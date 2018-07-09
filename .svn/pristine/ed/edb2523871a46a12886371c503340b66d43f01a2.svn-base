@@ -1,0 +1,17 @@
+/*
+SQLyog Ultimate v12.09 (64 bit)
+MySQL - 8.0.11 
+*********************************************************************
+*/
+/*!40101 SET NAMES utf8 */;
+
+insert into `sys_dic` (`dic_id`, `dic_name`, `table_name`, `dic_sql`, `validity`) values('10','是否','sys_dic_item','SELECT item_key, item_value FROM sys_dic_item WHERE dic_id=10 order by item_order','1');
+insert into `sys_dic` (`dic_id`, `dic_name`, `table_name`, `dic_sql`, `validity`) values('11','国家','sys_country','SELECT country_id item_key, country_name item_value FROM sys_country ORDER BY country_id;','1');
+insert into `sys_dic` (`dic_id`, `dic_name`, `table_name`, `dic_sql`, `validity`) values('12','省份','sys_region','SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=1 ORDER BY reg_id;','1');
+
+
+insert into `sys_dic_item` (`dic_id`, `item_key`, `item_value`, `item_order`, `validity`) values('10','0','否','2','1');
+insert into `sys_dic_item` (`dic_id`, `item_key`, `item_value`, `item_order`, `validity`) values('10','1','是','1','1');
+
+insert into `sys_country` (`country_id`, `country_name`, `country_no`, `country_en`) values('100','中华人民共和国','中国','China');
+

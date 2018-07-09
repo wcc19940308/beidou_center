@@ -1,0 +1,24 @@
+package com.ctbt.beidou.ship.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ctbt.beidou.base.model.BdShip;
+
+public interface IShipService {
+	public List<BdShip> selectAll(Map map);
+	
+	public List<BdShip> selectByitem(BdShip record);
+	
+	public int deleteByPrimaryKey(Integer shipId);
+
+	public int insert(BdShip record);
+	
+	public int insertSelective(BdShip record);
+
+	public BdShip selectByPrimaryKey(Integer shipId);
+
+	public int updateByPrimaryKeySelective(BdShip record);
+
+	public int updateByPrimaryKey(BdShip record);
+}

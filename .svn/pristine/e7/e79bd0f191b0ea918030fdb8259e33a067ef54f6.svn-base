@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.SysDicItemMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.SysDicItem">
+    <id column="dic_id" jdbcType="INTEGER" property="dicId" />
+    <result column="item_key" jdbcType="VARCHAR" property="itemKey" />
+    <result column="item_value" jdbcType="VARCHAR" property="itemValue" />
+    <result column="validity" jdbcType="CHAR" property="validity" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dic_id, item_key, item_value, validity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dic_item
+    where dic_id = #{dicId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_dic_item
+    where dic_id = #{dicId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.SysDicItem">
+    insert into sys_dic_item (dic_id, item_key, item_value, 
+      validity)
+    values (#{dicId,jdbcType=INTEGER}, #{itemKey,jdbcType=VARCHAR}, #{itemValue,jdbcType=VARCHAR}, 
+      #{validity,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.SysDicItem">
+    insert into sys_dic_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dicId != null">
+        dic_id,
+      </if>
+      <if test="itemKey != null">
+        item_key,
+      </if>
+      <if test="itemValue != null">
+        item_value,
+      </if>
+      <if test="validity != null">
+        validity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dicId != null">
+        #{dicId,jdbcType=INTEGER},
+      </if>
+      <if test="itemKey != null">
+        #{itemKey,jdbcType=VARCHAR},
+      </if>
+      <if test="itemValue != null">
+        #{itemValue,jdbcType=VARCHAR},
+      </if>
+      <if test="validity != null">
+        #{validity,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.SysDicItem">
+    update sys_dic_item
+    <set>
+      <if test="itemKey != null">
+        item_key = #{itemKey,jdbcType=VARCHAR},
+      </if>
+      <if test="itemValue != null">
+        item_value = #{itemValue,jdbcType=VARCHAR},
+      </if>
+      <if test="validity != null">
+        validity = #{validity,jdbcType=CHAR},
+      </if>
+    </set>
+    where dic_id = #{dicId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.SysDicItem">
+    update sys_dic_item
+    set item_key = #{itemKey,jdbcType=VARCHAR},
+      item_value = #{itemValue,jdbcType=VARCHAR},
+      validity = #{validity,jdbcType=CHAR}
+    where dic_id = #{dicId,jdbcType=INTEGER}
+  </update>
+</mapper>

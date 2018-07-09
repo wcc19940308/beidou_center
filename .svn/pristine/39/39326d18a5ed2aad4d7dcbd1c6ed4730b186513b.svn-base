@@ -1,0 +1,105 @@
+package com.ctbt.beidou.chat.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.bo.ResultView;
+import com.ctbt.beidou.base.dao.BdMsgChatDTOMapper;
+import com.ctbt.beidou.base.dao.BdMsgChatMapper;
+import com.ctbt.beidou.base.model.BdMsgChat;
+import com.ctbt.beidou.base.model.BdMsgChatDTO;
+import com.ctbt.beidou.base.model.BdRole;
+
+@Transactional
+@Service("chatService")
+public class BdChatServiceImpl implements IBdChatService{
+	
+	@Resource
+	private BdMsgChatMapper bdMsgChatMapper;
+	
+	@Resource
+	private BdMsgChatDTOMapper bdMsgChatDTOMapper;
+
+	@Override
+	public int deleteByPrimaryKey(Integer msgId) {
+		
+		return this.bdMsgChatMapper.deleteByPrimaryKey(msgId);
+	}
+
+	@Override
+	public int insert(BdMsgChat record) {
+		
+		return  this.bdMsgChatMapper.insert(record);
+	}
+
+	@Override
+	public int insertSelective(BdMsgChat record) {
+		
+		return this.bdMsgChatMapper.insertSelective(record);
+	}
+
+	@Override
+	public BdMsgChat selectByPrimaryKey(Integer msgId) {
+		
+		return this.bdMsgChatMapper.selectByPrimaryKey(msgId);
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(BdMsgChat record) {
+		
+		return this.bdMsgChatMapper.updateByPrimaryKeySelective(record);
+	}
+
+	@Override
+	public int updateByPrimaryKey(BdMsgChat record) {
+		
+		return this.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public List<BdMsgChat> queryChatList(BdMsgChat record) {
+		
+		return this.bdMsgChatMapper.selectByCondition(record);
+	}
+
+	@Override
+	public List<BdMsgChat> showChatList() {
+		
+		return this.bdMsgChatMapper.selectAll();
+	}
+
+	@Override
+	public ResultView saveBdChatEdit(BdMsgChat record) {
+		
+		Integer msgId = record.getMsgId();
+//		if(msgId == null) {
+//			//主键为空，新增
+//			record.setMsgId(Integer.valueOf(112));
+//			bdMsgChatMapper.insert(record);
+//		}else {
+//			//有主键，修改
+			bdMsgChatMapper.updateByPrimaryKey(record);
+			
+		
+		bdMsgChatMapper.updateByPrimaryKey(record);
+		return new ResultView("1", "", record);
+	}
+
+	@Override
+	public List<Map<String, Object>> findAll() {
+		
+		List<Map<String, Object>> list = bdMsgChatMapper.findAll();
+		
+		return list;
+	}
+
+
+	
+	
+
+}

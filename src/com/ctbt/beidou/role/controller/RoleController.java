@@ -1,0 +1,79 @@
+package com.ctbt.beidou.role.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.bo.ResultView;
+import com.ctbt.beidou.base.model.BdRole;
+import com.ctbt.beidou.base.model.BdUser;
+import com.ctbt.beidou.role.service.IBdRoleService;
+
+@Controller
+@RequestMapping("/role")
+public class RoleController {
+
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@Resource
+	private IBdRoleService roleService;
+	
+	@RequestMapping("/toRoleList")
+	public String toRoleList(HttpServletRequest request, Model model){
+//		role= new BdRole();
+//		role.setRoleId(Integer.valueOf(11));
+//		role.setRoleName("rname");
+//
+//		//java对象变成json对象
+//		JSONObject jsonObject=JSONObject.fromObject(role);
+//
+//		//json对象转换成json字符串
+//		String jsonStr=jsonObject.toString();
+//		logger.info(jsonStr);
+		
+		return "role/roleList";
+	}
+	
+	@RequestMapping(value = "/queryRoleList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Map<String,Object>> queryRoleList(HttpServletRequest request, BdRole model){
+
+		List<Map<String,Object>> list = roleService.queryRoleList();
+
+		return list;
+	}
+	
+	@RequestMapping(value = "/toRoleEdit")
+	public String toRoleEdit(HttpServletRequest request, BdRole bdRole, ModelMap retMap){
+		
+		Integer roleId = null;
+		if(bdRole != null) {
+			roleId = bdRole.getRoleId();
+		}
+		
+		if(roleId != null) {
+			bdRole = roleService.selectByPrimaryKey(roleId);
+		}
+
+		retMap.addAttribute("BdRole", bdRole);
+		return "role/roleEdit";
+	}
+	
+	@RequestMapping(value = "/saveRoleEdit")
+	@ResponseBody
+	public ResultView saveRoleEdit(HttpServletRequest request, BdRole role, BdUser user){
+		ResultView rv = null;//roleService.saveBdRoleEdit(role);
+		return rv;
+	}
+}

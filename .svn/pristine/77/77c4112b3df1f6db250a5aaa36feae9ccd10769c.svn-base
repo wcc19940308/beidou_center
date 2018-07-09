@@ -1,0 +1,95 @@
+package com.ctbt.beidou.ship.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.map.HashedMap;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.bo.ResultView;
+import com.ctbt.beidou.base.model.BdRole;
+import com.ctbt.beidou.base.model.BdShip;
+
+import com.ctbt.beidou.ship.service.IShipService;
+
+
+@Controller
+@RequestMapping("/ship")
+public class ShipController {
+
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@Resource
+	private IShipService shipService;
+	
+	@RequestMapping("/toShipList")
+	public String toShipList(HttpServletRequest request,Model model){
+
+		return "ship/shipList";
+	}
+
+	@RequestMapping("/queryShipList")
+	public String queryShipList(HttpServletRequest request,Model model){
+
+		return "ship/shipList";
+	}
+
+	@RequestMapping("/toShipEdit")
+	public String toShipEdit(HttpServletRequest request,Model model){
+
+		return "ship/shipEdit";
+	}
+	
+	
+	
+/*	@RequestMapping(value ="/selectByitem")
+	@ResponseBody
+	public List<BdShip> selectByitem(@RequestParam("shipno") String shipno,@RequestParam("shipowner") String shipowner,@RequestParam("cardno1") String cardno1){
+		Map map=new HashMap();
+		BdShip bdship=new BdShip();
+		bdship.setShipNo(shipno);
+		bdship.setCardNo1(cardno1);
+		bdship.setShipOwner(shipowner);
+		List<BdShip> result = shipService.selectByitem(bdship);
+		//System.out.println(result+"条件查询成功");
+		return result;
+	}*/
+	
+	@RequestMapping(value ="/selectByitem")
+	@ResponseBody
+	public List<BdShip> selectByitem(HttpServletRequest request,BdShip bdship){
+		List<BdShip> result = shipService.selectByitem(bdship);
+		//System.out.println(result+"条件查询成功");
+		return result;
+	}
+	
+	
+	@RequestMapping(value ="/selectAll")
+	@ResponseBody
+	public List<BdShip> selectAll(HttpServletRequest request){
+		Map map=new HashMap();
+		List<BdShip> result = shipService.selectAll(map);
+		System.out.println(result+"全部成功");
+		return result;
+	}
+	
+	@RequestMapping(value ="/insert")
+	@ResponseBody
+	public int insert(HttpServletRequest request,BdShip bdship){
+		int result=shipService.insert(bdship);
+		System.out.println(result+"全部成功");
+		return result;
+	}
+	
+	
+}

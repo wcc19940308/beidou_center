@@ -1,0 +1,12 @@
+package com.ctbt.beidou.base.dao;
+
+import java.util.List;
+
+import com.ctbt.beidou.base.bo.KeyValue;
+import com.ctbt.beidou.base.model.SysDic;
+
+public interface SysDicMapper {
+    List<SysDic> findAllValidity();
+    List<KeyValue> queryDicKeyValueListBySql(String sql);
+    List<KeyValue> queryDicKeyValueListById(Integer dicId);
+}

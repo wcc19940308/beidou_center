@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdFishRecordDetailMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdFishRecordDetail">
+    <id column="detail_id" jdbcType="INTEGER" property="detailId" />
+    <result column="record_id" jdbcType="INTEGER" property="recordId" />
+    <result column="fish_type" jdbcType="VARCHAR" property="fishType" />
+    <result column="fish_grade" jdbcType="VARCHAR" property="fishGrade" />
+    <result column="fish_weight" jdbcType="INTEGER" property="fishWeight" />
+    <result column="weight_unit" jdbcType="VARCHAR" property="weightUnit" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    detail_id, record_id, fish_type, fish_grade, fish_weight, weight_unit
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_fish_record_detail
+    where detail_id = #{detailId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_fish_record_detail
+    where detail_id = #{detailId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdFishRecordDetail">
+    insert into bd_fish_record_detail (detail_id, record_id, fish_type, 
+      fish_grade, fish_weight, weight_unit
+      )
+    values (#{detailId,jdbcType=INTEGER}, #{recordId,jdbcType=INTEGER}, #{fishType,jdbcType=VARCHAR}, 
+      #{fishGrade,jdbcType=VARCHAR}, #{fishWeight,jdbcType=INTEGER}, #{weightUnit,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdFishRecordDetail">
+    insert into bd_fish_record_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="detailId != null">
+        detail_id,
+      </if>
+      <if test="recordId != null">
+        record_id,
+      </if>
+      <if test="fishType != null">
+        fish_type,
+      </if>
+      <if test="fishGrade != null">
+        fish_grade,
+      </if>
+      <if test="fishWeight != null">
+        fish_weight,
+      </if>
+      <if test="weightUnit != null">
+        weight_unit,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="detailId != null">
+        #{detailId,jdbcType=INTEGER},
+      </if>
+      <if test="recordId != null">
+        #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="fishType != null">
+        #{fishType,jdbcType=VARCHAR},
+      </if>
+      <if test="fishGrade != null">
+        #{fishGrade,jdbcType=VARCHAR},
+      </if>
+      <if test="fishWeight != null">
+        #{fishWeight,jdbcType=INTEGER},
+      </if>
+      <if test="weightUnit != null">
+        #{weightUnit,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdFishRecordDetail">
+    update bd_fish_record_detail
+    <set>
+      <if test="recordId != null">
+        record_id = #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="fishType != null">
+        fish_type = #{fishType,jdbcType=VARCHAR},
+      </if>
+      <if test="fishGrade != null">
+        fish_grade = #{fishGrade,jdbcType=VARCHAR},
+      </if>
+      <if test="fishWeight != null">
+        fish_weight = #{fishWeight,jdbcType=INTEGER},
+      </if>
+      <if test="weightUnit != null">
+        weight_unit = #{weightUnit,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where detail_id = #{detailId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdFishRecordDetail">
+    update bd_fish_record_detail
+    set record_id = #{recordId,jdbcType=INTEGER},
+      fish_type = #{fishType,jdbcType=VARCHAR},
+      fish_grade = #{fishGrade,jdbcType=VARCHAR},
+      fish_weight = #{fishWeight,jdbcType=INTEGER},
+      weight_unit = #{weightUnit,jdbcType=VARCHAR}
+    where detail_id = #{detailId,jdbcType=INTEGER}
+  </update>
+</mapper>

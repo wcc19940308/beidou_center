@@ -1,0 +1,12 @@
+package com.ctbt.beidou.base.dao;
+
+import java.util.List;
+
+import com.ctbt.beidou.base.model.BdMsgChatDTO;
+
+public interface BdMsgChatDTOMapper {
+	List<BdMsgChatDTO> findAll();
+	
+	int sendMsg(List<BdMsgChatDTO> list);
+
+}

@@ -1,0 +1,50 @@
+package com.ctbt.beidou.ship.service;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ctbt.beidou.base.dao.BdShipMapper;
+import com.ctbt.beidou.base.model.BdShip;
+
+@Service("shipService")
+public class ShipServiceImpl implements IShipService {
+	
+	@Resource
+	private BdShipMapper bdShipMapper;
+	
+	@Override
+	public BdShip selectByPrimaryKey(Integer shipId) {
+		return this.bdShipMapper.selectByPrimaryKey(shipId);
+	}
+
+	@Override
+	public int deleteByPrimaryKey(Integer shipId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int insert(BdShip record) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int insertSelective(BdShip record) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(BdShip record) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int updateByPrimaryKey(BdShip record) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+}

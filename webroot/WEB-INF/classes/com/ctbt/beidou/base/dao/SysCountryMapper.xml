@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.SysCountryMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.SysCountry">
+    <id column="country_id" jdbcType="INTEGER" property="countryId" />
+    <result column="country_name" jdbcType="VARCHAR" property="countryName" />
+    <result column="country_no" jdbcType="VARCHAR" property="countryNo" />
+    <result column="country_en" jdbcType="VARCHAR" property="countryEn" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    country_id, country_name, country_no, country_en
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_country
+    where country_id = #{countryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_country
+    where country_id = #{countryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.SysCountry">
+    insert into sys_country (country_id, country_name, country_no, 
+      country_en)
+    values (#{countryId,jdbcType=INTEGER}, #{countryName,jdbcType=VARCHAR}, #{countryNo,jdbcType=VARCHAR}, 
+      #{countryEn,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.SysCountry">
+    insert into sys_country
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="countryId != null">
+        country_id,
+      </if>
+      <if test="countryName != null">
+        country_name,
+      </if>
+      <if test="countryNo != null">
+        country_no,
+      </if>
+      <if test="countryEn != null">
+        country_en,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="countryId != null">
+        #{countryId,jdbcType=INTEGER},
+      </if>
+      <if test="countryName != null">
+        #{countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="countryNo != null">
+        #{countryNo,jdbcType=VARCHAR},
+      </if>
+      <if test="countryEn != null">
+        #{countryEn,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.SysCountry">
+    update sys_country
+    <set>
+      <if test="countryName != null">
+        country_name = #{countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="countryNo != null">
+        country_no = #{countryNo,jdbcType=VARCHAR},
+      </if>
+      <if test="countryEn != null">
+        country_en = #{countryEn,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where country_id = #{countryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.SysCountry">
+    update sys_country
+    set country_name = #{countryName,jdbcType=VARCHAR},
+      country_no = #{countryNo,jdbcType=VARCHAR},
+      country_en = #{countryEn,jdbcType=VARCHAR}
+    where country_id = #{countryId,jdbcType=INTEGER}
+  </update>
+</mapper>

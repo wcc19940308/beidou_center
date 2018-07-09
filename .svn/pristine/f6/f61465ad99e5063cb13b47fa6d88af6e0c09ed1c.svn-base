@@ -1,0 +1,36 @@
+package com.ctbt.beidou.chat.controller;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+
+@Controller
+@RequestMapping("/chat")
+public class ChatController {
+
+	private Logger logger = Logger.getLogger(getClass());
+		
+	@RequestMapping("/toChatList")
+	public String toChatList(HttpServletRequest request,Model model){
+
+		return "chat/chatList";
+	}
+	
+	@RequestMapping("/queryChatList")
+	public String queryChatList(HttpServletRequest request,Model model){
+
+		return "chat/chatList";
+	}
+	
+	@RequestMapping("/toChatEdit")
+	public String toChatEdit(HttpServletRequest request,Model model){
+
+		return "chat/chatEdit";
+	}
+}

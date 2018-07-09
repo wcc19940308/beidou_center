@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.dao.SysLogMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.model.SysLog">
+    <id column="log_id" jdbcType="INTEGER" property="logId" />
+    <result column="log_type" jdbcType="CHAR" property="logType" />
+    <result column="log_time" jdbcType="TIMESTAMP" property="logTime" />
+    <result column="log_txt" jdbcType="VARCHAR" property="logTxt" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    log_id, log_type, log_time, log_txt, user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_log
+    where log_id = #{logId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_log
+    where log_id = #{logId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.model.SysLog">
+    insert into sys_log (log_id, log_type, log_time, 
+      log_txt, user_id)
+    values (#{logId,jdbcType=INTEGER}, #{logType,jdbcType=CHAR}, #{logTime,jdbcType=TIMESTAMP}, 
+      #{logTxt,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.model.SysLog">
+    insert into sys_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        log_id,
+      </if>
+      <if test="logType != null">
+        log_type,
+      </if>
+      <if test="logTime != null">
+        log_time,
+      </if>
+      <if test="logTxt != null">
+        log_txt,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        #{logId,jdbcType=INTEGER},
+      </if>
+      <if test="logType != null">
+        #{logType,jdbcType=CHAR},
+      </if>
+      <if test="logTime != null">
+        #{logTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logTxt != null">
+        #{logTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.model.SysLog">
+    update sys_log
+    <set>
+      <if test="logType != null">
+        log_type = #{logType,jdbcType=CHAR},
+      </if>
+      <if test="logTime != null">
+        log_time = #{logTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logTxt != null">
+        log_txt = #{logTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.model.SysLog">
+    update sys_log
+    set log_type = #{logType,jdbcType=CHAR},
+      log_time = #{logTime,jdbcType=TIMESTAMP},
+      log_txt = #{logTxt,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER}
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,13 @@
+## JNDI Data source
+# tomcat JNDI name must start with java:/comp/env/
+jndi.data_source java:/comp/env/jdbc/beidou
+
+#driver=com.mysql.cj.jdbc.Driver
+#url=jdbc:mysql://127.0.0.1:3306/beidou?serverTimezone=GMT&useUnicode=true&characterEncoding=utf8&useSSL=false
+#username=beidou
+#password=111111
+#initialSize=2
+#maxActive=20
+#maxIdle=20
+#minIdle=1
+#maxWait=60000

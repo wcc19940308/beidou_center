@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.SysLogTriggerMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.SysLogTrigger">
+    <id column="log_id" jdbcType="INTEGER" property="logId" />
+    <result column="log_time" jdbcType="TIMESTAMP" property="logTime" />
+    <result column="table_name" jdbcType="VARCHAR" property="tableName" />
+    <result column="columns" jdbcType="VARCHAR" property="columns" />
+    <result column="old_values" jdbcType="VARCHAR" property="oldValues" />
+    <result column="new_values" jdbcType="VARCHAR" property="newValues" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="device" jdbcType="CHAR" property="device" />
+    <result column="device_key" jdbcType="VARCHAR" property="deviceKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    log_id, log_time, table_name, columns, old_values, new_values, user_id, device, device_key
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_log_trigger
+    where log_id = #{logId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_log_trigger
+    where log_id = #{logId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.SysLogTrigger">
+    insert into sys_log_trigger (log_id, log_time, table_name, 
+      columns, old_values, new_values, 
+      user_id, device, device_key
+      )
+    values (#{logId,jdbcType=INTEGER}, #{logTime,jdbcType=TIMESTAMP}, #{tableName,jdbcType=VARCHAR}, 
+      #{columns,jdbcType=VARCHAR}, #{oldValues,jdbcType=VARCHAR}, #{newValues,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER}, #{device,jdbcType=CHAR}, #{deviceKey,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.SysLogTrigger">
+    insert into sys_log_trigger
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        log_id,
+      </if>
+      <if test="logTime != null">
+        log_time,
+      </if>
+      <if test="tableName != null">
+        table_name,
+      </if>
+      <if test="columns != null">
+        columns,
+      </if>
+      <if test="oldValues != null">
+        old_values,
+      </if>
+      <if test="newValues != null">
+        new_values,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="device != null">
+        device,
+      </if>
+      <if test="deviceKey != null">
+        device_key,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        #{logId,jdbcType=INTEGER},
+      </if>
+      <if test="logTime != null">
+        #{logTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tableName != null">
+        #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="columns != null">
+        #{columns,jdbcType=VARCHAR},
+      </if>
+      <if test="oldValues != null">
+        #{oldValues,jdbcType=VARCHAR},
+      </if>
+      <if test="newValues != null">
+        #{newValues,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="device != null">
+        #{device,jdbcType=CHAR},
+      </if>
+      <if test="deviceKey != null">
+        #{deviceKey,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.SysLogTrigger">
+    update sys_log_trigger
+    <set>
+      <if test="logTime != null">
+        log_time = #{logTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tableName != null">
+        table_name = #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="columns != null">
+        columns = #{columns,jdbcType=VARCHAR},
+      </if>
+      <if test="oldValues != null">
+        old_values = #{oldValues,jdbcType=VARCHAR},
+      </if>
+      <if test="newValues != null">
+        new_values = #{newValues,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="device != null">
+        device = #{device,jdbcType=CHAR},
+      </if>
+      <if test="deviceKey != null">
+        device_key = #{deviceKey,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.SysLogTrigger">
+    update sys_log_trigger
+    set log_time = #{logTime,jdbcType=TIMESTAMP},
+      table_name = #{tableName,jdbcType=VARCHAR},
+      columns = #{columns,jdbcType=VARCHAR},
+      old_values = #{oldValues,jdbcType=VARCHAR},
+      new_values = #{newValues,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      device = #{device,jdbcType=CHAR},
+      device_key = #{deviceKey,jdbcType=VARCHAR}
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+</mapper>

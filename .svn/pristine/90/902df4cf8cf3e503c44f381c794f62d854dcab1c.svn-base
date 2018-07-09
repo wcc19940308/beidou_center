@@ -1,0 +1,15 @@
+package com.ctbt.beidou.base.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ctbt.beidou.base.bo.KeyValue;
+import com.ctbt.beidou.base.model.SysDic;
+
+public interface IDicService {
+	Map<String, List<KeyValue>> getAllDic();
+
+	List<KeyValue> loadDic(SysDic sysDic);
+
+	List<KeyValue> loadDic(Integer dicId);
+}

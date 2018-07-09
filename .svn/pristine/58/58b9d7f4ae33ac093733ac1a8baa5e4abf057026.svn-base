@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdMsgChatDTOMapper">
+
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdMsgChatDTO">
+    <id column="ship_id" jdbcType="INTEGER" property="shipId" />
+    <result column="ship_name" jdbcType="VARCHAR" property="shipName" />
+    <result column="card_no1" jdbcType="VARCHAR" property="cardNo1" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+   
+  </resultMap>
+     
+   <select id="findAll" parameterType="com.ctbt.beidou.base.model.BdMsgChatDTO" resultMap="BaseResultMap">
+    select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e ,
+	(select c.phone , d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
+	(select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id) as f where e.user_id = f.user_id 
+  </select>
+  
+ 
+</mapper>

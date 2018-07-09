@@ -1,0 +1,43 @@
+package com.ctbt.beidou.base.model;
+
+public class SysCountry {
+    private Integer countryId;
+
+    private String countryName;
+
+    private String countryNo;
+
+    private String countryEn;
+
+    public Integer getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(Integer countryId) {
+        this.countryId = countryId;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName == null ? null : countryName.trim();
+    }
+
+    public String getCountryNo() {
+        return countryNo;
+    }
+
+    public void setCountryNo(String countryNo) {
+        this.countryNo = countryNo == null ? null : countryNo.trim();
+    }
+
+    public String getCountryEn() {
+        return countryEn;
+    }
+
+    public void setCountryEn(String countryEn) {
+        this.countryEn = countryEn == null ? null : countryEn.trim();
+    }
+}

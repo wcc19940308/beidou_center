@@ -1,0 +1,9 @@
+package com.ctbt.beidou.base.dao;
+
+import com.ctbt.beidou.base.model.BdUserPerm;
+
+public interface BdUserPermMapper {
+    int insert(BdUserPerm record);
+
+    int insertSelective(BdUserPerm record);
+}

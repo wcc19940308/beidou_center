@@ -1,0 +1,181 @@
+package com.ctbt.beidou.base.utils;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
+public class NumberUtil {
+
+	public static final String[] CnNums = new String[]{"零","一","二","三","四","五","六","七","八","九","十"};
+	public static final String[] HexNums = new String[]{"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
+	
+	
+	/**
+	 * 排序，从小到大
+	 * 
+	 * @param numbers
+	 */
+	public static void sortLow2Up(int[] numbers) {
+		int temp = 0;
+		for(int d = 0; d < numbers.length; d++){
+			for(int k = 0; k < numbers.length - 1; k++){
+				if(numbers[k] > numbers[k + 1]){
+					temp = numbers[k + 1];
+					numbers[k + 1] = numbers[k];
+					numbers[k] = temp;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 排序，从大到小
+	 * 
+	 * @param numbers
+	 */
+	public static void sortUp2Low(int[] numbers) {
+		int temp = 0;
+		for(int d = 0; d < numbers.length; d++){
+			for(int k = 0; k < numbers.length - 1; k++){
+				if(numbers[k] < numbers[k + 1]){
+					temp = numbers[k + 1];
+					numbers[k + 1] = numbers[k];
+					numbers[k] = temp;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 判断这个字符串是不是全部是数字
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNumbers(String str) {
+		if(str == null) return false;
+		java.util.regex.Pattern p = java.util.regex.Pattern.compile("[0-9]+");// 数字一个或多个
+		java.util.regex.Matcher matcher = p.matcher(str);
+		return matcher.matches();
+	}
+
+	/**
+	 * 数字格式化，保留 length 的小数位，四舍五入
+	 * @param value
+	 * @param length 有效的小数位长度
+	 * @return
+	 */
+	public static String numberFormat(Object value, int length) {
+		String numberStr = "";
+		if(value != null && (value instanceof Short || value instanceof Integer || value instanceof Long || value instanceof Float || value instanceof Double || value instanceof BigDecimal)){
+			DecimalFormat df = getDecimalFormat(length);
+			return df.format(value);
+		}
+
+		return numberStr;
+	}
+
+	/**
+	 * 数字格式化，保留 length 的小数位，四舍五入
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	public static String number2String(int value, int length) {
+		DecimalFormat df = getDecimalFormat(length);
+		return df.format(value);
+	}
+
+	/**
+	 * 数字格式化，保留 length 的小数位，四舍五入
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	public static String number2String(float value, int length) {
+		DecimalFormat df = getDecimalFormat(length);
+		return df.format(value);
+	}
+
+	/**
+	 * 数字格式化，保留 length 的小数位，四舍五入
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	public static String number2String(double value, int length) {
+		DecimalFormat df = getDecimalFormat(length);
+		return df.format(value);
+	}
+
+	/**
+	 * 数字格式化，保留 length 的小数位，四舍五入
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	public static String number2String(long value, int length) {
+		DecimalFormat df = getDecimalFormat(length);
+		return df.format(value);
+	}
+
+	/**
+	 * 调整 BigDecimal 的精度
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	public static BigDecimal numberScale(BigDecimal value, int length) {
+		if(value != null){
+			DecimalFormat df = getDecimalFormat(length);
+			return new BigDecimal(df.format(value));
+		}
+
+		return null;
+	}
+
+	/**
+	 * 调整 Double 的精度
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	public static Double numberScale(Double value, int length) {
+		if(value != null){
+			DecimalFormat df = getDecimalFormat(length);
+			return new Double(df.format(value));
+		}
+
+		return null;
+	}
+
+	/**
+	 * 调整 Float 的精度
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	public static Float numberScale(Float value, int length) {
+		if(value != null){
+			DecimalFormat df = getDecimalFormat(length);
+			return new Float(df.format(value));
+		}
+
+		return null;
+	}
+
+	public static DecimalFormat getDecimalFormat(int length) {
+		String format = "#";
+		if(length > 0) format += "." + StrUtil.getLengthSign("0", length);
+		DecimalFormat df = new DecimalFormat(format);
+		return df;
+	}
+
+	//    public static void main(String[] args) {
+	//	Float f = new Float("100.125456789");
+	//	Double d = new Double("100.125456789");
+	//	BigDecimal value = new BigDecimal("36578.791000");
+	//	System.out.println(NumberUtils.numberScale(f, 4));
+	//	System.out.println(NumberUtils.numberScale(d, 4));
+	//	System.out.println(NumberUtils.numberScale(value, 4));
+	//    }
+}

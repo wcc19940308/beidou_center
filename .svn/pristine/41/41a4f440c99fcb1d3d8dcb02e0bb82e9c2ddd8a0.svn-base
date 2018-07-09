@@ -1,0 +1,43 @@
+package com.ctbt.beidou.base.model;
+
+public class SysDicItem {
+    private Integer dicId;
+
+    private String itemKey;
+
+    private String itemValue;
+
+    private String validity;
+
+    public Integer getDicId() {
+        return dicId;
+    }
+
+    public void setDicId(Integer dicId) {
+        this.dicId = dicId;
+    }
+
+    public String getItemKey() {
+        return itemKey;
+    }
+
+    public void setItemKey(String itemKey) {
+        this.itemKey = itemKey == null ? null : itemKey.trim();
+    }
+
+    public String getItemValue() {
+        return itemValue;
+    }
+
+    public void setItemValue(String itemValue) {
+        this.itemValue = itemValue == null ? null : itemValue.trim();
+    }
+
+    public String getValidity() {
+        return validity;
+    }
+
+    public void setValidity(String validity) {
+        this.validity = validity == null ? null : validity.trim();
+    }
+}

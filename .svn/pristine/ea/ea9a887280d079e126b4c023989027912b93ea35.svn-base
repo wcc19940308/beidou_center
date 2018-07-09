@@ -1,0 +1,33 @@
+/*
+* 版权所有© 浙江同博科技发展有限公司
+* http://www.ctbt.com.cn/
+* 2018-06-28
+*/
+.ctbt-btn {
+	height: 23px;
+	overflow: hidden;
+	width: 70px;
+	line-height: 23px;
+	cursor: pointer;
+	position: relative;
+	text-align:center;
+	border:1px solid #D3D3D3;
+	color:#333333;
+	background:url('../images/ui/button.gif') repeat-x center center;
+}
+
+.ctbt-btn-over, .ctbt-btn:hover {
+	background-image:url('../images/ui/button-over.gif'); border-color:#D3D3D3;
+}
+.ctbt-btn-disabled, .ctbt-btn:disabled {
+	background-image:url('../images/ui/button-disabled.gif'); color:#9D9D9E;
+}
+
+/*ctbt_query_from_input*/
+.ctbt_qf_input{
+	width: 95%;
+}
+
+.ctbt_qf_select{
+	width: 95%;
+}

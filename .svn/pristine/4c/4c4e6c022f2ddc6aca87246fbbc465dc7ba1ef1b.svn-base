@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdka">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.5">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.web"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/AspectJ-plugin-3.0.0.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/aspectjweaver.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-chain-1.2.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-dbcp-1.4.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-digester-1.8.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-fileupload-1.2.1.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-httpclient-3.0.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-io-1.3.2.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-jxpath-1.1.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-lang-2.3.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-pool-1.3.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/commons-validator-1.3.1.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/ezmorph-1.0.3.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/jackson-annotations-2.9.6.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/jackson-core-2.9.6.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/jackson-databind-2.9.6.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/json-lib-2.4-jdk15.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/mybatis-3.4.6.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/mybatis-spring-1.3.2.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/mysql-connector-java-8.0.11.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-aop-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-aspects-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-beans-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-context-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-context-indexer-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-context-support-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-core-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-expression-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-instrument-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-jcl-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-jdbc-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-jms-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-messaging-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-orm-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-oxm-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-test-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-tx-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-web-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-webflux-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-webmvc-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/javaOXE/peackge/beidou/spring-websocket-5.0.6.RELEASE.jar"/>
+	<classpathentry kind="output" path="webroot/WEB-INF/classes"/>
+</classpath>

@@ -1,0 +1,55 @@
+package com.ctbt.beidou.base.controller;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.bo.KeyValue;
+import com.ctbt.beidou.base.service.IDicService;
+
+@Controller
+@RequestMapping("/dic")
+public class DicController {
+
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@Resource
+	private IDicService dicService;
+	
+	@RequestMapping(value = "/queryProvinceList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<KeyValue> queryProvinceList(Integer countryId) {
+		return dicService.queryProvinceList(countryId);
+	}
+
+	@RequestMapping(value = "/queryCityList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<KeyValue> queryCityList(Integer regId) {
+		return dicService.queryCityList(regId);
+	}
+
+	@RequestMapping(value = "/queryCityAreaList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<KeyValue> queryCityAreaList(Integer regId) {
+		return dicService.queryCityAreaList(regId);
+	}
+
+	@RequestMapping(value = "/queryTownList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<KeyValue> queryTownList(Integer regId) {
+		return dicService.queryTownList(regId);
+	}
+
+	@RequestMapping(value = "/queryVillageList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<KeyValue> queryVillageList(Integer regId) {
+		return dicService.queryVillageList(regId);
+	}
+	
+}

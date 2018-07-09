@@ -1,0 +1,90 @@
+package com.ctbt.beidou.chat.controller;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import com.ctbt.beidou.base.bo.ResultView;
+import com.ctbt.beidou.base.model.BdMsgChat;
+import com.ctbt.beidou.base.model.BdMsgChatDTO;
+import com.ctbt.beidou.base.model.BdRole;
+import com.ctbt.beidou.base.utils.DateUtil;
+import com.ctbt.beidou.chat.service.IBdChatService;
+
+import jdk.internal.org.objectweb.asm.commons.Remapper;
+
+
+@Controller
+@RequestMapping("/chat")
+public class ChatController {
+
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@Resource
+	private IBdChatService chatServie;
+		
+	@RequestMapping("/toChatList")
+	public String toChatList(HttpServletRequest request,Model model){
+
+		return "chat/chatList";
+	}
+	
+	//条件查询
+	@RequestMapping(value="/queryChatList", method = RequestMethod.POST)
+	public List<BdMsgChat> queryChatList(HttpServletRequest request,BdMsgChat model){
+
+		return chatServie.queryChatList(model);
+	}
+	
+	//查询所有
+	@RequestMapping(value="/showChatList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<BdMsgChat> showChatList(HttpServletRequest request,BdMsgChat model){
+		
+		List<BdMsgChat> list = chatServie.showChatList();
+		
+		return list;
+	}
+	
+	@RequestMapping("/toChatEdit")
+	public String toChatEdit(HttpServletRequest request,BdMsgChat model,ModelMap retMap){
+
+		Integer id = null;
+		
+		if(model.getMsgId()!=null) {
+			id = model.getMsgId();
+		}
+		if(id != null) {
+			model = chatServie.selectByPrimaryKey(id);
+		}
+		retMap.addAttribute("BdMsgChat", model);
+		return "chat/chatEdit";
+	}
+	
+	//找到所有人的信息
+	@GetMapping(value = "/findAll")
+	@ResponseBody
+	public List<Map<String, Object>> findAll(HttpServletRequest request,BdMsgChat record){
+				
+		List<Map<String, Object>> list = chatServie.findAll();
+		
+		System.out.println(list.size());
+		
+		return list;
+	}
+}

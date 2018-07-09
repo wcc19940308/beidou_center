@@ -1,0 +1,13 @@
+package com.ctbt.beidou.user.service;
+
+import java.util.List;
+
+import com.ctbt.beidou.base.bo.BdUserBo;
+import com.ctbt.beidou.base.model.BdUser;
+
+public interface IUserService {
+	public BdUser getUserById(int userId);
+	int saveBdUser(BdUser record);
+
+	public List<BdUserBo> queryUserList(BdUserBo bdUserBo);
+}

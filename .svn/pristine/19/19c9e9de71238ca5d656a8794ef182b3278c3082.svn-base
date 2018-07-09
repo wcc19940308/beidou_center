@@ -1,0 +1,17 @@
+package com.ctbt.beidou.base.dao;
+
+import com.ctbt.beidou.base.model.BdMsgChat;
+
+public interface BdMsgChatMapper {
+    int deleteByPrimaryKey(Integer msgId);
+
+    int insert(BdMsgChat record);
+
+    int insertSelective(BdMsgChat record);
+
+    BdMsgChat selectByPrimaryKey(Integer msgId);
+
+    int updateByPrimaryKeySelective(BdMsgChat record);
+
+    int updateByPrimaryKey(BdMsgChat record);
+}

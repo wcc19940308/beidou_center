@@ -1,0 +1,44 @@
+package com.ctbt.beidou.user.service;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.bo.BdUserBo;
+import com.ctbt.beidou.base.dao.BdUserMapper;
+import com.ctbt.beidou.base.model.BdUser;
+import com.ctbt.beidou.user.service.IUserService;
+
+@Transactional
+@Service("userService")
+public class UserServiceImpl implements IUserService {
+	@Resource
+	private BdUserMapper bdUserMapper;
+
+	@Override
+	public BdUser getUserById(int userId) {
+		return this.bdUserMapper.selectByPrimaryKey(userId);
+	}
+
+	@Override
+	public int saveBdUser(BdUser record) {
+		BdUser user = new BdUser();
+		user.setUserId(Integer.valueOf(2));
+		user.setPassword("Password");
+		bdUserMapper.insert(user);
+		return 0;
+	}
+
+	@Override
+	public List<BdUserBo> queryUserList(BdUserBo bdUserBo) {
+		// TODO Auto-generated method stub
+		List<BdUserBo> list = bdUserMapper.selectByCondition(bdUserBo);
+		System.out.println(list.size());
+		
+		return list;
+	}
+
+}

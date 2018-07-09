@@ -1,0 +1,17 @@
+package com.ctbt.beidou.base.dao;
+
+import com.ctbt.beidou.base.model.SysRegion;
+
+public interface SysRegionMapper {
+    int deleteByPrimaryKey(Integer regId);
+
+    int insert(SysRegion record);
+
+    int insertSelective(SysRegion record);
+
+    SysRegion selectByPrimaryKey(Integer regId);
+
+    int updateByPrimaryKeySelective(SysRegion record);
+
+    int updateByPrimaryKey(SysRegion record);
+}

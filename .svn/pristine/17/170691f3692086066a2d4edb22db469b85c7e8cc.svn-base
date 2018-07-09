@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdUserDetailMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdUserDetail">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_code" jdbcType="VARCHAR" property="userCode" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="weixin" jdbcType="VARCHAR" property="weixin" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, user_code, user_name, qq, weixin, addr
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_user_detail
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_user_detail
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdUserDetail">
+    insert into bd_user_detail (user_id, user_code, user_name, 
+      qq, weixin, addr)
+    values (#{userId,jdbcType=INTEGER}, #{userCode,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{qq,jdbcType=VARCHAR}, #{weixin,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdUserDetail">
+    insert into bd_user_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userCode != null">
+        user_code,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="qq != null">
+        qq,
+      </if>
+      <if test="weixin != null">
+        weixin,
+      </if>
+      <if test="addr != null">
+        addr,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userCode != null">
+        #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="weixin != null">
+        #{weixin,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null">
+        #{addr,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdUserDetail">
+    update bd_user_detail
+    <set>
+      <if test="userCode != null">
+        user_code = #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        qq = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="weixin != null">
+        weixin = #{weixin,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null">
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdUserDetail">
+    update bd_user_detail
+    set user_code = #{userCode,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      qq = #{qq,jdbcType=VARCHAR},
+      weixin = #{weixin,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

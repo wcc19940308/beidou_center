@@ -1,0 +1,40 @@
+package com.ctbt.beidou.ship.controller;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.ctbt.beidou.ship.service.IShipService;
+
+
+@Controller
+@RequestMapping("/ship")
+public class ShipController {
+
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@Resource
+	private IShipService shipService;
+	
+	@RequestMapping("/toShipList")
+	public String toShipList(HttpServletRequest request,Model model){
+
+		return "ship/shipList";
+	}
+
+	@RequestMapping("/queryShipList")
+	public String queryShipList(HttpServletRequest request,Model model){
+
+		return "ship/shipList";
+	}
+
+	@RequestMapping("/toShipEdit")
+	public String toShipEdit(HttpServletRequest request,Model model){
+
+		return "ship/shipEdit";
+	}
+}

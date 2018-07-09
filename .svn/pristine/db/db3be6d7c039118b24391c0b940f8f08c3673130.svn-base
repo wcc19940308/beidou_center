@@ -1,0 +1,17 @@
+package com.ctbt.beidou.base.dao;
+
+import com.ctbt.beidou.base.model.BdShip;
+
+public interface BdShipMapper {
+    int deleteByPrimaryKey(Integer shipId);
+
+    int insert(BdShip record);
+
+    int insertSelective(BdShip record);
+
+    BdShip selectByPrimaryKey(Integer shipId);
+
+    int updateByPrimaryKeySelective(BdShip record);
+
+    int updateByPrimaryKey(BdShip record);
+}

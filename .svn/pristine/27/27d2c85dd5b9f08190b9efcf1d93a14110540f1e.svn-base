@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdShipMapper">
+ <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdShip" >
+    <id column="ship_id" property="shipId" jdbcType="INTEGER" />
+    <result column="ship_no" property="shipNo" jdbcType="VARCHAR" />
+    <result column="ship_name" property="shipName" jdbcType="VARCHAR" />
+    <result column="ship_owner" property="shipOwner" jdbcType="VARCHAR" />
+    <result column="ship_owner_sfz" property="shipOwnerSfz" jdbcType="VARCHAR" />
+    <result column="ship_desc" property="shipDesc" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="INTEGER" />
+    <result column="card_no1" property="cardNo1" jdbcType="VARCHAR" />
+    <result column="serial_no1" property="serialNo1" jdbcType="VARCHAR" />
+    <result column="card_no2" property="cardNo2" jdbcType="VARCHAR" />
+    <result column="serial_no2" property="serialNo2" jdbcType="VARCHAR" />
+    <result column="mmsi" property="mmsi" jdbcType="VARCHAR" />
+    <result column="ship_length" property="shipLength" jdbcType="REAL" />
+    <result column="ship_width" property="shipWidth" jdbcType="REAL" />
+    <result column="ship_water" property="shipWater" jdbcType="REAL" />
+    <result column="ship_type" property="shipType" jdbcType="VARCHAR" />
+    <result column="ship_type_new" property="shipTypeNew" jdbcType="VARCHAR" />
+    <result column="ship_owner_tel" property="shipOwnerTel" jdbcType="VARCHAR" />
+    <result column="ship_tons" property="shipTons" jdbcType="INTEGER" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="city_area" property="cityArea" jdbcType="VARCHAR" />
+    <result column="town" property="town" jdbcType="VARCHAR" />
+    <result column="village" property="village" jdbcType="VARCHAR" />
+    <result column="radio_call_no" property="radioCallNo" jdbcType="VARCHAR" />
+    <result column="type_other" property="typeOther" jdbcType="VARCHAR" />
+    <result column="validity" property="validity" jdbcType="CHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    ship_id, ship_no, ship_name, ship_owner, ship_owner_sfz, ship_desc, org_id, card_no1, 
+    serial_no1, card_no2, serial_no2, mmsi, ship_length, ship_width, ship_water, ship_type, 
+    ship_type_new, ship_owner_tel, ship_tons, country, province, city, city_area, town, 
+    village, radio_call_no, type_other, validity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_ship
+    where ship_id = #{shipId,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" parameterType="map" resultMap="BaseResultMap">
+		select * from bd_ship
+  </select>
+    <select id="selectByitem" parameterType="com.ctbt.beidou.base.model.BdShip" resultMap="BaseResultMap">
+		select * from bd_ship where ship_no like '%${shipNo}%' and ship_owner like '%${shipOwner}%' and card_no1 like '%${cardNo1}%' 
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdShip">
+    delete from bd_ship
+    where ship_id = #{shipId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdShip" >
+    insert into bd_ship (ship_no, ship_name, 
+      ship_owner, ship_owner_sfz, ship_desc, 
+      org_id, card_no1, serial_no1, 
+      card_no2, serial_no2, mmsi, 
+      ship_length, ship_width, ship_water, 
+      ship_type, ship_type_new, ship_owner_tel, 
+      ship_tons, country, province, 
+      city, city_area, town, 
+      village, radio_call_no, type_other, 
+      validity)
+    values (#{shipNo,jdbcType=VARCHAR}, #{shipName,jdbcType=VARCHAR}, 
+      #{shipOwner,jdbcType=VARCHAR}, #{shipOwnerSfz,jdbcType=VARCHAR}, #{shipDesc,jdbcType=VARCHAR}, 
+      #{orgId,jdbcType=INTEGER}, #{cardNo1,jdbcType=VARCHAR}, #{serialNo1,jdbcType=VARCHAR}, 
+      #{cardNo2,jdbcType=VARCHAR}, #{serialNo2,jdbcType=VARCHAR}, #{mmsi,jdbcType=VARCHAR}, 
+      #{shipLength,jdbcType=REAL}, #{shipWidth,jdbcType=REAL}, #{shipWater,jdbcType=REAL}, 
+      #{shipType,jdbcType=VARCHAR}, #{shipTypeNew,jdbcType=VARCHAR}, #{shipOwnerTel,jdbcType=VARCHAR}, 
+      #{shipTons,jdbcType=INTEGER}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{cityArea,jdbcType=VARCHAR}, #{town,jdbcType=VARCHAR}, 
+      #{village,jdbcType=VARCHAR}, #{radioCallNo,jdbcType=VARCHAR}, #{typeOther,jdbcType=VARCHAR}, 
+      #{validity,jdbcType=CHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdShip">
+    update bd_ship
+    set ship_no = #{shipNo,jdbcType=VARCHAR},
+      ship_name = #{shipName,jdbcType=VARCHAR},
+      ship_owner = #{shipOwner,jdbcType=VARCHAR},
+      ship_desc = #{shipDesc,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=INTEGER},
+      card_no1 = #{cardNo1,jdbcType=VARCHAR},
+      serial_no1 = #{serialNo1,jdbcType=VARCHAR},
+      card_no2 = #{cardNo2,jdbcType=VARCHAR},
+      serial_no2 = #{serialNo2,jdbcType=VARCHAR},
+      validity = #{validity,jdbcType=CHAR}
+    where ship_id = #{shipId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,69 @@
+package com.ctbt.beidou.base.Interceptor;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
+
+import com.ctbt.beidou.base.bo.ResultView;
+
+import net.sf.json.JSONObject;
+
+@Component  
+public class MyHandlerExceptionResolver extends SimpleMappingExceptionResolver {
+ 
+    @Override
+    protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex){
+    	logger.info("-----------------------MyHandlerExceptionResolver doResolveException---------------------------");
+    	logger.info(ex.getMessage());
+        String viewName = determineViewName(ex,request);
+        response.setCharacterEncoding("UTF-8");
+        if (viewName != null) {// JSP格式返回
+            if (!(request.getHeader("accept").contains("application/json")  || (request.getHeader("X-Requested-With")!= null && request
+                .getHeader("X-Requested-With").contains("XMLHttpRequest") ))) {
+                // 如果不是异步请求
+                // Apply HTTP status code for error views, if specified.
+                // Only apply it if we're processing a top-level request.
+                Integer statusCode = determineStatusCode(request, viewName);
+                if (statusCode != null) {
+                    applyStatusCodeIfPossible(request, response, statusCode);
+                }
+                System.out.println("JSP格式返回" + viewName);
+                return getModelAndView(viewName, ex, request);
+            } else {// JSON格式返回
+                try {
+                    PrintWriter writer = response.getWriter();
+                    writer.write(ex.getMessage());
+                    writer.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                
+                System.out.println("JSON格式返回" + viewName);
+                return null;
+            }
+        } else {
+        	try {
+                PrintWriter writer = response.getWriter();
+                
+                ResultView rv = new ResultView("0","后台出现异常，操作失败！");
+        		JSONObject jsonObject=JSONObject.fromObject(rv);
+        		String jsonStr=jsonObject.toString();
+        		logger.info(jsonStr);
+                
+                writer.write(jsonStr);
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+            System.out.println("JSON格式返回" + viewName);
+            return null;
+        }
+    }
+}

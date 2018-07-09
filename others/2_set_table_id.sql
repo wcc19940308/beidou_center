@@ -1,0 +1,25 @@
+ALTER TABLE bd_fish_record MODIFY record_id INT AUTO_INCREMENT;
+ALTER TABLE bd_fish_record_detail MODIFY detail_id INT AUTO_INCREMENT;
+/* ALTER TABLE bd_location MODIFY ___id int auto_increment;*/
+ALTER TABLE bd_msg_alarm MODIFY msg_id INT AUTO_INCREMENT;
+ALTER TABLE bd_msg_chat MODIFY msg_id INT AUTO_INCREMENT;
+ALTER TABLE bd_msg_notice MODIFY msg_id INT AUTO_INCREMENT;
+ALTER TABLE bd_msg_weather MODIFY msg_id INT AUTO_INCREMENT;
+ALTER TABLE bd_org MODIFY org_id INT AUTO_INCREMENT;
+ALTER TABLE bd_perm MODIFY perm_id INT AUTO_INCREMENT;
+ALTER TABLE bd_phone_msg MODIFY phone_msg_id INT AUTO_INCREMENT;
+ALTER TABLE bd_role MODIFY role_id INT AUTO_INCREMENT;
+ALTER TABLE bd_ship MODIFY ship_id INT AUTO_INCREMENT;
+/*ALTER TABLE bd_ship_user MODIFY ___id int auto_increment;*/
+ALTER TABLE bd_user MODIFY user_id INT AUTO_INCREMENT;
+ALTER TABLE bd_user AUTO_INCREMENT=100000;
+/*ALTER TABLE bd_user_detail MODIFY user_id int auto_increment;*/
+ALTER TABLE bd_user_login_log MODIFY log_id INT AUTO_INCREMENT;
+/*ALTER TABLE bd_user_login_session MODIFY ___id int auto_increment;*/
+/*ALTER TABLE bd_user_perm MODIFY ___id int auto_increment;*/
+ALTER TABLE sys_country MODIFY country_id INT AUTO_INCREMENT;
+ALTER TABLE sys_dic MODIFY dic_id INT AUTO_INCREMENT;
+/*ALTER TABLE sys_dic_item MODIFY ___id int auto_increment;*/
+ALTER TABLE sys_log MODIFY log_id INT AUTO_INCREMENT;
+ALTER TABLE sys_log_trigger MODIFY log_id INT AUTO_INCREMENT;
+ALTER TABLE sys_region MODIFY reg_id INT AUTO_INCREMENT;

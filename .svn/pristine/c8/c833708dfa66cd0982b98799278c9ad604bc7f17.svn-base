@@ -1,0 +1,245 @@
+<%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link href="${WebUrl}/js/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+
+<script src="${WebUrl}/js/jquery/jquery-1.9.0.min.js" type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/ligerui.all.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+    
+    $(function(){
+    	
+    	
+    $("#save").click(function(){
+	    $.ajax({
+	        type: 'post',
+	        url: '/beidou/ship/insert.ctbt',
+	        data: $("form").serialize(),
+	        dataType:'json',
+	        success: function(result) {
+	            console.log(result)
+	        },
+			error:function() { 
+				alert("服务器异常，请重试！");    
+		} 	
+	    });
+	    	});
+ 
+    });
+    
+    
+    
+    
+	function validate_add() {
+		var stuId = $("#stuId").val();
+		var reguStuId = /^\d{11}$/;
+		if (!reguStuId.test(stuId)) {
+			show_validate_msg("#stuId", "error", "学号为十一位数字");
+			return false;
+		} else {
+			show_validate_msg("#stuId", "success", "");
+		}
+
+		var stuName = $("#stuName").val();
+		var reguStuName = /(^[a-zA-Z_-]{6,16}$)|(^[\u2E80-\u9FFF]{2,5}$)/;
+		if (!reguStuName.test(stuName)) {
+			show_validate_msg("#stuName", "error", "姓名可以是2-5位中文或者6-16位英文");
+			return false;
+		} else {
+			show_validate_msg("#stuName", "success", "");
+		}
+
+		var stuAge = $("#stuAge").val();
+		var reguStuAge = /^(?:[1-9]?\d|100)$/;
+		if (!reguStuAge.test(stuAge)) {
+			show_validate_msg("#stuAge", "error", "年龄非法");
+			return false;
+		} else {
+			show_validate_msg("#stuAge", "success", "");
+		}
+		return true;
+	}
+    
+    
+        function addShip() {
+            $.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "data",//预期服务器返回的数据类型
+                url: "/users/login" ,//url
+                data: $('#form1').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.resultCode == 200) {
+                        alert("SUCCESS");
+                    }
+                    ;
+                },
+                error : function() {
+                    alert("异常！");
+                }
+            });
+        }
+    </script>
+<style type="text/css">
+	td.tx
+		{
+		text-align: right; width: 100px; padding-right: 10px;
+		}
+</style>
+</head>
+<body>
+	<form action="">
+	<table style="margin-top:20px;">
+		<tr style="height:30px;">
+			<td class="tx">船舶编号:</td>
+			<td style="text-align: left; width: 100px;"><input type="text" id="shipNo" name="shipNo"/> </td>
+			<td class="tx"><span style="color:red;font-size:20px">*</span>船舶名称:</td>
+			<td style="text-align: left; width: 100px;"><input type="text" id="shipName" name="shipName"/></td>
+			<td class="tx"><span style="color:red;font-size:20px">*</span>船东:</td>
+			<td style="text-align: left; width: 100px;"><input type="text" id="shipOwner" name="shipOwner" /></td>
+		</tr>
+		<tr style="height:30px;">
+			<td class="tx">船东身份证:</td>
+			<td><input type="text" id="shipOwnerSfz" name="shipOwnerSfz"/></td>
+			<td class="tx">船舶描述:</td>
+			<td><input type="text" id="shipDesc" name="shipDesc"/></td>
+			<td class="tx">船舶类型:</td>
+			<td><input type="text" id="shipType" name="shipType"/></td>
+		</tr>
+		<tr style="height:30px;">
+			<td class="tx">所属机构id:</td>
+			<td><input type="text" id="orgId" name="orgId"/></td>
+			<td class="tx">北斗IC卡号1:</td>
+			<td><input type="text" id="cardNo1" name="cardNo1"/></td>
+			<td class="tx">设备序列号1:</td>
+			<td><input type="text" id="serialNo1" name="serialNo1"/></td>
+		</tr>
+		<tr style="height:30px;">
+			<td class="tx">北斗IC卡号2:</td>
+			<td><input type="text" id="cardNo2" name="cardNo2"/></td>
+			<td class="tx">设备序列号2:</td>
+			<td><input type="text" id="serialNo2" name="serialNo2"/></td>
+			<td class="tx">MMSI:</td>
+			<td><input type="text" id="mmsi" name="mmsi"/></td>
+		</tr>
+			<tr style="height:30px;">
+			<td class="tx">船长:</td>
+			<td><input type="text" id="shipLength" name="shipLength"/></td>
+			<td class="tx">船宽:</td>
+			<td><input type="text" id="shipWidth" name="shipWidth"/></td>
+			<td class="tx">吃水:</td>
+			<td><input type="text" id="shipWater" name="shipWater"/></td>
+		</tr>
+			<tr style="height:30px;">
+			<td class="tx">联系方式:</td>
+			<td><input type="text" id="shipOwnerTel" name="shipOwnerTel"/></td>
+			<td class="tx">船舶吨位:</td>
+			<td><input type="text" id="shipTons" name="shipTons"/></td>
+			<td class="tx">无线电呼号:</td>
+			<td><input type="text" id="radioCallNo" name="radioCallNo"/></td>
+		</tr>
+
+		
+		<tr style="height:30px;">
+			<td class="tx">类别:</td>
+			<td><input type="text" id="shipNo" name="shipNo"/></td>
+		
+			<td class="tx">国家:</td>
+			<td>
+				<select  id="country" name="country">
+					<option value="1">中国</option>
+					<option value="2">英国</option>
+
+				</select>
+			</td>
+			<td class="tx">省份:</td>
+			<td>
+				<select  id="province" name="province">
+					<option value="1">Volvo</option>
+					<option value="1">Saab</option>
+					<option value="1">Fiat</option>
+					<option value="1">Audi</option>
+				</select>
+			</td>
+			
+		</tr>
+		<tr style="height:30px;">
+		<td class="tx">城市:</td>
+			<td>
+				<select  id="city" name="city">
+					<option value="1">Volvo</option>
+					<option value="1">Saab</option>
+					<option value="fiat">Fiat</option>
+					<option value="audi">Audi</option>
+				</select>
+			</td>
+			<td class="tx">区县:</td>
+			<td>
+				<select  id="cityArea" name="cityArea">
+					<option value="1">Volvo</option>
+					<option value="1">Saab</option>
+					<option value="1">Fiat</option>
+					<option value="1">Audi</option>
+				</select>
+			</td>
+			<td class="tx">镇/街道:</td>
+			<td>
+	
+	<input type="text" name="town" list="town" style="width:60px" value="1">
+	<datalist id="town" >
+	    <option value="1">
+	    <option value="1">
+	    <option value="1">
+	</datalist>
+			</td>
+			
+		</tr>
+		<tr style="height:30px;">
+		<td class="tx">村/服务站:</td>
+			<td>
+	<input type="text" name="village" list="village" style="width:60px" value="1">
+	<datalist id="village" >
+	    <option value="1">
+	    <option value="1">
+	    <option value="1">
+	</datalist>
+				
+				
+			</td>
+			<td class="tx">船舶类型(新):</td>
+			<td>
+				<select  id="typeOther" name="typeOther">
+					<option value="2">Volvo</option>
+					<option value="1">Saab</option>
+					<option value="1">Fiat</option>
+					<option value="1">Audi</option>
+				</select>
+			</td>
+			<td class="tx">是否有效:</td>
+			<td>
+				<select  id="validity" name="validity">
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</td>
+		
+		</tr>
+
+		<tr>
+            <td colspan="6" style="text-align: center; padding-top: 30px; padding-bottom: 30px;">
+					   <button id="save" >保存</button>
+					   <button type="button" class="l-dialog-btn-inner">清空</button>
+					   (<span style="color:red;font-size:20px">*</span>为必填)
+            </td>
+         </tr>
+		
+	</table>
+	</form>
+</body>
+</html>

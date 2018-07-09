@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.dao.BdLocationMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.model.BdLocation">
+    <result column="recv_time" jdbcType="TIMESTAMP" property="recvTime" />
+    <result column="loc_from" jdbcType="VARCHAR" property="locFrom" />
+    <result column="ship_id" jdbcType="INTEGER" property="shipId" />
+    <result column="jdv1" jdbcType="CHAR" property="jdv1" />
+    <result column="jdv2" jdbcType="INTEGER" property="jdv2" />
+    <result column="jdv3" jdbcType="INTEGER" property="jdv3" />
+    <result column="jdv4" jdbcType="INTEGER" property="jdv4" />
+    <result column="jdv5" jdbcType="INTEGER" property="jdv5" />
+    <result column="wdv1" jdbcType="CHAR" property="wdv1" />
+    <result column="wdv2" jdbcType="INTEGER" property="wdv2" />
+    <result column="wdv3" jdbcType="INTEGER" property="wdv3" />
+    <result column="wdv4" jdbcType="INTEGER" property="wdv4" />
+    <result column="wdv5" jdbcType="INTEGER" property="wdv5" />
+    <result column="sd" jdbcType="INTEGER" property="sd" />
+    <result column="fx" jdbcType="INTEGER" property="fx" />
+    <result column="wxs" jdbcType="INTEGER" property="wxs" />
+  </resultMap>
+  <insert id="insert" parameterType="com.ctbt.beidou.model.BdLocation">
+    insert into bd_location (recv_time, loc_from, ship_id, 
+      jdv1, jdv2, jdv3, jdv4, 
+      jdv5, wdv1, wdv2, wdv3, 
+      wdv4, wdv5, sd, fx, 
+      wxs)
+    values (#{recvTime,jdbcType=TIMESTAMP}, #{locFrom,jdbcType=VARCHAR}, #{shipId,jdbcType=INTEGER}, 
+      #{jdv1,jdbcType=CHAR}, #{jdv2,jdbcType=INTEGER}, #{jdv3,jdbcType=INTEGER}, #{jdv4,jdbcType=INTEGER}, 
+      #{jdv5,jdbcType=INTEGER}, #{wdv1,jdbcType=CHAR}, #{wdv2,jdbcType=INTEGER}, #{wdv3,jdbcType=INTEGER}, 
+      #{wdv4,jdbcType=INTEGER}, #{wdv5,jdbcType=INTEGER}, #{sd,jdbcType=INTEGER}, #{fx,jdbcType=INTEGER}, 
+      #{wxs,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.model.BdLocation">
+    insert into bd_location
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="recvTime != null">
+        recv_time,
+      </if>
+      <if test="locFrom != null">
+        loc_from,
+      </if>
+      <if test="shipId != null">
+        ship_id,
+      </if>
+      <if test="jdv1 != null">
+        jdv1,
+      </if>
+      <if test="jdv2 != null">
+        jdv2,
+      </if>
+      <if test="jdv3 != null">
+        jdv3,
+      </if>
+      <if test="jdv4 != null">
+        jdv4,
+      </if>
+      <if test="jdv5 != null">
+        jdv5,
+      </if>
+      <if test="wdv1 != null">
+        wdv1,
+      </if>
+      <if test="wdv2 != null">
+        wdv2,
+      </if>
+      <if test="wdv3 != null">
+        wdv3,
+      </if>
+      <if test="wdv4 != null">
+        wdv4,
+      </if>
+      <if test="wdv5 != null">
+        wdv5,
+      </if>
+      <if test="sd != null">
+        sd,
+      </if>
+      <if test="fx != null">
+        fx,
+      </if>
+      <if test="wxs != null">
+        wxs,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="recvTime != null">
+        #{recvTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="locFrom != null">
+        #{locFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="shipId != null">
+        #{shipId,jdbcType=INTEGER},
+      </if>
+      <if test="jdv1 != null">
+        #{jdv1,jdbcType=CHAR},
+      </if>
+      <if test="jdv2 != null">
+        #{jdv2,jdbcType=INTEGER},
+      </if>
+      <if test="jdv3 != null">
+        #{jdv3,jdbcType=INTEGER},
+      </if>
+      <if test="jdv4 != null">
+        #{jdv4,jdbcType=INTEGER},
+      </if>
+      <if test="jdv5 != null">
+        #{jdv5,jdbcType=INTEGER},
+      </if>
+      <if test="wdv1 != null">
+        #{wdv1,jdbcType=CHAR},
+      </if>
+      <if test="wdv2 != null">
+        #{wdv2,jdbcType=INTEGER},
+      </if>
+      <if test="wdv3 != null">
+        #{wdv3,jdbcType=INTEGER},
+      </if>
+      <if test="wdv4 != null">
+        #{wdv4,jdbcType=INTEGER},
+      </if>
+      <if test="wdv5 != null">
+        #{wdv5,jdbcType=INTEGER},
+      </if>
+      <if test="sd != null">
+        #{sd,jdbcType=INTEGER},
+      </if>
+      <if test="fx != null">
+        #{fx,jdbcType=INTEGER},
+      </if>
+      <if test="wxs != null">
+        #{wxs,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

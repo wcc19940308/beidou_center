@@ -1,0 +1,169 @@
+package com.ctbt.beidou.ship.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.map.HashedMap;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.bo.ResultView;
+import com.ctbt.beidou.base.model.BdRole;
+import com.ctbt.beidou.base.model.BdShip;
+import com.ctbt.beidou.base.model.SysRegion;
+import com.ctbt.beidou.base.service.IDicService;
+import com.ctbt.beidou.ship.service.IShipService;
+
+
+@Controller
+@RequestMapping("/ship")
+public class ShipController {
+
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@Resource
+	private IDicService dicService;
+
+	@Resource
+	private IShipService shipService;
+	
+	@RequestMapping("/toShipList")
+	public String toShipList(HttpServletRequest request,Model model){
+
+		return "ship/shipList";
+	}
+
+	@RequestMapping("/queryShipList")
+	public String queryShipList(HttpServletRequest request,Model model){
+
+		return "ship/shipList";
+	}
+
+
+	
+
+	
+	@RequestMapping(value = "/toShipEdit")
+	
+	public String toShipEdit(HttpServletRequest request, BdShip bdship, ModelMap retMap){
+		Integer shipId = null;
+		if(bdship != null) {
+			shipId = bdship.getShipId();
+		}
+		if(shipId != null) {
+			bdship = shipService.selectByPrimaryKey(bdship);
+		}
+		else {
+			bdship.setCountry(0);
+			bdship.setShipId(0);
+			bdship.setProvince(0);
+			bdship.setCity(0);
+			bdship.setCityArea(0);
+			bdship.setTown(0);
+			bdship.setVillage(0);
+			bdship.setValidity("1");
+		}
+		retMap.addAttribute("Bdship", bdship);
+		
+		return "ship/shipEdit";
+	}
+
+
+
+	
+	@RequestMapping(value ="/selectByitem")
+	@ResponseBody
+	public List<BdShip> selectByitem(HttpServletRequest request,BdShip bdship){
+		List<BdShip> result = shipService.selectByitem(bdship);
+		//System.out.println(result+"������ѯ�ɹ�");
+		return result;
+	}
+	
+	@RequestMapping(value ="/deleteShip")
+	@ResponseBody
+	public int  deleteShip(HttpServletRequest request,BdShip bdship){
+		int result = shipService.deleteByPrimaryKey(bdship);
+		
+		return result;
+	}
+	
+	
+	
+	
+	@RequestMapping(value ="/selectAll")
+	@ResponseBody
+	public List<BdShip> selectAll(HttpServletRequest request){
+		Map map=new HashMap();
+		List<BdShip> result = shipService.selectAll(map);
+		//System.out.println(result+"ȫ���ɹ�");
+		return result;
+	}
+	
+	@RequestMapping(value ="/insert", method = RequestMethod.POST)
+	@ResponseBody
+	public int insert(HttpServletRequest request,BdShip bdship){
+		Integer maxId=dicService.queryMax();
+		int result=0;
+		SysRegion record = new SysRegion();
+		SysRegion record1 = new SysRegion();
+		String town=request.getParameter("townname");
+		String village=request.getParameter("villagename");
+		if(bdship.getTown()==0) 
+		{
+			record.setCountryId(100);
+			record.setLevel(4);
+			record.setParentId(bdship.getCityArea());
+			record.setRegId(maxId+1);
+			record.setRegName(town);
+			record1.setCountryId(100);
+			record1.setLevel(5);
+			record1.setParentId(maxId+1);
+			record1.setRegId(maxId+2);
+			record1.setRegName(village);
+			bdship.setTown(maxId+1);
+			bdship.setVillage(maxId+2);
+		}
+		else {
+			//则新插入town
+			if(bdship.getVillage()==0) {
+				record1.setCountryId(100);
+				record1.setLevel(5);
+				record1.setParentId(bdship.getTown());
+				record1.setRegId(maxId+1);
+				record1.setRegName(village);
+			}
+		}
+		result=dicService.insert(record);
+		if(result==1) {
+			result=dicService.insert(record1);
+			if(result==1) {
+				result=shipService.insert(bdship);
+				}
+		}
+
+		return result;
+	}
+	
+	
+	@RequestMapping(value ="/updateShip", method = RequestMethod.POST)
+	@ResponseBody
+	public int updateShip(HttpServletRequest request,BdShip bdship,ModelMap retMap){
+		
+		int result=shipService.updateByPrimaryKey(bdship);
+
+		return result;
+	}
+	
+	
+	
+}

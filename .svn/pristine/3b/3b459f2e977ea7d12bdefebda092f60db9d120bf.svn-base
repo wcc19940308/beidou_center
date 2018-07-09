@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.dao.BdPermMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.model.BdPerm">
+    <id column="perm_id" jdbcType="INTEGER" property="permId" />
+    <result column="perm_code" jdbcType="VARCHAR" property="permCode" />
+    <result column="perm_level" jdbcType="INTEGER" property="permLevel" />
+    <result column="perm_name" jdbcType="VARCHAR" property="permName" />
+    <result column="perm_type" jdbcType="CHAR" property="permType" />
+    <result column="menu_url" jdbcType="VARCHAR" property="menuUrl" />
+    <result column="validity" jdbcType="CHAR" property="validity" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    perm_id, perm_code, perm_level, perm_name, perm_type, menu_url, validity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_perm
+    where perm_id = #{permId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_perm
+    where perm_id = #{permId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.model.BdPerm">
+    insert into bd_perm (perm_id, perm_code, perm_level, 
+      perm_name, perm_type, menu_url, 
+      validity)
+    values (#{permId,jdbcType=INTEGER}, #{permCode,jdbcType=VARCHAR}, #{permLevel,jdbcType=INTEGER}, 
+      #{permName,jdbcType=VARCHAR}, #{permType,jdbcType=CHAR}, #{menuUrl,jdbcType=VARCHAR}, 
+      #{validity,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.model.BdPerm">
+    insert into bd_perm
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="permId != null">
+        perm_id,
+      </if>
+      <if test="permCode != null">
+        perm_code,
+      </if>
+      <if test="permLevel != null">
+        perm_level,
+      </if>
+      <if test="permName != null">
+        perm_name,
+      </if>
+      <if test="permType != null">
+        perm_type,
+      </if>
+      <if test="menuUrl != null">
+        menu_url,
+      </if>
+      <if test="validity != null">
+        validity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="permId != null">
+        #{permId,jdbcType=INTEGER},
+      </if>
+      <if test="permCode != null">
+        #{permCode,jdbcType=VARCHAR},
+      </if>
+      <if test="permLevel != null">
+        #{permLevel,jdbcType=INTEGER},
+      </if>
+      <if test="permName != null">
+        #{permName,jdbcType=VARCHAR},
+      </if>
+      <if test="permType != null">
+        #{permType,jdbcType=CHAR},
+      </if>
+      <if test="menuUrl != null">
+        #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="validity != null">
+        #{validity,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.model.BdPerm">
+    update bd_perm
+    <set>
+      <if test="permCode != null">
+        perm_code = #{permCode,jdbcType=VARCHAR},
+      </if>
+      <if test="permLevel != null">
+        perm_level = #{permLevel,jdbcType=INTEGER},
+      </if>
+      <if test="permName != null">
+        perm_name = #{permName,jdbcType=VARCHAR},
+      </if>
+      <if test="permType != null">
+        perm_type = #{permType,jdbcType=CHAR},
+      </if>
+      <if test="menuUrl != null">
+        menu_url = #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="validity != null">
+        validity = #{validity,jdbcType=CHAR},
+      </if>
+    </set>
+    where perm_id = #{permId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.model.BdPerm">
+    update bd_perm
+    set perm_code = #{permCode,jdbcType=VARCHAR},
+      perm_level = #{permLevel,jdbcType=INTEGER},
+      perm_name = #{permName,jdbcType=VARCHAR},
+      perm_type = #{permType,jdbcType=CHAR},
+      menu_url = #{menuUrl,jdbcType=VARCHAR},
+      validity = #{validity,jdbcType=CHAR}
+    where perm_id = #{permId,jdbcType=INTEGER}
+  </update>
+</mapper>

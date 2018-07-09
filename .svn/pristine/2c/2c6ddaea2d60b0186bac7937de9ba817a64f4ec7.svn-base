@@ -1,0 +1,25 @@
+package com.ctbt.beidou.base.dao;
+
+import java.util.List;
+
+import com.ctbt.beidou.base.model.BdMsgChat;
+
+public interface BdMsgChatMapper {
+    int deleteByPrimaryKey(Integer msgId);
+
+    int insert(BdMsgChat record);
+
+    int insertSelective(BdMsgChat record);
+
+    BdMsgChat selectByPrimaryKey(Integer msgId);
+
+    int updateByPrimaryKeySelective(BdMsgChat record);
+
+    int updateByPrimaryKey(BdMsgChat record);
+    
+    //查询所有
+    List<BdMsgChat> selectAll();
+    
+    //按条件查询
+    List<BdMsgChat> selectByCondition(BdMsgChat record);
+}

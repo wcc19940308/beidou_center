@@ -1,0 +1,19 @@
+package com.ctbt.beidou.base.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ctbt.beidou.base.model.BdShip;
+
+public interface BdShipMapper {
+    int deleteByPrimaryKey(BdShip record);
+
+    int insert(BdShip record);
+
+ 
+    List<BdShip> selectAll(Map map);
+    List<BdShip> selectByitem(BdShip record);
+    BdShip selectByPrimaryKey(BdShip record);
+
+    int updateByPrimaryKey(BdShip record);
+}

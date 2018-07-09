@@ -1,0 +1,74 @@
+package com.ctbt.beidou.user.controller;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.ctbt.beidou.user.service.IUserService;
+
+@Controller
+@RequestMapping("/user")
+public class UserController {
+
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@Resource
+	private IUserService userService;
+	
+	@RequestMapping("/toLogin")
+	public String toLogin(HttpServletRequest request, Model model){
+		logger.info("user toLogin");
+//		String className = Thread.currentThread().getStackTrace()[1].getClassName();
+//		String MethodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+//		int lineNumber = Thread.currentThread().getStackTrace()[1].getLineNumber();
+//
+//		logger.info("className:"+className);
+//		logger.info("MethodName:"+MethodName);
+//		logger.info("lineNumber:"+lineNumber);
+		
+		ServletContext application = request.getServletContext();
+        String WebUrl = (String)application.getAttribute("WebUrl");
+        if("".equals(StringUtils.trimToEmpty(WebUrl))) {
+        	//为空，则加入全局变量
+        	WebUrl = request.getScheme() +"://" + request.getServerName()  + ":" +request.getServerPort() +request.getContextPath();
+        	application.setAttribute("WebUrl", WebUrl);
+        }
+		
+		return "login";
+	}
+	
+	@RequestMapping("/toWelcome")
+	public String toWelcome(HttpServletRequest request, Model model){
+		
+		return "welcome";
+	}
+	
+	@RequestMapping("/login")
+	public String login(HttpServletRequest request, Model model){
+
+		return "main";
+	}
+	
+	@RequestMapping("/toUserList")
+	public String toUserList(HttpServletRequest request,Model model){
+//		int userId = Integer.parseInt(request.getParameter("id"));
+//		BdUser user = this.userService.getUserById(userId);
+//		model.addAttribute("user", user);
+		return "user/userList";
+	}
+	
+	@RequestMapping("/toUserEdit")
+	public String toUserEdit(HttpServletRequest request,Model model){
+//		int userId = Integer.parseInt(request.getParameter("id"));
+//		BdUser user = this.userService.getUserById(userId);
+//		model.addAttribute("user", user);
+		return "user/userEdit";
+	}
+	
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdUserPermMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdUserPermKey">
+    <id column="ur_id" jdbcType="INTEGER" property="urId" />
+    <id column="perm_id" jdbcType="INTEGER" property="permId" />
+    <id column="perm_type" jdbcType="CHAR" property="permType" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdUserPermKey">
+    delete from bd_user_perm
+    where ur_id = #{urId,jdbcType=INTEGER}
+      and perm_id = #{permId,jdbcType=INTEGER}
+      and perm_type = #{permType,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdUserPermKey">
+    insert into bd_user_perm (ur_id, perm_id, perm_type
+      )
+    values (#{urId,jdbcType=INTEGER}, #{permId,jdbcType=INTEGER}, #{permType,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdUserPermKey">
+    insert into bd_user_perm
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="urId != null">
+        ur_id,
+      </if>
+      <if test="permId != null">
+        perm_id,
+      </if>
+      <if test="permType != null">
+        perm_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="urId != null">
+        #{urId,jdbcType=INTEGER},
+      </if>
+      <if test="permId != null">
+        #{permId,jdbcType=INTEGER},
+      </if>
+      <if test="permType != null">
+        #{permType,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

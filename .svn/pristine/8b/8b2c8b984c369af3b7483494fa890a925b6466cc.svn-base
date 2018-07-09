@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.SysRegionMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.SysRegion">
+    <id column="reg_id" jdbcType="INTEGER" property="regId" />
+    <result column="reg_name" jdbcType="VARCHAR" property="regName" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="country_id" jdbcType="INTEGER" property="countryId" />
+  </resultMap>
+  
+  <resultMap id="KeyValueMap" type="com.ctbt.beidou.base.bo.KeyValue">
+    <result column="item_key" jdbcType="VARCHAR" property="key" />
+    <result column="item_value" jdbcType="VARCHAR" property="value" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    reg_id, reg_name, parent_id, level, country_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_region
+    where reg_id = #{regId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 省级 -->
+  <select id="queryProvinceList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
+    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=1 AND country_id=#{countryId,jdbcType=INTEGER}
+    order by reg_id
+  </select>
+  
+  <!-- 市级 -->
+  <select id="queryCityList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
+    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=2 AND reg_id=#{regId,jdbcType=INTEGER}
+    order by reg_id
+  </select>
+  
+  <!-- 区县 -->
+  <select id="getCityAreaList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
+    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=3 AND reg_id=#{regId,jdbcType=INTEGER}
+    order by reg_id
+  </select>
+  
+  <!-- 乡镇 -->
+  <select id="queryTownList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
+    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=4 AND reg_id=#{regId,jdbcType=INTEGER}
+    order by reg_id
+  </select>
+  
+  <!-- 村级、服务站 -->
+  <select id="queryVillageList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
+    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=5 AND reg_id=#{regId,jdbcType=INTEGER}
+    order by reg_id
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_region
+    where reg_id = #{regId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.SysRegion">
+    insert into sys_region (reg_id, reg_name, parent_id, 
+      level, country_id)
+    values (#{regId,jdbcType=INTEGER}, #{regName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
+      #{level,jdbcType=INTEGER}, #{countryId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.SysRegion">
+    insert into sys_region
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="regId != null">
+        reg_id,
+      </if>
+      <if test="regName != null">
+        reg_name,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="countryId != null">
+        country_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="regId != null">
+        #{regId,jdbcType=INTEGER},
+      </if>
+      <if test="regName != null">
+        #{regName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="countryId != null">
+        #{countryId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.SysRegion">
+    update sys_region
+    <set>
+      <if test="regName != null">
+        reg_name = #{regName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="countryId != null">
+        country_id = #{countryId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where reg_id = #{regId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.SysRegion">
+    update sys_region
+    set reg_name = #{regName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      country_id = #{countryId,jdbcType=INTEGER}
+    where reg_id = #{regId,jdbcType=INTEGER}
+  </update>
+</mapper>

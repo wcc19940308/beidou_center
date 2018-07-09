@@ -1,0 +1,100 @@
+package com.ctbt.beidou.base.utils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
+import com.ctbt.beidou.base.bo.KeyValue;
+import com.ctbt.beidou.base.service.IDicService;
+
+@Component
+public class DicUtil {
+
+	private static Logger logger = Logger.getLogger(DicUtil.class);
+
+	private static DicUtil instance = new DicUtil();
+
+	private static Map<String, List<KeyValue>> dicMap = new HashMap<String, List<KeyValue>>();
+	
+	private DicUtil() {
+	}
+
+	public static DicUtil getInstance() {
+		return instance;
+	}
+
+	public synchronized void putDic(String dicId, List<KeyValue> dataList) {
+		if(dicMap.containsKey(dicId)){
+			dicMap.remove(dicId);
+		}
+
+		dicMap.put(dicId, dataList);
+	}
+
+	public void loadAllDic() {
+		IDicService dicService = (IDicService) SpringContextUtil.getBean("dicService");
+		dicMap = dicService.getAllDic();
+	}
+
+	public void loadDic(Integer dicId) {
+		IDicService dicService = (IDicService) SpringContextUtil.getBean("dicService");
+		dicMap.put(dicId.toString(), dicService.loadDic(dicId));
+	}
+
+	/**
+	 * 根据字典编号得到字典内容列表。
+	 * @param dicId 字典编号
+	 * @return 字典内容列表
+	 */
+	public static List getDic(String dicId) {
+		if(dicMap.containsKey(dicId) == false){
+			logger.error("该字典不存在。 dic_id = " + dicId);
+			return new ArrayList();
+		}
+
+		return (List) dicMap.get(dicId);
+	}
+
+	/**
+     * 根据传入的字典编号和键值得到描述信息。
+     * 
+     * <p>
+     * 
+     * @param dicId
+     *                字典编号
+     * @param itemKey
+     *                键值
+     * 
+     * @return 描述信息
+     */
+	public static String getItemValue(String dicId, Object itemKey) {
+		if(itemKey == null){
+			return null;
+		}
+
+		List dicList = getDic(dicId);
+		String itemValue = "";
+		if(dicList != null && dicList.size() > 0){
+			KeyValue kv = null;
+			for(int k = 0; k < dicList.size(); k++){
+				kv = (KeyValue) dicList.get(k);
+				if(itemKey.equals(kv.getKey())){
+					itemValue = kv.getValue();
+					break;
+				}
+			}
+		}
+
+		if(StringUtils.isEmpty(itemValue)){
+			return itemKey.toString();
+		}else{
+			return itemValue;
+		}
+	}
+
+}

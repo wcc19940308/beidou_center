@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdUserMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.bo.BdUserBo">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="validity" jdbcType="CHAR" property="validity" />
+    <result column="role_name" jdbcType="INTEGER" property="roleName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, password, phone, role_id, validity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCondition" parameterType="com.ctbt.beidou.base.bo.BdUserBo" resultMap="BaseResultMap">
+SELECT user_id, `password`,phone,t2.role_id,t2.validity,t2.role_name FROM 
+`bd_user` as t1,`bd_role` as t2 WHERE phone LIKE '%${phone}%'  AND  t1.validity = '${validity}' 
+AND t1.role_id = (SELECT role_id FROM `bd_role` WHERE role_name = '${roleName}') AND t1.role_id = t2.role_id;
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdUser" >
+    insert into bd_user (user_id, password, phone, 
+      role_id, validity)
+    values (#{userId,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{roleId,jdbcType=INTEGER}, #{validity,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdUser">
+    insert into bd_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="validity != null">
+        validity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="validity != null">
+        #{validity,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdUser">
+    update bd_user
+    <set>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="validity != null">
+        validity = #{validity,jdbcType=CHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdUser">
+    update bd_user
+    set password = #{password,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=INTEGER},
+      validity = #{validity,jdbcType=CHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

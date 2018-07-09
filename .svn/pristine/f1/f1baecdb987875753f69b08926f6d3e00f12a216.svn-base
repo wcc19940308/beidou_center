@@ -1,0 +1,90 @@
+package com.ctbt.beidou.base.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import com.ctbt.beidou.base.bo.KeyValue;
+import com.ctbt.beidou.base.dao.SysDicMapper;
+import com.ctbt.beidou.base.dao.SysRegionMapper;
+import com.ctbt.beidou.base.model.SysDic;
+
+@Service("dicService")
+public class DicServiceImpl implements IDicService{
+
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+
+	@Resource
+	private SysDicMapper sysDicMapper;
+
+	@Resource
+	private SysRegionMapper sysRegionMapper;
+	
+	/**
+     * 获得所有的字典，map<dicId,map<key,value>>
+     * 
+     * @return
+     */
+	public Map<String, List<KeyValue>> getAllDic() {
+		Map<String, List<KeyValue>> allDicMap = new HashMap<String, List<KeyValue>>();
+		List<SysDic> list = sysDicMapper.findAllValidity();
+		if(list != null && list.size() > 0){
+			SysDic sysDic;
+			List<KeyValue> dicList;
+			for(int k = 0; k < list.size(); k++){
+				sysDic = (SysDic) list.get(k);
+				dicList = this.loadDic(sysDic);
+				if(dicList != null){
+					allDicMap.put(sysDic.getDicId().toString(), dicList);
+				}
+			}
+		}
+
+		return allDicMap;
+	}
+
+	public List<KeyValue> loadDic(SysDic sysDic) {
+		return sysDicMapper.queryDicKeyValueListBySql(sysDic.getDicSql());
+	}
+
+	/**
+     * 根据字典号，返回一个字典，用于重新加载某一个 字典
+     * 
+     * @param dicId
+     * @return
+     */
+	public List<KeyValue> loadDic(Integer dicId) {
+		return sysDicMapper.queryDicKeyValueListById(dicId);
+	}
+
+	@Override
+	public List<KeyValue> queryProvinceList(Integer countryId) {
+		return sysRegionMapper.queryProvinceList(countryId);
+	}
+
+	@Override
+	public List<KeyValue> queryCityList(Integer regId) {
+		return sysRegionMapper.queryCityList(regId);
+	}
+
+	@Override
+	public List<KeyValue> queryCityAreaList(Integer regId) {
+		return sysRegionMapper.queryCityAreaList(regId);
+	}
+
+	@Override
+	public List<KeyValue> queryTownList(Integer regId) {
+		return sysRegionMapper.queryTownList(regId);
+	}
+
+	@Override
+	public List<KeyValue> queryVillageList(Integer regId) {
+		return sysRegionMapper.queryVillageList(regId);
+	}
+	
+}
