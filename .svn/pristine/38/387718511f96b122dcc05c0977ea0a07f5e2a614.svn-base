@@ -1,0 +1,5 @@
+# \u5EFA\u7ACB\u540D\u79F0\u4E3A console \u548C file \u7684\u4E24\u4E2A appender
+
+name=PropertiesConfig
+property.filename = logs
+appenders = console, file

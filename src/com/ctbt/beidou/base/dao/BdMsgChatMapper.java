@@ -3,6 +3,8 @@ package com.ctbt.beidou.base.dao;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ctbt.beidou.base.model.BdMsgChat;
 
 public interface BdMsgChatMapper {
@@ -26,6 +28,9 @@ public interface BdMsgChatMapper {
     
     //查询所有人的信息
     List<Map<String, Object>> findAll();
+    
+    //查询搜索后的人的信息
+    List<Map<String, Object>> searchInfo(String text);
     
     //将发送的信息批量插入到表中
     int toInsertMsg(List<BdMsgChat> list);

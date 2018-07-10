@@ -9,37 +9,34 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Configuration;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.validator.Var;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.ctbt.beidou.base.bo.ResultView;
 import com.ctbt.beidou.base.model.BdMsgChat;
-import com.ctbt.beidou.base.model.BdMsgChatDTO;
-import com.ctbt.beidou.base.model.BdRole;
-import com.ctbt.beidou.base.utils.DateUtil;
 import com.ctbt.beidou.chat.service.IBdChatService;
 import com.sun.org.apache.xerces.internal.util.EncodingMap;
 
-import jdk.internal.org.objectweb.asm.commons.Remapper;
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
-
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/chat")
 public class ChatController {
 
-	private Logger logger = Logger.getLogger(getClass());
+	private Logger logger = LogManager.getLogger(getClass());
 	
 	@Resource
 	private IBdChatService chatServie;
@@ -94,13 +91,20 @@ public class ChatController {
 		return list;
 	}
 	
-	//找到所有人信息，并且跳转到发送信息页面
+	//显示from,to的页面信息
+	@RequestMapping(value = "/showFromTo")
+	public String showFromTo(HttpServletRequest request) {
+		if(request.getParameter("").equals(""))
+		return "chat/chatEdit";
+	}
+	
+	//找到所有人信息，并且跳转到选择人员界面
 	@RequestMapping("/toSendMsg")
 	public String toSendMsg(HttpServletRequest request,BdMsgChat record,ModelMap retMap){
 
 		List<Map<String,Object>> list = this.findAll(request, record);
 		retMap.addAttribute("BdMsgChat", list);
-		return "chat/chatEdit";
+		return "chat/chatSend";
 	}
 	
 	//向bd_msg_chat表插入向船员发送的数据
@@ -108,31 +112,30 @@ public class ChatController {
 	@ResponseBody
 	public int toInsertMsg(HttpServletRequest request) {
 		
-		//实验用的List
-		List<BdMsgChat> myList = new ArrayList<>();
-		//SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//		for(int i=0; i<3; i++) {
-//			BdMsgChat bdMsgChat = new BdMsgChat();
-//			bdMsgChat.setSendTime(new Date());
-//			bdMsgChat.setMsgType("1");
-//			bdMsgChat.setMsgTxt("测试数据");
-//			bdMsgChat.setFromPhone("数据中心");
-//			bdMsgChat.setMsgFrom("数据中心");
-//			bdMsgChat.setToPhone("1311311313131");	
-//			myList.add(bdMsgChat);
-//		}
-		
-		
-		return 1;
+		String liString = request.getParameter("list");
+		List<BdMsgChat> list = new ArrayList<>();
+		JSONArray jsonArray=JSONArray.fromObject(liString);
+		for(int i=0; i<jsonArray.size(); i++) {
+			Object object = jsonArray.get(i);
+			JSONObject jsonObject = JSONObject.fromObject(object);
+			BdMsgChat bdMsgChat = (BdMsgChat) JSONObject.toBean(jsonObject,BdMsgChat.class);
+			bdMsgChat.setSendTime(new Date());
+			list.add(bdMsgChat);
+		}
+		int returnInt = chatServie.toInsertMsg(list);
+		System.out.println(returnInt);
+		return returnInt;
 	}
 	
-	//找到所有人的信息
+	//找到所有人的信息构造树形结构
 	@RequestMapping(value = "/findAll",method = RequestMethod.POST)
 	@ResponseBody
 	public List<Map<String, Object>> findAll(HttpServletRequest request,BdMsgChat record){
 				
-		List<Map<String, Object>> list = chatServie.findAll();
+		List<Map<String, Object>> list = chatServie.findAll(request);
 		
 		return list;
 	}
+	
+	
 }

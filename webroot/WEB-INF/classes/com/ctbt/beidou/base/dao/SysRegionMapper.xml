@@ -7,6 +7,7 @@
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="country_id" jdbcType="INTEGER" property="countryId" />
+    <result column="order_no" jdbcType="INTEGER" property="orderNo" />
   </resultMap>
   
   <resultMap id="KeyValueMap" type="com.ctbt.beidou.base.bo.KeyValue">
@@ -15,13 +16,28 @@
   </resultMap>
   
   <sql id="Base_Column_List">
-    reg_id, reg_name, parent_id, level, country_id
+    reg_id, reg_name, parent_id, level, country_id, order_no
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from sys_region
     where reg_id = #{regId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 整棵行政区划树查询 -->
+  <select id="querySysRegionTree" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT 
+	<include refid="Base_Column_List" />
+	 FROM sys_region ORDER BY LEVEL,order_no DESC
+  </select>
+  
+  <!-- 根据父节点查询行政区划树 -->
+  <select id="querySysRegionTreeByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT 
+	<include refid="Base_Column_List" />
+	 FROM sys_region
+	 where parent_id=#{regId,jdbcType=INTEGER}
   </select>
   
   <!-- 国家 -->
@@ -42,15 +58,8 @@
     order by reg_id
   </select>
   
-    <!-- 省级条件查询 -->
-  <select id="queryAllProvince" parameterType="java.lang.Integer" resultMap="KeyValueMap">
-    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=1  order by reg_id
-  </select>
-  
-  <!-- 查询条件查询 -->
-  <select id="queryAllCity" parameterType="java.lang.Integer" resultMap="KeyValueMap">
-    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=2  AND reg_id=#{reg_id,jdbcType=INTEGER} order by reg_id
-  </select>
+
+
   
     <!-- 市级 -->
   <select id="queryCityList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
@@ -63,30 +72,20 @@
     order by reg_id
   </select>
   
-    <!-- 区县条件查询 -->
-  <select id="queryAllCityArea" parameterType="java.lang.Integer" resultMap="KeyValueMap">
-    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=3  AND reg_id=#{reg_id,jdbcType=INTEGER} order by reg_id
-  </select>
+
   
   <!-- 乡镇 -->
   <select id="queryTownList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
     SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=4 AND parent_id=#{regId,jdbcType=INTEGER}
     order by reg_id
   </select>
-    <!-- 乡镇条件查询 -->
-  <select id="queryAllTown" parameterType="java.lang.Integer" resultMap="KeyValueMap">
-    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=4 AND reg_id=#{reg_id,jdbcType=INTEGER} order by reg_id
-  </select>
+
   <!-- 村级、服务站 -->
   <select id="queryVillageList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
     SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=5 AND parent_id=#{regId,jdbcType=INTEGER}
     order by reg_id
   </select>
-   <!-- 村级、服务站条件查询 -->
-  <select id="queryAllVillage" parameterType="java.lang.Integer" resultMap="KeyValueMap">
-    SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=5  AND reg_id=#{reg_id,jdbcType=INTEGER} order by reg_id
-  </select>
-  
+
  
   
   

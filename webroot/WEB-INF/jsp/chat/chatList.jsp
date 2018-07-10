@@ -156,24 +156,24 @@ function reset(){
 	ctbt.FormUtil.Clean(document.queryRoleFrom);
 }
 
-function clause(aa){
-	alert(clause);
-	alert(aa);
-}
-
+//发送信息对话框
 var chatEditWin;
-function addMsg(){
-
-	
-	var toUrl = '${WebUrl}/chat/toSendMsg.ctbt?'
-	chatEditWin = $.ligerDialog.open({title:'发送消息',url:toUrl,height: 500,width: 500});
+function addMsg(){	
+	var toUrl = '${WebUrl}/chat/showFromTo.ctbt?'
+	chatEditWin = $.ligerDialog.open({title:'发送消息',url:toUrl,height: 500,width: 500,left: 600,isResize:true});
 }
 
-function closeRoleEditWin(){
+//人员信息对话框
+var chatSendWin;
+function peopleInfo(){	
+	var toUrl = '${WebUrl}/chat/toSendMsg.ctbt?'
+	chatSendWin = $.ligerDialog.open({title:'人员列表',url:toUrl,height: 500,width: 500,isResize:true});
+}
+
+function closeChatEditWin(){
 	if(chatEditWin != null){
 		chatEditWin.close();
-	}
-	
+	}	
 	query();
 }
 
@@ -184,16 +184,11 @@ function deleteRow(item){
 var lastVoice;
 //语音部分
 function playVoice(res){
-	//document.getElementById("playId").onclick = function(){  
 	//停止上一次的
 	RongIMLib.RongIMVoice.stop(lastVoice);
 	RongIMLib.RongIMVoice.play(res);
 	lastVoice = res;
-	console.log(res);
-	/* };
-	document.getElementById("stopId").onclick = function(){
-	    RongIMLib.RongIMVoice.stop();
-	}; */
+	console.log(res);	
 }
 
 

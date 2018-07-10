@@ -24,6 +24,15 @@
     from bd_msg_alarm
     where msg_id = #{msgId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByCondition" parameterType="java.lang.Integer" resultType="Map">
+    select 
+    send_time sendTime, recv_time recvTime, msg_type msgType, msg_txt msgTxt, msg_from msgFrom, msg_to msgTo, is_recv isRecv, recv_confirm_time recvConfirmTime, 
+    is_exclude isExclude, exclude_confirm_time excludeConfirmTime
+    from bd_msg_alarm
+    where msg_txt is not null
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from bd_msg_alarm
     where msg_id = #{msgId,jdbcType=INTEGER}

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.print.DocFlavor.STRING;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,14 +81,24 @@ public class BdChatServiceImpl implements IBdChatService{
 		return list;
 	}
 
-	//找到相应的数据拼接并返回
+	//查询消息，构造树形结构
 	@Override
-	public List<Map<String, Object>> findAll() {
+	public List<Map<String, Object>> findAll(HttpServletRequest request) {
 		
-		List<Map<String, Object>> list = bdMsgChatMapper.findAll();
+		String text = request.getParameter("text");
+		System.out.println("text is -------------------------------------------------"+text);
+		List<Map<String, Object>> list = null;
+		if(text == "") {
+			list = bdMsgChatMapper.findAll();
+		}else {
+			list = bdMsgChatMapper.searchInfo(text);
+		}
+				
+		//6
+		System.out.println("------------------------"+list.size());
 		//返回的List数据
 		List<Map<String, Object>> returnListInfo = new ArrayList<>();	
-		for(int i=0; i<=list.size(); i++) {
+		while(list.size() > 0){
 			//返回的Map数据
 			Map<String,Object> returnMapInfo = new HashMap<>();
 			//获得每项明细
@@ -98,10 +109,13 @@ public class BdChatServiceImpl implements IBdChatService{
 			returnMapInfo.put("ship_id", detailShip_id);
 			returnMapInfo.put("ship_name", detailShip_name);
 			returnMapInfo.put("card_no1", detailCard_no1);
-			returnMapInfo.put("text", "船名:"+detailShip_name+", IC卡号:"+detailCard_no1);
+			returnMapInfo.put("text", detailShip_name+"("+detailCard_no1+")");
+			returnMapInfo.put("icon", request.getScheme() +"://" + request.getServerName()  + 
+					":" +request.getServerPort() +request.getContextPath()+"/images/icons/ship22.png");
+			returnMapInfo.put("ischecked",false);
 			//用户具体信息
 			List<Map<String, Object>> returnChildrenListInfo = new ArrayList<>();
-			for(int j=0; j<=list.size(); j++) {
+			while(list.size() > 0){
 				Map<String, Object> returnChildrenMapInfo = new HashMap<>();
 				if(list.get(0).get("ship_id").equals(detailShip_id)) {
 					int detailUser_id = (int) list.get(0).get("user_id");
@@ -110,8 +124,11 @@ public class BdChatServiceImpl implements IBdChatService{
 					returnChildrenMapInfo.put("user_id",detailUser_name);
 					returnChildrenMapInfo.put("user_name",detailUser_name);
 					returnChildrenMapInfo.put("phone",detailPhone);
-					returnChildrenMapInfo.put("text", "用户名:"+detailUser_name+", 手机号:"+detailPhone);
+					returnChildrenMapInfo.put("text", detailUser_name+"("+detailPhone+")");
 					returnChildrenMapInfo.put("IC", detailCard_no1);
+					returnChildrenMapInfo.put("icon", request.getScheme() +"://" + request.getServerName()  + 
+							":" +request.getServerPort() +request.getContextPath()+"/images/icons/user22.png");
+					returnChildrenMapInfo.put("ischecked", false);
 					list.remove(0);
 				}else {
 					break;
@@ -129,4 +146,8 @@ public class BdChatServiceImpl implements IBdChatService{
 		
 		return this.bdMsgChatMapper.toInsertMsg(list);
 	}
+
+	
+	
+	
 }

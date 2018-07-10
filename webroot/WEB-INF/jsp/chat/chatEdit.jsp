@@ -24,16 +24,30 @@
 
 <div id="maingrid"></div> 
 <form name="sendMsgForm">
-<div class="box">
-                <h2>请选择需要发送信息的用户:</h2>
-                 <div class="tree"> 
-                    <ul id="tree1"></ul> 
-                </div> 
-</div>
-
 <table>
 			<tr>
                 <td>
+                    <label for="from">from：</label>
+                </td>
+                <td>
+                    <input type="text" id="from" name="from" class="ui-textarea" >
+                </td>
+            </tr>
+            <br/>
+            <tr>
+            	<td>
+                    <label for="to">to：</label>
+                </td>
+                <td>
+                    <input type="textarea" id="to" name="to" class="ui-textarea" >
+                </td>
+                <td>
+                    <input type="button" id="find" name="find" onclick="parent.peopleInfo()" value="人员信息">
+                </td>
+            </tr>
+            <br/>
+            <tr>    
+            	<td>
                     <label for="msg">请输入需要发送的信息：</label>
                 </td>
                 <td>
@@ -41,53 +55,25 @@
                 </td>
             </tr>
 </table>
-<input type="button" value="提交" id="msgButton" class="l-button l-button-submit" onclick="sendMsg()"/>
+<input type="button" value="确定" id="ok" class="l-button " onclick="sendMsg()"/>
+<input type="button" value="取消" id="out" class="l-button " onclick="close()"/>
 </form>
 
 </body>
 </html>
 
 <script type="text/javascript">
-//渲染树形结构
-var treeList;
-$(function ()
-        { 
-           treeList = $("#tree1").ligerTree({ 
-                nodeWidth: 200,
-                url: "${WebUrl}/chat/findAll.ctbt",
-                checkbox: true,
-                idFieldName: 'id', 
-                isExpand: false, 
-                slide: false 
-            });            
-});
- 
+var list;
 function sendMsg(){
-	var nodes = treeList.getChecked();
-	console.log(nodes)
-	var msg = document.getElementById("msg").value;
-	console.log(msg);
-	var list = [];
-		for(var i in nodes){
-			if(nodes[i].data.children != undefined )
-				continue;
-			var res = {};
-			res.msg_type = 1;
-			res.msg_text = msg;
-			res.msg_from = "数据中心";
-			res.msg_to = nodes[i].data.IC;
-			res.to_phone = nodes[i].data.phone;		
-			list.push(res);
-		}
-		console.log(list);
 	$.ajax({
 		   type: "POST",
-		   url: "${WebUrl}/chat/toInsertMsg.ctbt",
-		   //data: JSON.stringify(list),
-		   data: {"list":list}, 
-		    traditional:true, 
+		   url: "${WebUrl}/chat/toSendMsg.ctbt",
+		   data: {"list":JSON.stringify(list)},
+		  /*  data: {"list":list}, 
+		   traditional:true,  */
 		   dataType:"json",
 		   success: function(listdata){
+			   console.log(listdata);
 			    alert("发送成功");
 		   },
 		   error: function(error){
@@ -96,36 +82,9 @@ function sendMsg(){
 		}); 
 }
 
-/* function saveChatEdit(){
-	var params = $(document.chatEditForm).serialize();
-	alert(params);
-	console.log(params);
-	alert("before");
-	$.ajax({
-	   type: "POST",
-	   url: "${WebUrl}/chat/saveChatEdit.ctbt",
-	   //data: $('#chatEditForm').serializeArray(),
-	   data:params,
-	   dataType:"json",
-	   success: function(ResultView){
-		    alert(ResultView);
-	   		if(ResultView.flag==1){
-	   			var msgId = ResultView.data.msgId;
-	   			$("#msgId").val(msgId);
-	   			alert("保存成功！");
-	   		}else{
-	   			alert(ResultView.msg);
-	   		}
-	   },
-	   error: function(XMLHttpRequest, textStatus){
-		    alert("error:"+XMLHttpRequest);
-		    //alert(textStatus);
-		    alert("111");
-	   }
-	});
-} */
 
-function closeDialog(){
-	parent.closeRoleEditWin();
+function close(){
+	parent.closeChatEditWin();
 }
+
 </script>

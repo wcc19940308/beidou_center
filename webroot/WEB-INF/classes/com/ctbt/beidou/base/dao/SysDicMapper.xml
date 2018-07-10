@@ -5,6 +5,8 @@
     <id column="dic_id" jdbcType="INTEGER" property="dicId" />
     <result column="dic_name" jdbcType="VARCHAR" property="dicName" />
     <result column="table_name" jdbcType="VARCHAR" property="tableName" />
+    <result column="key_column" jdbcType="VARCHAR" property="keyColumn" />
+    <result column="value_column" jdbcType="VARCHAR" property="valueColumn" />
     <result column="dic_sql" jdbcType="VARCHAR" property="dicSql" />
     <result column="validity" jdbcType="CHAR" property="validity" />
   </resultMap>
@@ -15,7 +17,7 @@
   </resultMap>
   
   <sql id="Base_Column_List">
-    dic_id, dic_name, table_name, dic_sql, validity
+    dic_id, dic_name, table_name, key_column, value_column, dic_sql, validity
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
