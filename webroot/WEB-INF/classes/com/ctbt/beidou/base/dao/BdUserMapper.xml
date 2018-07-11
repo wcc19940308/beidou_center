@@ -18,10 +18,18 @@
     from bd_user
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
+   <select id="selectByModel" parameterType="com.ctbt.beidou.base.model.BdUser" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_user
+    where (user_id = #{userId,jdbcType=INTEGER} OR
+      phone = #{phone,jdbcType=VARCHAR})  AND
+      password = #{password,jdbcType=VARCHAR},
+  </select>
   <select id="selectByCondition" parameterType="com.ctbt.beidou.base.bo.BdUserBo" resultMap="BaseResultMap">
 SELECT user_id, `password`,phone,t2.role_id,t2.validity,t2.role_name FROM 
-`bd_user` as t1,`bd_role` as t2 WHERE phone LIKE '%${phone}%'  AND  t1.validity = '${validity}' 
-AND t1.role_id = (SELECT role_id FROM `bd_role` WHERE role_name = '${roleName}') AND t1.role_id = t2.role_id;
+`bd_user` as t1,`bd_role` as t2 WHERE phone LIKE '%${phone}%'  AND  t1.validity = #{validity} 
+AND t1.role_id IN (SELECT role_id FROM `bd_role` WHERE role_name LIKE '%${roleName}%') AND t1.role_id = t2.role_id;
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from bd_user
