@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdUserLoginSessionMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdUserLoginSession">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <id column="login_device" jdbcType="VARCHAR" property="loginDevice" />
+    <result column="net_type" jdbcType="VARCHAR" property="netType" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, login_device, net_type, device_id, login_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdUserLoginSessionKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_user_login_session
+    where user_id = #{userId,jdbcType=INTEGER}
+      and login_device = #{loginDevice,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdUserLoginSessionKey">
+    delete from bd_user_login_session
+    where user_id = #{userId,jdbcType=INTEGER}
+      and login_device = #{loginDevice,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdUserLoginSession">
+    insert into bd_user_login_session (user_id, login_device, net_type, 
+      device_id, login_time)
+    values (#{userId,jdbcType=INTEGER}, #{loginDevice,jdbcType=VARCHAR}, #{netType,jdbcType=VARCHAR}, 
+      #{deviceId,jdbcType=VARCHAR}, #{loginTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdUserLoginSession">
+    insert into bd_user_login_session
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="loginDevice != null">
+        login_device,
+      </if>
+      <if test="netType != null">
+        net_type,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="loginTime != null">
+        login_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="loginDevice != null">
+        #{loginDevice,jdbcType=VARCHAR},
+      </if>
+      <if test="netType != null">
+        #{netType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginTime != null">
+        #{loginTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdUserLoginSession">
+    update bd_user_login_session
+    <set>
+      <if test="netType != null">
+        net_type = #{netType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginTime != null">
+        login_time = #{loginTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdUserLoginSession">
+    update bd_user_login_session
+    set net_type = #{netType,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      login_time = #{loginTime,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
+      and login_device = #{loginDevice,jdbcType=VARCHAR}
+  </update>
+</mapper>

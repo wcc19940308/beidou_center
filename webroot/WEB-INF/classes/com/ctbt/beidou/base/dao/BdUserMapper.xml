@@ -12,6 +12,9 @@
   <sql id="Base_Column_List">
     user_id, password, phone, role_id, validity
   </sql>
+  <select id="getMaxUserID" resultType="java.lang.Integer">
+	select max(user_id) from bd_user;
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -21,10 +24,9 @@
    <select id="selectByModel" parameterType="com.ctbt.beidou.base.model.BdUser" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from bd_user
-    where (user_id = #{userId,jdbcType=INTEGER} OR
-      phone = #{phone,jdbcType=VARCHAR})  AND
-      password = #{password,jdbcType=VARCHAR},
+    from bd_user where (user_id = #{userId,jdbcType=INTEGER} OR 
+    phone = #{phone,jdbcType=VARCHAR})  AND
+      password = #{password,jdbcType=VARCHAR}
   </select>
   <select id="selectByCondition" parameterType="com.ctbt.beidou.base.bo.BdUserBo" resultMap="BaseResultMap">
 SELECT user_id, `password`,phone,t2.role_id,t2.validity,t2.role_name FROM 

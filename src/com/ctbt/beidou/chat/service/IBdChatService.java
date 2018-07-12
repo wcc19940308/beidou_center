@@ -5,9 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ctbt.beidou.base.bo.ResultView;
 import com.ctbt.beidou.base.model.BdMsgChat;
-import com.ctbt.beidou.base.model.BdMsgChatDTO;
 
 public interface IBdChatService {
 	int deleteByPrimaryKey(Integer msgId);

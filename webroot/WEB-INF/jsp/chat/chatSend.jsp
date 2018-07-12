@@ -29,7 +29,7 @@
 <div class="box">
                 <h3>请选择需要发送信息的用户:</h3>
                 <input type="text" id="findTxt" name="findTxt" />
-                <input type="button" id="findButton" name="findButton" onclick="search()" value="搜索"/>
+                <input type="button" id="findButton" name="findButton" onclick="search()" value="搜索"/>              
                  <div class="tree"> 
                     <ul id="tree1"></ul> 
                 </div> 
@@ -37,6 +37,7 @@
 
 <input type="button" value="确定" class="ctbt-btn" onclick="sendMsg()"/>
 <input value="关闭" type="button" onclick="closeWin()" class="ctbt-btn">
+<!-- <input value="通知子页面" type="button" onclick="sendPage1()" class="ctbt-btn"> -->
 </form>
 
 </body>
@@ -45,70 +46,104 @@
 <script type="text/javascript">
 //渲染树形结构
 var treeList;
-
 //查询的信息
 var text = "";
-$(function ()
-        { 
-           treeList = $("#tree1").ligerTree({ 
-                nodeWidth: 200,
-                url: "${WebUrl}/chat/findAll.ctbt?text="+text,
-                checkbox: true,
-                idFieldName: 'id', 
-                isExpand: false, 
-                slide: false
-            });         
+$(function () {
+	window.top.send_page = this;
+	var editPage = window.top.edit_page ;
+	//根据to中是否有内容进行判断	
+	//正则表达式，取出电话号码,变成电话1，电话2的形式
+		var doc = $(editPage).find('input[id="to"]');
+		var value = doc[0].value;
+		value = value.split(";");
+	//如果to框中已有值，则展示to中的树形结构，且打上勾
+	if(value != ""){
+		treeList = $("#tree1").ligerTree({ 
+		     nodeWidth: 200,
+		     url: "${WebUrl}/chat/findAll.ctbt?",
+		     checkbox: true,
+		     idFieldName: 'id', 
+		     isExpand: true, 
+		     slide: false,
+		     enabledCompleteCheckbox:true,
+		     onSuccess: function(){
+		    	 treeList.selectNode(function(data){
+		    		 console.log(data);
+						for(var i in value){
+							if(value[i] == data.text){
+								return true;
+							}
+						}  
+				});
+				treeList.refreshTree();
+		     }
+	 	});
+	}
+	//如果第一次加载，to中没有内容，展示整棵树，并且不打勾
+	else{
+		treeList = $("#tree1").ligerTree({ 
+		     nodeWidth: 200,
+		     url: "${WebUrl}/chat/findAll.ctbt?text="+text,
+		     checkbox: true,
+		     idFieldName: 'id', 
+		     isExpand: true, 
+		     slide: false
+		 });
+	}
 });
 
-//to中展示的list
-var toList = [];
-//要插入的list
-var insertList = [];
+function prove(){
+	treeList.selectNode(function(data){
+		return true;
+	})
+}
+
 function sendMsg(){
 	var nodes = treeList.getChecked();
-	console.log(nodes)
+	var toList = "";
+	var insertList = [];
 		for(var i in nodes){
 			if(nodes[i].data.children != undefined )
 				continue;
-			var toRes = {};
 			var insertRes = {};
 			
-			toRes.text = nodes[i].data.text;
+			toList += nodes[i].data.text+";";
 			
 			insertRes.msgType = 1;
 			insertRes.msgTo = nodes[i].data.IC;
 			insertRes.toPhone = nodes[i].data.phone;
 			
-			toList.push(toRes);
 			insertList.push(insertRes);
 		}
-		console.log(toList);
-		console.log(insertList);
+		console.log(insertList);		
+		var editPage = window.top.edit_page ;
+		//to框中显示数据
+		$(editPage).find('input[id="to"]').val(toList);
 		
-		//将list传递到parent中
-		parent.toList = toList;
-		parent.insertList = insertList;
-		parent.show();
+		//向隐藏域中放需要插入的数据
+		$(editPage).find('input[id="hideMsg"]').val(JSON.stringify(insertList));
+		
+		closeWin();
+		//dialog.close();		
 }
-
+var dialog = frameElement.dialog;
 function closeWin(){
 	parent.closeChatSendWin();
+	//dialog.close();
 }
 
 
 function search(){
 	text = document.getElementById("findTxt").value;
+	text = text;
 	console.log(text);
 	treeList = $("#tree1").ligerTree({ 
          nodeWidth: 200,
          url: "${WebUrl}/chat/findAll.ctbt?text="+text,
          checkbox: true,
          idFieldName: 'id', 
-         isExpand: false, 
+         isExpand: true, 
          slide: false
      });   
 }
-	
-	
-
 </script>

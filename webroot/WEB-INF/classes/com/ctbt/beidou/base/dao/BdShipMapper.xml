@@ -22,11 +22,17 @@
     <result column="ship_owner_tel" jdbcType="VARCHAR" property="shipOwnerTel" />
     <result column="ship_tons" jdbcType="INTEGER" property="shipTons" />
     <result column="country" jdbcType="INTEGER" property="country" />
+    <result column="country_name" jdbcType="VARCHAR" property="countryName" />
     <result column="province" jdbcType="INTEGER" property="province" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
     <result column="city" jdbcType="INTEGER" property="city" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
     <result column="city_area" jdbcType="INTEGER" property="cityArea" />
+    <result column="city_area_name" jdbcType="VARCHAR" property="cityAreaName" />
     <result column="town" jdbcType="INTEGER" property="town" />
+    <result column="town_name" jdbcType="VARCHAR" property="townName" />
     <result column="village" jdbcType="INTEGER" property="village" />
+    <result column="village_name" jdbcType="VARCHAR" property="villageName" />
     <result column="radio_call_no" jdbcType="VARCHAR" property="radioCallNo" />
     <result column="type_other" jdbcType="VARCHAR" property="typeOther" />
     <result column="validity" jdbcType="CHAR" property="validity" />
@@ -35,20 +41,27 @@
   <sql id="Base_Column_List">
     ship_id, ship_no, ship_name, ship_owner, ship_owner_sfz, ship_desc, org_id, card_no1, 
     serial_no1, card_no2, serial_no2, mmsi, ship_length, ship_width, ship_water, ship_type, 
-    ship_type_new, ship_owner_tel, ship_tons, country, province, city, city_area, town, 
-    village, radio_call_no, type_other, validity
+    ship_type_new, ship_owner_tel, ship_tons, country, f_find_country_name(country) country_name, 
+    province, f_find_reg_name(province) province_name, city, f_find_reg_name(city) city_name,
+     city_area, f_find_reg_name(city_area) city_area_name, 
+    town,f_find_reg_name(town) town_name, village,f_find_reg_name(village) village_name, 
+    radio_call_no, type_other, validity
   </sql>
   <select id="selectByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdShip" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from bd_ship
+	 from bd_ship
     where ship_id = #{shipId,jdbcType=INTEGER}
   </select>
     <select id="selectAll" parameterType="map" resultMap="BaseResultMap">
-		select * from bd_ship
+		select 
+<include refid="Base_Column_List" />
+ from bd_ship
   </select>
     <select id="selectByitem" parameterType="com.ctbt.beidou.base.model.BdShip" resultMap="BaseResultMap">
-		select * from bd_ship where ship_no like '%${shipNo}%' and ship_owner like '%${shipOwner}%' and card_no1 like '%${cardNo1}%' 
+		select 
+		<include refid="Base_Column_List" />
+		 from bd_ship where ship_no like '%${shipNo}%' and ship_owner like '%${shipOwner}%' and card_no1 like '%${cardNo1}%' 
   </select>
   
   

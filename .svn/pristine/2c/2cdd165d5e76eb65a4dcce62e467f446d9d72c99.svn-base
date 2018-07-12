@@ -1,0 +1,119 @@
+<%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="/WEB-INF/ctbt-tag.tld" prefix="ctbt" %>
+<%@ taglib uri="/WEB-INF/ctbt-fn.tld" prefix="ctbtfn" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title></title>
+<ctbt:base/>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerGrid.js" type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerToolBar.js" type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerResizable.js" type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerCheckBox.js" type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerDialog.js" type="text/javascript"></script>
+
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerTree.js" type="text/javascript"></script>
+
+<link href="${WebUrl}/js/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css">
+<link href="${WebUrl}/js/ligerUI/skins/Gray/css/all.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+<div id="maingrid"></div> 
+<form name="sendMsgForm">
+
+
+<div class="box">
+                <h3>请选择需要发送信息的用户:</h3>
+                <input type="text" id="findTxt" name="findTxt" />
+                <input type="button" id="findButton" name="findButton" onclick="search()" value="搜索"/>
+                 <div class="tree"> 
+                    <ul id="tree1"></ul> 
+                </div> 
+</div>
+
+<input type="button" value="确定" class="ctbt-btn" onclick="sendMsg()"/>
+<input value="关闭" type="button" onclick="closeWin()" class="ctbt-btn">
+<input value="通知子页面" type="button" onclick="sendPage1()" class="ctbt-btn">
+</form>
+
+</body>
+</html>
+
+<script type="text/javascript">
+//渲染树形结构
+var treeList;
+
+//查询的信息
+var text = "";
+$(function () {
+	window.top.b_page = this;
+	
+	treeList = $("#tree1").ligerTree({ 
+	     nodeWidth: 200,
+	     url: "${WebUrl}/chat/findAll.ctbt?text="+text,
+	     checkbox: true,
+	     idFieldName: 'id', 
+	     isExpand: false, 
+	     slide: false
+	 });
+});
+
+//to中展示的list
+var toList = [];
+//要插入的list
+var insertList = [];
+function sendMsg(){
+	var nodes = treeList.getChecked();
+	console.log(nodes)
+		for(var i in nodes){
+			if(nodes[i].data.children != undefined )
+				continue;
+			var toRes = {};
+			var insertRes = {};
+			
+			toRes.text = nodes[i].data.text;
+			
+			insertRes.msgType = 1;
+			insertRes.msgTo = nodes[i].data.IC;
+			insertRes.toPhone = nodes[i].data.phone;
+			
+			toList.push(toRes);
+			insertList.push(insertRes);
+		}
+		console.log(toList);
+		console.log(insertList);
+		
+		//将list传递到parent中
+		parent.toList = toList;
+		parent.insertList = insertList;
+		parent.show();
+}
+
+function closeWin(){
+	parent.closeChatSendWin();
+}
+
+
+function search(){
+	text = document.getElementById("findTxt").value;
+	console.log(text);
+	treeList = $("#tree1").ligerTree({ 
+         nodeWidth: 200,
+         url: "${WebUrl}/chat/findAll.ctbt?text="+text,
+         checkbox: true,
+         idFieldName: 'id', 
+         isExpand: false, 
+         slide: false
+     });   
+}
+
+function sendPage1(){
+	alert("chatSend.jsp sendPage1");
+	parent.sendPage1();
+}
+
+</script>

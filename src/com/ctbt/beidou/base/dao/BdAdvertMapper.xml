@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdAdvertMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdAdvert">
+    <id column="adv_id" jdbcType="INTEGER" property="advId" />
+    <result column="adv_title" jdbcType="VARCHAR" property="advTitle" />
+    <result column="adv_type" jdbcType="CHAR" property="advType" />
+    <result column="adv_text" jdbcType="VARCHAR" property="advText" />
+    <result column="adv_start" jdbcType="TIMESTAMP" property="advStart" />
+    <result column="adv_end" jdbcType="TIMESTAMP" property="advEnd" />
+    <result column="order_no" jdbcType="INTEGER" property="orderNo" />
+    <result column="validity" jdbcType="CHAR" property="validity" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ctbt.beidou.base.model.BdAdvert">
+    <result column="adv_base64" jdbcType="LONGVARCHAR" property="advBase64" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    adv_id, adv_title, adv_type, adv_text, adv_start, adv_end, order_no, validity
+  </sql>
+  <sql id="Blob_Column_List">
+    adv_base64
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from bd_advert
+    where adv_id = #{advId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_advert
+    where adv_id = #{advId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdAdvert">
+    insert into bd_advert (adv_id, adv_title, adv_type, 
+      adv_text, adv_start, adv_end, 
+      order_no, validity, adv_base64
+      )
+    values (#{advId,jdbcType=INTEGER}, #{advTitle,jdbcType=VARCHAR}, #{advType,jdbcType=CHAR}, 
+      #{advText,jdbcType=VARCHAR}, #{advStart,jdbcType=TIMESTAMP}, #{advEnd,jdbcType=TIMESTAMP}, 
+      #{orderNo,jdbcType=INTEGER}, #{validity,jdbcType=CHAR}, #{advBase64,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdAdvert">
+    insert into bd_advert
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="advId != null">
+        adv_id,
+      </if>
+      <if test="advTitle != null">
+        adv_title,
+      </if>
+      <if test="advType != null">
+        adv_type,
+      </if>
+      <if test="advText != null">
+        adv_text,
+      </if>
+      <if test="advStart != null">
+        adv_start,
+      </if>
+      <if test="advEnd != null">
+        adv_end,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="validity != null">
+        validity,
+      </if>
+      <if test="advBase64 != null">
+        adv_base64,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="advId != null">
+        #{advId,jdbcType=INTEGER},
+      </if>
+      <if test="advTitle != null">
+        #{advTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="advType != null">
+        #{advType,jdbcType=CHAR},
+      </if>
+      <if test="advText != null">
+        #{advText,jdbcType=VARCHAR},
+      </if>
+      <if test="advStart != null">
+        #{advStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="advEnd != null">
+        #{advEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="validity != null">
+        #{validity,jdbcType=CHAR},
+      </if>
+      <if test="advBase64 != null">
+        #{advBase64,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdAdvert">
+    update bd_advert
+    <set>
+      <if test="advTitle != null">
+        adv_title = #{advTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="advType != null">
+        adv_type = #{advType,jdbcType=CHAR},
+      </if>
+      <if test="advText != null">
+        adv_text = #{advText,jdbcType=VARCHAR},
+      </if>
+      <if test="advStart != null">
+        adv_start = #{advStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="advEnd != null">
+        adv_end = #{advEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="validity != null">
+        validity = #{validity,jdbcType=CHAR},
+      </if>
+      <if test="advBase64 != null">
+        adv_base64 = #{advBase64,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where adv_id = #{advId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ctbt.beidou.base.model.BdAdvert">
+    update bd_advert
+    set adv_title = #{advTitle,jdbcType=VARCHAR},
+      adv_type = #{advType,jdbcType=CHAR},
+      adv_text = #{advText,jdbcType=VARCHAR},
+      adv_start = #{advStart,jdbcType=TIMESTAMP},
+      adv_end = #{advEnd,jdbcType=TIMESTAMP},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      validity = #{validity,jdbcType=CHAR},
+      adv_base64 = #{advBase64,jdbcType=LONGVARCHAR}
+    where adv_id = #{advId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdAdvert">
+    update bd_advert
+    set adv_title = #{advTitle,jdbcType=VARCHAR},
+      adv_type = #{advType,jdbcType=CHAR},
+      adv_text = #{advText,jdbcType=VARCHAR},
+      adv_start = #{advStart,jdbcType=TIMESTAMP},
+      adv_end = #{advEnd,jdbcType=TIMESTAMP},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      validity = #{validity,jdbcType=CHAR}
+    where adv_id = #{advId,jdbcType=INTEGER}
+  </update>
+</mapper>

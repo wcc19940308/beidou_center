@@ -39,10 +39,11 @@
                     <label for="to">to：</label>
                 </td>
                 <td>
-                    <input type="textarea" id="to" name="to" class="ui-textarea" value="${toList}">
+                    <input type="textarea" id="to" name="to" class="ui-textarea">
                 </td>
                 <td>
                     <input type="button" id="find" name="find" onclick="parent.peopleInfo()" value="人员信息">
+                    <input type="button" id="clear" name="clear" onclick="reset()" value="清空"/>
                 </td>
             </tr>
             <br/>
@@ -54,6 +55,9 @@
                     <input type="textarea" id="msg" name="msg" class="ui-textarea" >
                 </td>
             </tr>
+            <tr>
+            		<input type="text" id="hideMsg" hidden="true"/>
+            </tr>
 </table>
 <input type="button" value="确定"  class="ctbt-btn " onclick="sendMsg()"/>
 <input type="button" value="关闭"  class="ctbt-btn " onclick="closeWin()"/>
@@ -63,35 +67,50 @@
 </html>
 
 <script type="text/javascript">
-var toList = "";
-var insertList = "";
+$(function (){
+	window.top.edit_page = this;
+});
+		
+
 //最后确定要插入发送的信息
 function sendMsg(){
-	var list = 
-	console.log(list);
-	/* $.ajax({
+	var list = document.getElementById("hideMsg").value;
+	var msg = $("#msg")[0].value;
+	var from = $("#from")[0].value;
+	
+    var myList = JSON.parse(list);
+    for(var i in myList){
+    	myList[i].msgTxt = msg;
+    	myList[i].msgFrom = from;
+    }
+	
+	$.ajax({
 		   type: "POST",
 		   url: "${WebUrl}/chat/toInsertMsg.ctbt",
-		   data: {"list":JSON.stringify(list)},
+		   data: {"list":JSON.stringify(myList)},
 		   dataType:"json",
 		   success: function(listdata){
 			   console.log(listdata);
 			    alert("toInsertMsg发送成功");
+			    closeWin();
 		   },
 		   error: function(error){
 			   alert("toInsertMsg发送失败");
 		   }
-		});  */
-}
-function closeWin(){	
-	parent.closeChatEditWin();
+		});   
+	
 }
 
-function showSendMsg(){
-	console.log("wccccccccccccccccccc");
-	console.log(toList);
-	console.log(insertList);
-	document.getElementById("msg").value = toList;
+var dialog = frameElement.dialog;
+function closeWin(){
+	dialog.close();
+	$("#to")[0].val("");
 }
+
+
+function reset(){
+	ctbt.FormUtil.Clean(document.to);
+}
+
 
 </script>

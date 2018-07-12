@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdMsgChatFileMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdMsgChatFile">
+    <id column="msg_id" jdbcType="INTEGER" property="msgId" />
+    <result column="msg_type" jdbcType="CHAR" property="msgType" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ctbt.beidou.base.model.BdMsgChatFile">
+    <result column="msg_base64" jdbcType="LONGVARCHAR" property="msgBase64" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    msg_id, msg_type
+  </sql>
+  <sql id="Blob_Column_List">
+    msg_base64
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from bd_msg_chat_file
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_msg_chat_file
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdMsgChatFile">
+    insert into bd_msg_chat_file (msg_id, msg_type, msg_base64
+      )
+    values (#{msgId,jdbcType=INTEGER}, #{msgType,jdbcType=CHAR}, #{msgBase64,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdMsgChatFile">
+    insert into bd_msg_chat_file
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="msgId != null">
+        msg_id,
+      </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
+      <if test="msgBase64 != null">
+        msg_base64,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="msgId != null">
+        #{msgId,jdbcType=INTEGER},
+      </if>
+      <if test="msgType != null">
+        #{msgType,jdbcType=CHAR},
+      </if>
+      <if test="msgBase64 != null">
+        #{msgBase64,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdMsgChatFile">
+    update bd_msg_chat_file
+    <set>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=CHAR},
+      </if>
+      <if test="msgBase64 != null">
+        msg_base64 = #{msgBase64,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ctbt.beidou.base.model.BdMsgChatFile">
+    update bd_msg_chat_file
+    set msg_type = #{msgType,jdbcType=CHAR},
+      msg_base64 = #{msgBase64,jdbcType=LONGVARCHAR}
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdMsgChatFile">
+    update bd_msg_chat_file
+    set msg_type = #{msgType,jdbcType=CHAR}
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+</mapper>

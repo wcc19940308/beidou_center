@@ -1,0 +1,156 @@
+package com.ctbt.beidou.notice.service;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.dao.BdMsgNoticeMapper;
+import com.ctbt.beidou.base.model.BdMsgNotice;
+
+@Transactional
+@Service("noticeService")
+public class IBdNoticeServiceImpl implements IBdNoticeService{
+	@Resource
+	private BdMsgNoticeMapper bdMsgNoticeMapper;
+	
+
+	@Override
+	public int deleteByPrimaryKey(Integer msgId) {
+		
+		return this.bdMsgNoticeMapper.deleteByPrimaryKey(msgId);
+	}
+
+	@Override
+	public int insert(BdMsgNotice record) {
+		
+		return  this.bdMsgNoticeMapper.insert(record);
+	}
+
+	@Override
+	public int insertSelective(BdMsgNotice record) {
+		
+		return this.bdMsgNoticeMapper.insertSelective(record);
+	}
+
+	@Override
+	public BdMsgNotice selectByPrimaryKey(Integer msgId) {
+		
+		return this.bdMsgNoticeMapper.selectByPrimaryKey(msgId);
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(BdMsgNotice record) {
+		
+		return this.bdMsgNoticeMapper.updateByPrimaryKeySelective(record);
+	}
+
+	@Override
+	public int updateByPrimaryKey(BdMsgNotice record) {
+		
+		return this.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public List<BdMsgNotice> queryChatList(BdMsgNotice record) {
+		
+		return this.bdMsgNoticeMapper.selectByCondition(record);
+	}
+
+//	@Override
+//	public List<BdMsgNotice> showChatList() {
+//		
+//		List<BdMsgNotice> list = bdMsgNoticeMapper.selectAll();
+//		for(BdMsgNotice b : list) {
+//			if(b.getMsgType().equals("3")) {
+//				String base64Msg = bdMsgNoticeMapper.findVoice(b.getMsgId());
+//				b.setMsgTxt(base64Msg);
+//			}		
+//		}
+//		return list;
+//	}
+
+	//查询消息，构造树形结构
+	@Override
+	public List<Map<String, Object>> findAll(HttpServletRequest request) {
+		
+		String text = request.getParameter("text");
+		String str = request.getParameter("str");
+		List<Map<String, Object>> list = null;
+		//如果搜索框的内容和to中的内容都为空，构造整棵树
+		if((text == null || text == "") && (str == null || str == "")) 
+		{
+			list = bdMsgNoticeMapper.findAll();
+		}
+		//如果搜索框内容不为空，则按搜索框内容进行搜索
+		else if(text != null || text == "")
+		{
+			text = "%"+text+"%";
+			list = bdMsgNoticeMapper.searchInfo(text);
+		}
+		//如果搜索框内容为空，to中内容不为空，则按to中的内容构造树形结构显示
+		else if(str != "" && (text == null || text == "")) {
+			
+			//List<String> stringList = Arrays.asList(str);
+			String[] stringList = str.split(",");
+			list = bdMsgNoticeMapper.findByPhone(stringList);
+		}
+		
+		//6
+		System.out.println("------------------------"+list.size());
+		//返回的List数据
+		List<Map<String, Object>> returnListInfo = new LinkedList<>();	
+		while(list.size() > 0){
+			//返回的Map数据
+			Map<String,Object> returnMapInfo = new HashMap<>();
+			//获得每项明细
+			int detailShip_id = (int) list.get(0).get("ship_id");
+			String detailShip_name = (String) list.get(0).get("ship_name");
+			String detailCard_no1 = (String) list.get(0).get("card_no1");
+			//船的具体信息
+			returnMapInfo.put("ship_id", detailShip_id);
+			returnMapInfo.put("ship_name", detailShip_name);
+			returnMapInfo.put("card_no1", detailCard_no1);
+			returnMapInfo.put("text", detailShip_name+"("+detailCard_no1+")");
+			returnMapInfo.put("icon", request.getScheme() +"://" + request.getServerName()  + 
+					":" +request.getServerPort() +request.getContextPath()+"/images/icons/ship22.png");
+			
+			//用户具体信息
+			List<Map<String, Object>> returnChildrenListInfo = new LinkedList<>();
+			while(list.size() > 0){
+				Map<String, Object> returnChildrenMapInfo = new HashMap<>();
+				if(list.get(0).get("ship_id").equals(detailShip_id)) {
+					int detailUser_id = (int) list.get(0).get("user_id");
+					String detailUser_name = (String) list.get(0).get("user_name");
+					String detailPhone = (String) list.get(0).get("phone");
+					returnChildrenMapInfo.put("user_id",detailUser_name);
+					returnChildrenMapInfo.put("user_name",detailUser_name);
+					returnChildrenMapInfo.put("phone",detailPhone);
+					returnChildrenMapInfo.put("text", detailUser_name+"("+detailPhone+")");
+					returnChildrenMapInfo.put("IC", detailCard_no1);
+					returnChildrenMapInfo.put("icon", request.getScheme() +"://" + request.getServerName()  + 
+							":" +request.getServerPort() +request.getContextPath()+"/images/icons/user22.png");				
+					list.remove(0);
+				}else {
+					break;
+				}
+				returnChildrenListInfo.add(returnChildrenMapInfo);
+			}
+			returnMapInfo.put("children", returnChildrenListInfo);
+			returnListInfo.add(returnMapInfo);
+		}
+		return returnListInfo;
+	}
+
+	@Override
+	public int insertMsg(List<BdMsgNotice> list) {
+		
+		return this.bdMsgNoticeMapper.toInsertMsg(list);
+	}
+}

@@ -22,7 +22,6 @@
 
 </head>
 <body>
-<div id="father">
 <form id="queryChatForm" name="queryChatForm" action="">
 <div style="height:50px; border:solid 1px #cccccc; margin: 5px; padding-top: 10px;">
 	<table style="width: 98%;">
@@ -31,7 +30,7 @@
 			<td width="23%">
 			<input id="fromPhone" name="fromPhone" type="text" class="ctbt_qf_input"/>
 			</td> 
-			<td width="10%" align="right">接受者手机：</td>
+			<td width="10%" align="right">接收者手机：</td>
 			<td width="23%">
 			<input id="toPhone" name="toPhone" type="text" class="ctbt_qf_input"/>
 			</td>
@@ -49,7 +48,6 @@
 <div id="maingrid"></div>
 
 <div style="display:none;"></div>
-</div>
 </body> 
 <script type="text/javascript">
 var gd;
@@ -59,7 +57,6 @@ $(function ()
     gd = $("#maingrid").ligerGrid({
         height:'99.5%',
         columns: [
-        { display: '消息ID', name: 'msgId', align: 'left',  minWidth: 150 },
         { display: '发送时间', name: 'sendTime', align: 'left',  minWidth: 150 },
         { display: '接收时间', name: 'recvTime', minWidth: 150 },
         { display: '消息', name: 'msgTxt', minWidth: 200 },
@@ -67,14 +64,13 @@ $(function ()
         { display: '发送者手机', name: 'fromPhone', minWidth: 150 },
         { display: '接收者IC卡号', name: 'msgTo',  minWidth: 150 },
         { display: '接收者手机', name: 'toPhone', minWidth: 150 },
-        { display: '是否确认', name: 'isRecv', minWidth: 80 },
+        { display: '是否接收', name: 'isRecv', minWidth: 80 },
         { display: '接收确认时间', name: 'revcConfirmTime', minWidth: 100 }
         ],
         pageSize:20 ,rownumbers:true,
         toolbar: { items: [
-        { text: '查询全部', click: query, icon: 'search' },
-        { line: true },
-        { text: '发送信息', click: addMsg, icon: 'add' }
+        { text: '发送信息', click: addMsg, icon: 'add' },
+        { line: true }
         ]
         }
     });
@@ -159,28 +155,35 @@ function reset(){
 var chatEditWin;
 function addMsg(){	
 	var toUrl = '${WebUrl}/chat/showFromTo.ctbt?'
-	chatEditWin = $.ligerDialog.show({id:"editWin",title:'发送消息',url:toUrl,height: 500,width: 500,left: 600,isResize:true});
+	chatEditWin = $.ligerDialog.show({id:"editWin",title:'发送消息',url:toUrl,height: 500,width: 500,isResize:true});
 }
 
 //人员信息对话框
-var chatSendWin;
-function peopleInfo(){	
-	var toUrl = '${WebUrl}/chat/toSendMsg.ctbt?'
-	chatSendWin = $.ligerDialog.open({id:"sendWin",title:'人员列表',url:toUrl,height: 500,width: 500,isResize:true});
+var chatSendWin = null;
+//第一次加载的时候读取整棵树，下次加载的时候根据to中的内容构造树形结构
+function peopleInfo(){		
+	var toUrl = '${WebUrl}/chat/toSendMsg.ctbt';
+	
+	if(chatSendWin == null){
+		chatSendWin = $.ligerDialog.open({id:"sendWin",title:'人员列表',url:toUrl,height: 500,width: 500,left: 700,isResize:true});
+		console.log("11111"+chatSendWin);
+	}		
 }
 
 function closeChatEditWin(){
 	if(chatEditWin != null){
 		chatEditWin.close();
-	}	
+	}
+
 	//query();
 }
 
 function closeChatSendWin(){
-	if(chatSendWin != null){
+	
 		chatSendWin.close();
-	}	
-	//query();
+		chatSendWin = null;
+		console.log("22222"+chatSendWin);
+		
 }
 
 function deleteRow(item){
@@ -197,31 +200,6 @@ function playVoice(res){
 	console.log(res);	
 }
 
-var toList;
-var insertList;
-function show(){
-	console.log(toList);
-	console.log(insertList);
-	
-	$.ajax({
-		   type: "POST",
-		   url: "${WebUrl}/chat/showFromTo.ctbt",
-		   data: {"toList":toList,"insertList":insertList},
-		   traditional : true,
-		   dataType:"json",
-		   success: function(listdata){
-			   console.log(listdata);
-			    alert("ok");
-		   },
-		   error: function(error){
-			   console.log(error);
-			   alert("error");
-		   }
-		});  
-	
-	//chatEditWin.toList = toList;
-	//chatEditWin.insertList = insertList;
-}
 
 </script>
 </html>

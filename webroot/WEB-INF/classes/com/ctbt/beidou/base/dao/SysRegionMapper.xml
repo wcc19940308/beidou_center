@@ -60,7 +60,6 @@
   
 
 
-  
     <!-- 市级 -->
   <select id="queryCityList" parameterType="java.lang.Integer" resultMap="KeyValueMap">
     SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=2 AND parent_id=#{regId,jdbcType=INTEGER}
@@ -85,7 +84,19 @@
     SELECT reg_id item_key, reg_name item_value FROM sys_region WHERE LEVEL=5 AND parent_id=#{regId,jdbcType=INTEGER}
     order by reg_id
   </select>
-
+  
+  
+  <!-- 查询乡镇有无 -->
+  <select id="queryT" parameterType="com.ctbt.beidou.base.model.SysRegion" resultMap="BaseResultMap">
+    SELECT * FROM sys_region WHERE LEVEL=4 AND reg_name=#{regName,jdbcType=VARCHAR} AND parent_id=#{parentId,jdbcType=INTEGER}
+    order by reg_id
+  </select>
+  
+    <!-- 查询村级、服务站有无-->
+  <select id="queryV" parameterType="com.ctbt.beidou.base.model.SysRegion" resultMap="BaseResultMap">
+    SELECT * FROM sys_region WHERE LEVEL=5 AND reg_name=#{regName,jdbcType=VARCHAR} AND parent_id=#{parentId,jdbcType=INTEGER}
+    order by reg_id
+  </select>
  
   
   
