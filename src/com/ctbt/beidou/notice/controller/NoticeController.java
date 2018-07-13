@@ -1,34 +1,103 @@
 package com.ctbt.beidou.notice.controller;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.model.BdMsgNotice;
+import com.ctbt.beidou.notice.service.IBdNoticeService;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/notice")
 public class NoticeController {
 
 	private Logger logger = LogManager.getLogger(getClass());
+	
+	@Resource
+	private IBdNoticeService noticeService;
 		
+	//条件查询
+	@RequestMapping(value = "/queryNoticeList",method = RequestMethod.POST)
+	@ResponseBody
+	public List<BdMsgNotice> queryNoticeList(HttpServletRequest request,Model model){
+
+		BdMsgNotice bdMsgNotice = new BdMsgNotice();
+						
+		List<BdMsgNotice> list = noticeService.queryNoticeList(bdMsgNotice);
+		
+		return list;
+	}
+	
 	@RequestMapping("/toNoticeList")
 	public String toNoticeList(HttpServletRequest request,Model model){
 
 		return "notice/noticeList";
 	}
 	
-	@RequestMapping("/queryNoticeList")
-	public String queryNoticeList(HttpServletRequest request,Model model){
-
-		return "notice/noticeList";
-	}
-	
 	@RequestMapping("/toNoticeEdit")
 	public String toNoticeEdit(HttpServletRequest request,Model model){
-
+		
 		return "notice/noticeEdit";
 	}
+	
+	//显示from,to的页面信息
+	@RequestMapping(value = "/showFromTo")
+	public String showFromTo(HttpServletRequest request,ModelMap retMap) {
+		return "notice/noticeEdit";
+	}
+	
+	//向bd_msg_notice表插入向船员发送的数据
+		@RequestMapping(value="/toInsertMsg", method = RequestMethod.POST)
+		@ResponseBody
+		public int toInsertMsg(HttpServletRequest request) {
+			
+			String liString = request.getParameter("list");
+			List<BdMsgNotice> list = new ArrayList<>();
+			JSONArray jsonArray=JSONArray.fromObject(liString);
+			for(int i=0; i<jsonArray.size(); i++) {
+				Object object = jsonArray.get(i);
+				JSONObject jsonObject = JSONObject.fromObject(object);
+				BdMsgNotice bdMsgNotice = (BdMsgNotice) JSONObject.toBean(jsonObject,BdMsgNotice.class);
+				bdMsgNotice.setSendTime(new Date());
+				list.add(bdMsgNotice);
+				System.out.println(bdMsgNotice);
+			}
+			for(int i=0; i<list.size(); i++) {
+				System.out.println(list.get(i));
+			}
+			int returnInt = noticeService.insertMsg(list);
+			System.out.println(returnInt);
+			return returnInt;
+		}
+		
+		//找到所有人信息，并且跳转到选择人员界面
+		@RequestMapping("/toSendMsg")
+		public String toSendMsg(HttpServletRequest request,BdMsgNotice record,ModelMap retMap){
+				return "notice/noticeSend";
+		}
+		
+		//找到所有人的信息构造树形结构
+		@RequestMapping(value = "/findAll",method = RequestMethod.POST)
+		@ResponseBody
+		public List<Map<String, Object>> findAll(HttpServletRequest request,BdMsgNotice record){
+					
+			List<Map<String, Object>> list = noticeService.findAll(request);		
+			return list;
+		}
 }

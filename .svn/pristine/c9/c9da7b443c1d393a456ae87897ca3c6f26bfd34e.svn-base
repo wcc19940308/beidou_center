@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdMsgChatMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdMsgChat">
+    <id column="msg_id" jdbcType="INTEGER" property="msgId" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="recv_time" jdbcType="TIMESTAMP" property="recvTime" />
+    <result column="msg_type" jdbcType="CHAR" property="msgType" />
+    <result column="msg_txt" jdbcType="VARCHAR" property="msgTxt" />
+    <result column="msg_from" jdbcType="VARCHAR" property="msgFrom" />
+    <result column="from_phone" jdbcType="VARCHAR" property="fromPhone" />
+    <result column="msg_to" jdbcType="VARCHAR" property="msgTo" />
+    <result column="to_phone" jdbcType="VARCHAR" property="toPhone" />
+    <result column="is_recv" jdbcType="CHAR" property="isRecv" />
+    <result column="recv_confirm_time" jdbcType="TIMESTAMP" property="recvConfirmTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    msg_id, send_time, recv_time, msg_type, msg_txt, msg_from, from_phone, msg_to, to_phone, is_recv, 
+    recv_confirm_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_msg_chat
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </select>
+  
+ 
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_msg_chat
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdMsgChat">
+    insert into bd_msg_chat (msg_id, send_time, recv_time, msg_type
+      msg_txt, msg_from, from_phone, 
+      msg_to, to_phone, is_recv, 
+      recv_confirm_time)
+    values (#{msgId,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP}, #{recvTime,jdbcType=TIMESTAMP}, 
+      #{msgType,jdbcType=CHAR}, #{msgTxt,jdbcType=VARCHAR}, #{msgFrom,jdbcType=VARCHAR}, #{fromPhone,jdbcType=VARCHAR}, 
+      #{msgTo,jdbcType=VARCHAR}, #{toPhone,jdbcType=VARCHAR}, #{isRecv,jdbcType=CHAR}, 
+      #{recvConfirmTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdMsgChat">
+    insert into bd_msg_chat
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="msgId != null">
+        msg_id,
+      </if>
+      <if test="sendTime != null">
+        send_time,
+      </if>
+      <if test="recvTime != null">
+        recv_time,
+      </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
+      
+      <if test="msgTxt != null">
+        msg_txt,
+      </if>
+      <if test="msgFrom != null">
+        msg_from,
+      </if>
+      <if test="fromPhone != null">
+        from_phone,
+      </if>
+      <if test="msgTo != null">
+        msg_to,
+      </if>
+      <if test="toPhone != null">
+        to_phone,
+      </if>
+      <if test="isRecv != null">
+        is_recv,
+      </if>
+      <if test="recvConfirmTime != null">
+        recv_confirm_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="msgId != null">
+        #{msgId,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null">
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recvTime != null">
+        #{recvTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msgType != null">
+        #{msgType,jdbcType=CHAR},
+      </if>
+      
+      <if test="msgTxt != null">
+        #{msgTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="msgFrom != null">
+        #{msgFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="fromPhone != null">
+        #{fromPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="msgTo != null">
+        #{msgTo,jdbcType=VARCHAR},
+      </if>
+      <if test="toPhone != null">
+        #{toPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecv != null">
+        #{isRecv,jdbcType=CHAR},
+      </if>
+      <if test="recvConfirmTime != null">
+        #{recvConfirmTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdMsgChat">
+    update bd_msg_chat
+    <set>
+      <if test="sendTime != null">
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recvTime != null">
+        recv_time = #{recvTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=CHAR},
+      </if>
+      
+      <if test="msgTxt != null">
+        msg_txt = #{msgTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="msgFrom != null">
+        msg_from = #{msgFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="fromPhone != null">
+        from_phone = #{fromPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="msgTo != null">
+        msg_to = #{msgTo,jdbcType=VARCHAR},
+      </if>
+      <if test="toPhone != null">
+        to_phone = #{toPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecv != null">
+        is_recv = #{isRecv,jdbcType=CHAR},
+      </if>
+      <if test="recvConfirmTime != null">
+        recv_confirm_time = #{recvConfirmTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdMsgChat">
+    update bd_msg_chat
+    set send_time = #{sendTime,jdbcType=TIMESTAMP},
+      recv_time = #{recvTime,jdbcType=TIMESTAMP},
+      msg_type = #{msgType,jdbcType=CHAR},
+      msg_txt = #{msgTxt,jdbcType=VARCHAR},
+      msg_from = #{msgFrom,jdbcType=VARCHAR},
+      from_phone = #{fromPhone,jdbcType=VARCHAR},
+      msg_to = #{msgTo,jdbcType=VARCHAR},
+      to_phone = #{toPhone,jdbcType=VARCHAR},
+      is_recv = #{isRecv,jdbcType=CHAR},
+      recv_confirm_time = #{recvConfirmTime,jdbcType=TIMESTAMP}
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">select  <include refid="Base_Column_List" /> from bd_msg_chat where msg_id is not null
+    <if test="sendTime != null">
+        and send_time = #{sendTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="recvTime != null">
+        and recv_time = #{recvTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="msgType != null">
+        and msg_type = #{msgType,jdbcType=CHAR}
+      </if>
+      
+      <if test="msgTxt != null">
+        and msg_txt = #{msgTxt,jdbcType=VARCHAR}
+      </if>
+      <if test="msgFrom != null">
+        and msg_from = #{msgFrom,jdbcType=VARCHAR}
+      </if>
+      <if test="fromPhone != null">
+        and from_phone = #{fromPhone,jdbcType=VARCHAR}
+      </if>
+      <if test="msgTo != null">
+        and msg_to = #{msgTo,jdbcType=VARCHAR}
+      </if>
+      <if test="toPhone != null">
+        and to_phone = #{toPhone,jdbcType=VARCHAR}
+      </if>
+      <if test="isRecv != null">
+        and is_recv = #{isRecv,jdbcType=CHAR}
+      </if>
+      <if test="recvConfirmTime != null">
+        and recv_confirm_time = #{recvConfirmTime,jdbcType=TIMESTAMP}
+      </if>
+      order by send_time DESC
+  </select>
+  
+  <select id="selectAll" parameterType="java.util.Map" resultMap="BaseResultMap">select <include refid="Base_Column_List" />
+    from bd_msg_chat
+    where msg_id is not null
+  </select>
+  
+  <insert id="toInsertMsg" parameterType="java.util.List">
+  insert into bd_msg_chat (send_time,msg_type,msg_txt,msg_from,msg_to,to_phone)
+  values
+  <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.sendTime,jdbcType=TIMESTAMP}, #{item.msgType,jdbcType=CHAR}, #{item.msgTxt,jdbcType=VARCHAR},#{item.msgFrom,jdbcType=VARCHAR},
+            #{item.msgTo,jdbcType=VARCHAR},#{item.toPhone,jdbcType=VARCHAR})
+  </foreach>
+    
+  </insert>
+  
+   <select id="findAll" parameterType="java.util.Map" resultType="Map">
+  select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e , 
+  (select c.phone , d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
+  (select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id) as f 
+  where e.user_id = f.user_id order by ship_id
+	</select>
+	
+  <select id="searchInfo" parameterType="java.lang.String" resultType="Map">
+  select * from 
+  (select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e , 
+  (select c.phone , d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
+  (select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id) as f 
+  where e.user_id = f.user_id order by ship_id)as x where x.user_name like #{text} or x.phone like #{text} or
+  x.ship_name like #{text} or x.card_no1 like #{text}
+  </select>
+  
+  <select id="findVoice" parameterType="java.lang.Integer" resultType="java.lang.String"> 	
+  	select a.msg_base64 from bd_msg_chat_file as a ,bd_msg_chat as b 
+  	where a.msg_id = b.msg_id 
+  	and b.msg_type = 3 
+  	and b.msg_id= #{msgId,jdbcType=INTEGER}
+  </select>
+  
+  
+  
+ 
+</mapper>

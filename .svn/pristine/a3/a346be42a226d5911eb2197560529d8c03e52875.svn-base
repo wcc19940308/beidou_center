@@ -77,8 +77,8 @@ function queryByCondition(){
 	console.log(params)
 	$.ajax({
 	   type: "POST",
-	   url: "${WebUrl}/notice/queryNoticeList.ctbt",
-	   //data: params,
+	   url: "${WebUrl}/chat/queryChatList.ctbt",
+	   data: params,
 	   dataType:"json",
 	   async : false,
 	   success: function(listdata){
@@ -133,7 +133,7 @@ function closeChatEditWin(){
 		chatEditWin.close();
 	}
 
-	queryByCondition();
+	//query();
 }
 
 function closeChatSendWin(){

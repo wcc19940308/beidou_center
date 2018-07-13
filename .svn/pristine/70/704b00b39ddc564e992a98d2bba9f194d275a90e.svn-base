@@ -58,10 +58,23 @@ public class IBdNoticeServiceImpl implements IBdNoticeService{
 	}
 
 	@Override
-	public List<BdMsgNotice> queryNoticeList(BdMsgNotice record) {
+	public List<BdMsgNotice> queryChatList(BdMsgNotice record) {
 		
 		return this.bdMsgNoticeMapper.selectByCondition(record);
 	}
+
+//	@Override
+//	public List<BdMsgNotice> showChatList() {
+//		
+//		List<BdMsgNotice> list = bdMsgNoticeMapper.selectAll();
+//		for(BdMsgNotice b : list) {
+//			if(b.getMsgType().equals("3")) {
+//				String base64Msg = bdMsgNoticeMapper.findVoice(b.getMsgId());
+//				b.setMsgTxt(base64Msg);
+//			}		
+//		}
+//		return list;
+//	}
 
 	//查询消息，构造树形结构
 	@Override

@@ -9,17 +9,32 @@
     <result column="adv_start" jdbcType="TIMESTAMP" property="advStart" />
     <result column="adv_end" jdbcType="TIMESTAMP" property="advEnd" />
     <result column="order_no" jdbcType="INTEGER" property="orderNo" />
+    <result column="adv_time" jdbcType="INTEGER" property="advTime" />
     <result column="validity" jdbcType="CHAR" property="validity" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ctbt.beidou.base.model.BdAdvert">
     <result column="adv_base64" jdbcType="LONGVARCHAR" property="advBase64" />
   </resultMap>
   <sql id="Base_Column_List">
-    adv_id, adv_title, adv_type, adv_text, adv_start, adv_end, order_no, validity
+    adv_id, adv_title, adv_type, adv_text, adv_start, adv_end,adv_time, order_no, validity
   </sql>
   <sql id="Blob_Column_List">
     adv_base64
   </sql>
+    <select id="selectAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_advert
+  </select>
+  
+    <select id="selectByItem" parameterType="com.ctbt.beidou.base.model.BdAdvert" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_advert
+    where adv_title like '%${advTitle}%'  and adv_text like '%${advText}%' and validity like '%${validity}%'
+  </select>
+  
+  
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
@@ -28,18 +43,20 @@
     from bd_advert
     where adv_id = #{advId,jdbcType=INTEGER}
   </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from bd_advert
     where adv_id = #{advId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdAdvert">
-    insert into bd_advert (adv_id, adv_title, adv_type, 
+    insert into bd_advert ( adv_title, adv_type, 
       adv_text, adv_start, adv_end, 
-      order_no, validity, adv_base64
+      order_no, validity, adv_base64,adv_time
       )
-    values (#{advId,jdbcType=INTEGER}, #{advTitle,jdbcType=VARCHAR}, #{advType,jdbcType=CHAR}, 
+    values ( #{advTitle,jdbcType=VARCHAR}, #{advType,jdbcType=CHAR}, 
       #{advText,jdbcType=VARCHAR}, #{advStart,jdbcType=TIMESTAMP}, #{advEnd,jdbcType=TIMESTAMP}, 
-      #{orderNo,jdbcType=INTEGER}, #{validity,jdbcType=CHAR}, #{advBase64,jdbcType=LONGVARCHAR}
+      #{orderNo,jdbcType=INTEGER}, #{validity,jdbcType=CHAR}, #{advBase64,jdbcType=LONGVARCHAR},#{advTime,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdAdvert">
@@ -130,19 +147,17 @@
       <if test="advBase64 != null">
         adv_base64 = #{advBase64,jdbcType=LONGVARCHAR},
       </if>
-    </set>
+        <if test="advTime != null">
+        adv_time = #{advTime,jdbcType=INTEGER},
+      </if>
+   </set>
     where adv_id = #{advId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ctbt.beidou.base.model.BdAdvert">
+  
+  
+  <update id="updateByPrimaryKeyValidity" parameterType="com.ctbt.beidou.base.model.BdAdvert">
     update bd_advert
-    set adv_title = #{advTitle,jdbcType=VARCHAR},
-      adv_type = #{advType,jdbcType=CHAR},
-      adv_text = #{advText,jdbcType=VARCHAR},
-      adv_start = #{advStart,jdbcType=TIMESTAMP},
-      adv_end = #{advEnd,jdbcType=TIMESTAMP},
-      order_no = #{orderNo,jdbcType=INTEGER},
-      validity = #{validity,jdbcType=CHAR},
-      adv_base64 = #{advBase64,jdbcType=LONGVARCHAR}
+    set  validity = #{validity,jdbcType=CHAR}
     where adv_id = #{advId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdAdvert">

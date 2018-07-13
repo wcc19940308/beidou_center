@@ -58,9 +58,14 @@ $(function ()
         height:'99.5%',
         columns: [
         { display: '发送时间', name: 'sendTime', align: 'left',  minWidth: 150 },
-        { display: '公告', name: 'msgTxt', minWidth: 200 },
-        { display: '发送者', name: 'msgFrom', minWidth: 150 },
-        { display: '接收者手机', name: 'msgTo',  minWidth: 150 },
+        { display: '接收时间', name: 'recvTime', minWidth: 150 },
+        { display: '消息', name: 'msgTxt', minWidth: 200 },
+        { display: '发送者IC卡号', name: 'msgFrom', minWidth: 150 },
+        { display: '发送者手机', name: 'fromPhone', minWidth: 150 },
+        { display: '接收者IC卡号', name: 'msgTo',  minWidth: 150 },
+        { display: '接收者手机', name: 'toPhone', minWidth: 150 },
+        { display: '是否接收', name: 'isRecv', minWidth: 80 },
+        { display: '接收确认时间', name: 'revcConfirmTime', minWidth: 100 }
         ],
         pageSize:20 ,rownumbers:true,
         toolbar: { items: [
@@ -77,8 +82,8 @@ function queryByCondition(){
 	console.log(params)
 	$.ajax({
 	   type: "POST",
-	   url: "${WebUrl}/notice/queryNoticeList.ctbt",
-	   //data: params,
+	   url: "${WebUrl}/chat/queryChatList.ctbt",
+	   data: params,
 	   dataType:"json",
 	   async : false,
 	   success: function(listdata){
@@ -105,6 +110,42 @@ function queryByCondition(){
 	   }
 	});
 } 
+//查询所有内容
+function query(){
+	$.ajax({
+	   type: "POST",
+	   url: "${WebUrl}/chat/showChatList.ctbt",
+	   dataType:"json",
+	   success: function(listdata){
+		   console.log(listdata)
+		   for(var i in listdata){
+			   	  var now = new Date(listdata[i].sendTime) 
+			  	  var   year=now.getFullYear();     
+	              var   month=now.getMonth()+1;     
+	              var   date=now.getDate();     
+	              var   hour=now.getHours();     
+	              var   minute=now.getMinutes();     
+	              var   second=now.getSeconds();
+	              listdata[i].sendTime = year+"-"+month+"-"+date+"  "+hour+":"+minute+":"+second
+		   }
+		    console.log(listdata)
+		    for(var i in listdata){
+		    	if(listdata[i].msgType=="3"){
+		    		listdata[i].msgTxt = "<input type='image' src='http://127.0.0.1:8080/beidou/images/icons/notice.png' style='width:25px;height:25px' onclick=playVoice('"+listdata[i].msgTxt+"') >"
+		    	}
+		    }
+		    console.log(listdata)
+		    var jsonObj = {};
+            jsonObj.Rows = listdata;
+            console.log(jsonObj);
+		    gd.set({ data: jsonObj });
+		    console.log(gd);
+	   },
+	   error: function(error){
+		   alert("error");
+	   }
+	});
+}
 
 function reset(){
 	ctbt.FormUtil.Clean(document.queryRoleFrom);
@@ -113,18 +154,19 @@ function reset(){
 //发送信息对话框
 var chatEditWin;
 function addMsg(){	
-	var toUrl = '${WebUrl}/notice/showFromTo.ctbt?'
-	chatEditWin = $.ligerDialog.show({id:"editWin",title:'发送公告',url:toUrl,height: 500,width: 500,isResize:true});
+	var toUrl = '${WebUrl}/chat/showFromTo.ctbt?'
+	chatEditWin = $.ligerDialog.show({id:"editWin",title:'发送消息',url:toUrl,height: 500,width: 500,isResize:true});
 }
 
 //人员信息对话框
 var chatSendWin = null;
 //第一次加载的时候读取整棵树，下次加载的时候根据to中的内容构造树形结构
 function peopleInfo(){		
-	var toUrl = '${WebUrl}/notice/toSendMsg.ctbt';
+	var toUrl = '${WebUrl}/chat/toSendMsg.ctbt';
 	
 	if(chatSendWin == null){
 		chatSendWin = $.ligerDialog.open({id:"sendWin",title:'人员列表',url:toUrl,height: 500,width: 500,left: 700,isResize:true});
+		console.log("11111"+chatSendWin);
 	}		
 }
 
@@ -133,13 +175,15 @@ function closeChatEditWin(){
 		chatEditWin.close();
 	}
 
-	queryByCondition();
+	//query();
 }
 
 function closeChatSendWin(){
 	
 		chatSendWin.close();
-		chatSendWin = null;		
+		chatSendWin = null;
+		console.log("22222"+chatSendWin);
+		
 }
 
 function deleteRow(item){

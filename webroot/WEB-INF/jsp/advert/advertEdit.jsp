@@ -1,0 +1,251 @@
+<%@ page language="java" contentType="text/html; UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="/WEB-INF/ctbt-tag.tld" prefix="ctbt"%>
+<%@ taglib uri="/WEB-INF/ctbt-fn.tld" prefix="ctbtfn"%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<ctbt:base />
+<link href="${WebUrl}/js/ligerUI/skins/Aqua/css/ligerui-all.css"
+	rel="stylesheet" type="text/css" />
+<link href="${WebUrl}/css/validate.css" rel="stylesheet" type="text/css" />
+
+<script src="${WebUrl}/js/jquery/jquery-1.9.0.min.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/ligerui.all.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerGrid.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerToolBar.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerResizable.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerCheckBox.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerDialog.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerForm.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/ligerUI/js/plugins/ligerComboBox.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/jquery-validation/jquery.validate.min.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/jquery-validation/jquery.metadata.js"
+	type="text/javascript"></script>
+<script src="${WebUrl}/js/jquery-validation/messages_cn.js"
+	type="text/javascript"></script>
+
+<script src="${WebUrl}/js/jquery-validation/tooltip.js"
+	type="text/javascript"></script>
+<style type="text/css">
+td.tx {
+	text-align: right;
+	width: 100px;
+	padding-right: 47px;
+}
+</style>
+</head>
+<body>
+	<form onsubmit='return false' name="queryRoleFrom" id="queryRoleFrom">
+		<table style="margin-top: 18px;border-collapse:separate; border-spacing:3px;" align="center">
+			<tr style="height: 30px;">
+				<td class="tx"><span style="color: red; font-size: 20px">*</span>广告标题:</td>
+				<input type="hidden" id="advId" name="advId" value="${BdAdvert.advId}" />		
+				<td>
+				<input type="text" id="advTitle" name="advTitle" style="width:130px"
+					value="${BdAdvert.advTitle}" validate="{required:true,maxlength:50}" /></td>
+			</tr>
+			<tr style="height: 30px;">
+				<td class="tx">内容类型:</td>
+				<td>
+			<input type="text" id="advType" name="advType"  validate="{required:true}" />		
+				
+				</td>
+		   </tr>
+				<tr style="height: 30px;">
+				<td class="tx">广告内容:</td>
+				<td><textarea id="advText" name="advText" style="width:130px" validate="{maxlength:250}">${BdAdvert.advText}</textarea>
+				</td>
+		</tr>
+			<tr style="height: 30px;">
+				<td class="tx">广告图片:</td>
+					<td><input type="file" id="file" name="file" accept=".gif,.jpg,.jpeg,.png" style="width:135px"/>			
+				</td>
+			
+				</tr>
+				<tr style="height: 30px;">
+				<td class="tx">
+				预览：
+				</td>
+				<td id="imgBase64">
+				</td>
+				</tr>
+
+			<tr style="height: 30px;border-collapse:separate; border-spacing:110px;">
+				<td class="tx"><span style="color: red; font-size: 20px">*</span>开始时间:</td>
+				<td>  
+				 <input type="text" id="advStart" name="advStart" value="${start}" validate="{required:true}"/>
+				</td>
+			</tr>
+				<tr style="height: 30px;">
+				<td class="tx">结束时间:</td>
+				<td> 
+				 <input type="text" id="advEnd" name="advEnd" value="${end}" />
+				</td>
+			</tr>
+				<tr style="height: 30px;">
+				<td class="tx">轮播时间(s):</td>
+				<td>
+				<input type="text" id="advTime" name="advTime" style="width:130px"
+					value="${BdAdvert.advTime}" validate="{number:true,min:0,max:9999999}" />
+					</td>
+	</tr>
+	
+			<tr style="height: 30px;">
+				<td class="tx">优先级:</td>
+				<td>
+				 <input type="text" id="orderNo" name="orderNo" value="${BdAdvert.orderNo}"  validate="{number:true,min:0,max:999999999}"/>
+
+				</td>
+					</tr>
+				<tr style="height: 30px;">
+				<td class="tx">是否有效:</td>
+				<td><input id="validity" name="validity" style="width:135px"/></td>
+				</tr>
+
+			<tr>
+				<td colspan="6"
+					style="text-align: center; padding-top: 10px; padding-left:70px;">
+					<button type="button" id="save">保存</button>&nbsp;&nbsp;&nbsp;
+					<button type="button" id="reset">关闭</button> (<span
+					style="color: red; font-size: 20px">*</span>为必填)
+				</td>
+			</tr>
+
+		</table>
+	</form>
+</body>
+<script type="text/javascript">
+    $(function(){	  
+    	  $("#advStart").ligerDateEditor({ showTime: true,  labelWidth: 100, labelAlign: 'left',initValue: '${start}', });
+    	  $("#advEnd").ligerDateEditor({ showTime: true,  labelWidth: 100, labelAlign: 'left' ,initValue: '${end}',});
+    	  var advTypeV=$("#advType").ligerComboBox({
+              data: [
+                  { text: '文字', id: '1' },
+                  { text: '图片', id: '2' },
+                  { text: 'Flash', id: '3' },
+              ],  
+              value: '${BdAdvert.advType}',
+              initIsTriggerEvent: false,
+          });
+    	 var base64="${BdAdvert.advBase64}";
+    	$("#save").click(function(){
+    	var ship=${BdAdvert.advId} 
+   		 var urls;
+	 	 if(ship==0){
+			  urls="${WebUrl}/advert/insertAdvert.ctbt" 	  
+		} 
+		 else{
+			 urls="${WebUrl}/advert/updateAdvert.ctbt"
+		 }  
+   		var para = $('form').serializeObject() ;
+			para['validity']=validityV.getValue() 
+			para['advType']=advTypeV.getValue()
+			para['advStart']=new Date(para['advStart']) 
+			if(para['advEnd']!=""){
+				para['advEnd']=new Date(para['advEnd'])}
+			else{
+				para['advEnd']='Mon Jan 01 2099 00:00:00 GMT+0800 ';
+			}
+			para['advBase64']=base64
+   		if(vaildaty.form())	{
+	    $.ajax({
+	    	async : false,
+	        type: 'post',
+	        url: urls,
+	        data: para,
+	        dataType:'json',
+	        success: function(result) {
+	        	parent.fresh();
+	        	if(result==1){
+	        		alert("保存成功！");}
+	        	else{
+	        		alert("请正确填写表项！");
+	        	}
+	        },
+			error:function(XMLHttpRequest, textStatus, errorThrown){   
+				alert("error"+errorThrown);     
+		} 	
+	    });}
+   		else{
+   			alert("请根据提示修改所填项");
+   		}
+
+	    	});
+      
+    $("#reset").click(function(){
+    	parent.closeRoleEditWin();
+    });
+
+var validityV=$("#validity").ligerComboBox({       
+	url: '${WebUrl}/dic/getDic.ctbt?dicId=10', 
+	valueField:'key',
+    textField:'value',
+    value:${BdAdvert.validity},
+    }); 
+
+$.metadata.setType("attr", "validate");
+var vaildaty=$("#queryRoleFrom").validate({
+	     onfocusout: function(element){
+	         $(element).valid();
+	         }
+	 });
+	 
+var imgBase64 = document.getElementById("imgBase64"); 
+if("${BdAdvert.advBase64}"=="No"){
+	imgBase64.innerHTML ="<li id='advBase64'>暂无图片</li>"
+}
+else{
+	imgBase64.innerHTML ="<img id='advBase64'  src='${BdAdvert.advBase64}' style='height: 60px;width:140px;margin-top:10px' alt=''/>"
+}
+
+var input = document.getElementById("file"); 
+input.addEventListener('change',function readFile(){ 
+	var file = this.files[0]; 
+	var reader = new FileReader(); 
+	reader.readAsDataURL(file); 
+	reader.onload = function(e){
+		base64=e.currentTarget.result
+		$("#advBase64").hide();
+		var newPreview = document.getElementById("imgBase64"); 
+		oPreviewImg = new Image(); 
+		oPreviewImg.style.width = (newPreview.offsetWidth).toString() + "px"; 
+		oPreviewImg.style.height = 60 + "px"; 
+		newPreview.appendChild(oPreviewImg); 
+		oPreviewImg.src = base64; 
+
+	} 
+	} );
+   
+});
+ //json化序列化数据
+    $.fn.serializeObject = function()   
+    {  var o = {};   
+       var a = this.serializeArray();   
+       $.each(a, function() {   
+           if (o[this.name]) {   
+               if (!o[this.name].push) {   
+                   o[this.name] = [o[this.name]];   
+               }   
+               o[this.name].push(this.value || '');   
+           } else {   
+               o[this.name] = this.value || '';   
+           }   
+       });   
+       return o;   
+    }; 
+ </script>
+</html>

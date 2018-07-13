@@ -103,7 +103,6 @@ function sendMsg(){
 
 var dialog = frameElement.dialog;
 function closeWin(){
-	parent.queryByCondition();
 	dialog.close();
 	$("#to")[0].val("");
 }
