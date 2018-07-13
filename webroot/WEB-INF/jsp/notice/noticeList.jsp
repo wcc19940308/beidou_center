@@ -60,7 +60,7 @@ $(function ()
         { display: '发送时间', name: 'sendTime', align: 'left',  minWidth: 150 },
         { display: '公告', name: 'msgTxt', minWidth: 200 },
         { display: '发送者', name: 'msgFrom', minWidth: 150 },
-        { display: '接收者手机', name: 'msgTo',  minWidth: 150 },
+        { display: '接收者IC卡号', name: 'msgTo',  minWidth: 150 },
         ],
         pageSize:20 ,rownumbers:true,
         toolbar: { items: [
