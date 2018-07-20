@@ -23,8 +23,25 @@
     select 
     <include refid="Base_Column_List" />
     from sys_dic
-    where dic_id = #{dicId,jdbcType=INTEGER}
+    where dic_id = #{dicId,jdbcType=INTEGER} 
   </select>
+  
+  
+<select id="selectAll"  parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dic 
+  </select>
+  
+  
+   <select id="selectAllByItem" parameterType="com.ctbt.beidou.base.model.SysDic" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dic
+    where dic_id = #{dicId,jdbcType=INTEGER} and dic_name like '%${dicName}%' 
+  </select> 
+  
+  
   
   <select id="findAllValidity" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 

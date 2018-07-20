@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctbt.beidou.base.dao.BdDeviceMapper" >
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdDevice" >
+    <id column="msid" property="msid" jdbcType="INTEGER" />
+    <id column="master_card_no" property="masterCardNo" jdbcType="VARCHAR" />
+    <id column="slave_card_no" property="slaveCardNo" jdbcType="VARCHAR" />
+    <result column="master_name" property="masterName" jdbcType="VARCHAR" />
+    <result column="master_serial_no" property="masterSerialNo" jdbcType="VARCHAR" />
+    <result column="slave_serial_no" property="slaveSerialNo" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    msid, master_card_no, slave_card_no, master_name, master_serial_no, slave_serial_no
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.ctbt.beidou.base.model.BdDevice" >
+    select 
+    <include refid="Base_Column_List" />
+    from bd_device
+    where msid = #{msid,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from bd_device
+  </select>
+    <select id="selectByItem" resultMap="BaseResultMap" parameterType="com.ctbt.beidou.base.model.BdDevice" >
+    select 
+    <include refid="Base_Column_List" />
+    from bd_device
+    where master_name like '%${masterName}%' and  master_card_no like '%${masterCardNo}%' and  slave_card_no like '%${slaveCardNo}%'
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdDevice" >
+    delete from bd_device
+    where msid = #{msid,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdDevice" >
+    insert into bd_device (master_card_no, slave_card_no, 
+      master_name, master_serial_no, slave_serial_no
+      )
+    values (#{masterCardNo,jdbcType=VARCHAR}, #{slaveCardNo,jdbcType=VARCHAR}, 
+      #{masterName,jdbcType=VARCHAR}, #{masterSerialNo,jdbcType=VARCHAR}, #{slaveSerialNo,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdDevice" >
+    update bd_device
+    <set >
+      <if test="masterName != null" >
+        master_name = #{masterName,jdbcType=VARCHAR},
+      </if>
+      <if test="masterSerialNo != null" >
+        master_serial_no = #{masterSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="slaveSerialNo != null" >
+        slave_serial_no = #{slaveSerialNo,jdbcType=VARCHAR},
+      </if>
+        <if test="masterCardNo != null" >
+       master_card_no = #{masterCardNo,jdbcType=VARCHAR},
+      </if>
+        <if test="slaveCardNo != null" >
+       slave_card_no = #{slaveCardNo,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where msid = #{msid,jdbcType=INTEGER}
+  </update>
+</mapper>

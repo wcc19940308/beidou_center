@@ -1,0 +1,35 @@
+package com.ctbt.beidou.app.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.dao.BdAppMapper;
+import com.ctbt.beidou.base.dao.BdMsgChatMapper;
+import com.ctbt.beidou.base.utils.DateUtil;
+
+@Transactional
+@Service("appService")
+public class BdAppServiceImpl implements IBdAppService{
+	
+	@Resource
+	private BdAppMapper bdAppMapper;
+
+	@Override
+	public List<Map<String, Object>> findAll(Map<String, Object> params) {
+		
+		List<Map<String, Object>> list = bdAppMapper.findAll(params);
+		for(int i=0; i<list.size(); i++) {
+			list.get(i).put("recv_time", 
+					DateUtil.date2String((Date) list.get(i).get("recv_time"),DateUtil.FORMAT_DATETIME));
+		}
+					
+		return list;
+	}
+	
+}

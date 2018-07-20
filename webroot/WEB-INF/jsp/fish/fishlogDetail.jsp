@@ -1,0 +1,162 @@
+<%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
+	<%@ taglib uri="/WEB-INF/ctbt-tag.tld" prefix="ctbt" %>
+		<%@ taglib uri="/WEB-INF/ctbt-fn.tld" prefix="ctbtfn" %>
+			<!DOCTYPE html>
+			<html>
+
+			<head>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				<title></title>
+				<ctbt:base/>
+				<link href="${WebUrl}/js/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+				<script src="${WebUrl}/js/jquery/jquery-1.9.0.min.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/ligerui.all.js" type="text/javascript"></script>
+				<style>
+					.a {
+						text-align: right;
+					}
+
+
+					.c {
+						text-align: center;
+					}
+
+					td {
+						height: 30px;
+					}
+				</style>
+
+			</head>
+
+			<body>
+				<div id="login">
+					<form id="formAdd">
+						<div id="maingr1"></div>
+						<div id="maingr2"></div>
+					</form>
+				</div>
+			</body>
+
+			</html>
+			<script>
+				var box1, box2, box3, gd1, gd2;
+				var dialog = frameElement.dialog;
+
+				gd1 = $("#maingr1").ligerGrid({
+					height: 150,
+					columns: [{
+							display: '用户ID:',
+							name: 'record_id',
+							width: 100,
+							minWidth: 100
+						}, {
+							display: '渔船ID:',
+							name: 'ship_id',
+							minWidth: 160
+						}, {
+							display: 'ID:',
+							name: 'user_id',
+							minWidth: 160
+						}, {
+							display: '海域：',
+							name: 'sea_area',
+							minWidth: 80
+						}, {
+							display: '国家：',
+							name: 'country',
+							minWidth: 80
+						}, {
+							display: '捕鱼时间：',
+							name: 'record_date',
+							minWidth: 160
+						}, {
+							display: '天气：',
+							name: 'weather',
+							minWidth: 80
+						}, {
+							display: '风力：',
+							name: 'wind',
+							minWidth: 160
+						}, {
+							display: '经纬度',
+							name: 'location',
+							minWidth: 160
+						},
+						{
+							display: '详情：',
+							name: 'grade',
+							minWidth: 50,
+						},
+
+					],
+					pageSize: 30,
+					rownumbers: true,
+				});
+				gd2 = $("#maingr2").ligerGrid({
+					height: '100%',
+					columns: [{
+						display: '记录ID:',
+						name: 'record_id',
+						width: 100,
+						minWidth: 100
+					}, {
+						display: '捕捞等级:',
+						name: 'fish_grade',
+						minWidth: 160
+					}, {
+						display: '鱼类:',
+						name: 'fish_type',
+						minWidth: 160
+					}, {
+						display: '重量：',
+						name: 'fish_weight',
+						minWidth: 80
+					}, {
+						display: '重量单位：',
+						name: 'weight_unit',
+						minWidth: 80
+					}],
+					pageSize: 30,
+					rownumbers: true,
+				});
+				$(function () {
+					console.log('record_id:' + dialog.get('data')['recordId'])
+					$.ajax({
+						type: "POST",
+						url: "${WebUrl}/fish/queryFishLogListByKey.ctbt",
+						data: {
+							"recordId": dialog.get('data')['recordId']
+						},
+						dataType: "json",
+						success: function (listdata) { //成功后返回数据			
+							console.log(listdata)
+							var jsonObj = {};
+							jsonObj.Rows = listdata;
+							gd1.set({
+								data: jsonObj
+							});
+						}
+					});
+					$.ajax({
+						type: "POST",
+						url: "${WebUrl}/fish/queryFishDetailList.ctbt",
+						data: {
+							"recordId": dialog.get('data')['recordId']
+						},
+						dataType: "json",
+						success: function (listdata) { //成功后返回数据			
+							console.log(listdata)
+							var jsonObj = {};
+							jsonObj.Rows = listdata;
+							gd2.set({
+								data: jsonObj
+							});
+						}
+					});
+
+				})
+
+				function closeDialog() {
+					parent.closeUserEditWin();
+				}
+			</script>

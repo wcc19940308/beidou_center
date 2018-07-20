@@ -18,6 +18,13 @@
     from bd_fish_record_detail
     where detail_id = #{detailId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByRecordKey" parameterType="java.lang.Integer" resultType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_fish_record_detail
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from bd_fish_record_detail
     where detail_id = #{detailId,jdbcType=INTEGER}

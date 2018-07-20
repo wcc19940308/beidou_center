@@ -24,14 +24,14 @@
     <select id="selectAll"  resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from bd_advert
+    from bd_advert order by validity desc
   </select>
   
     <select id="selectByItem" parameterType="com.ctbt.beidou.base.model.BdAdvert" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from bd_advert
-    where adv_title like '%${advTitle}%'  and adv_text like '%${advText}%' and validity like '%${validity}%'
+    where adv_title like '%${advTitle}%'  and adv_text like '%${advText}%' and validity like '%${validity}%' order by validity desc
   </select>
   
   
@@ -41,7 +41,7 @@
     ,
     <include refid="Blob_Column_List" />
     from bd_advert
-    where adv_id = #{advId,jdbcType=INTEGER}
+    where adv_id = #{advId,jdbcType=INTEGER} order by validity desc
   </select>
   
   

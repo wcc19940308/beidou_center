@@ -39,6 +39,12 @@ public interface BdMsgChatMapper {
     //将发送的信息批量插入到表中
     int toInsertMsg(List<BdMsgChat> list);
     
+    //将船员给船员发送的信息插入
+    int insertChatWithPhone(Map<String, Object> map);
+    
+    //判断消息类型，如果是图片或者语音则还要插入到bd_msg_chat_file中
+    int insertChatFile(Map<String, Object> map);
+    
     //查找某条语音信息
     String findVoice(int msgId);
     

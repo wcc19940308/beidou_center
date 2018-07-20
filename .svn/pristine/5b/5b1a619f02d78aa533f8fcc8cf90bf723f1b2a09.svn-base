@@ -1,0 +1,23 @@
+package com.ctbt.beidou.base.dao;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.ctbt.beidou.base.model.BdFishRecord;
+
+public interface BdFishRecordMapper {
+    int deleteByPrimaryKey(Integer recordId);
+
+    int insert(BdFishRecord record);
+
+    int insertSelective(BdFishRecord record);
+
+    BdFishRecord selectByPrimaryKey(Integer recordId);
+
+    int updateByPrimaryKeySelective(BdFishRecord record);
+
+    int updateByPrimaryKey(BdFishRecord record);
+
+	List selectBySelective(HashMap<String, String> paramsMap);
+}

@@ -1,0 +1,39 @@
+package com.ctbt.beidou.data;
+
+public class DataSendRunnable implements Runnable {
+	
+	private boolean alive;
+	
+	public DataSendRunnable() {
+		this.alive = true;
+	}
+	
+	@Override
+	public void run() {
+		System.out.println("涓汉淇℃伅鍏畨鎺ュ彛鏍￠獙鎵归噺澶勭悊寮�濮�");
+		int count = 0;
+		try {
+			
+			String aac001,aac002;
+			while(alive){
+				
+				//Thread.sleep(1000);
+			}
+			
+		} catch (Exception ex) {
+			System.out.println("涓汉淇℃伅鍏畨鎺ュ彛鏍￠獙鎵归噺澶勭悊锛屽嚭鐜板紓甯�");
+			ex.printStackTrace();
+		}
+		
+		try{
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+
+		}
+	
+		System.out.println("涓汉淇℃伅鍏畨鎺ュ彛鏍￠獙鎵归噺澶勭悊缁撴潫");
+	}
+
+}

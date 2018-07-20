@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ctbt.beidou.base.dao.BdAppMapper">
+
+<select id="findAll" parameterType="java.util.Map" resultType="Map">
+
+select msg_from, from_phone, msg_to, to_phone, 'd' as type, msg_txt, is_recv, recv_confirm_time, msg_id from bd_msg_chat where msg_type=1
+
+UNION
+
+select a.msg_from, a.from_phone, a.msg_to, a.to_phone, 'm' as type, b.msg_base64 as msg_txt, a.is_recv, a.recv_confirm_time, a.msg_id 
+from bd_msg_chat as a,bd_msg_chat_file as b where a.msg_id=b.msg_id and a.msg_type=3
+
+UNION
+
+select a.msg_from, a.from_phone, a.msg_to, a.to_phone, 'n' as type, b.msg_base64 as msg_txt, a.is_recv, a.recv_confirm_time, a.msg_id 
+from bd_msg_chat as a,bd_msg_chat_file as b where a.msg_id=b.msg_id and a.msg_type=2
+
+UNION
+
+select msg_from, null as from_phone, msg_to, null as to_phone, 'o' as type, msg_txt, null as is_recv, null as recv_confirm_time, msg_id from bd_msg_notice 
+
+UNION
+
+select msg_from, null as from_phone, msg_to, null as to_phone, 'c' as type, msg_txt, null as is_recv, null as recv_confirm_time, msg_id from bd_msg_weather 
+
+UNION
+
+select msg_from, null as from_phone, msg_to, null as to_phone, 'a' as type, msg_txt, is_recv, recv_confirm_time, msg_id from bd_msg_alarm where is_exclude = 0
+
+UNION
+
+select msg_from, null as from_phone, msg_to, null as to_phone, 'b' as type, msg_txt, is_recv, recv_confirm_time, msg_id from bd_msg_alarm where is_exclude = 1
+
+</select>
+
+</mapper>

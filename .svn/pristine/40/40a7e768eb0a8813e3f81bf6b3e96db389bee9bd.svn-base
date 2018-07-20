@@ -1,0 +1,252 @@
+<%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
+	<%@ taglib uri="/WEB-INF/ctbt-tag.tld" prefix="ctbt" %>
+		<%@ taglib uri="/WEB-INF/ctbt-fn.tld" prefix="ctbtfn" %>
+			<!DOCTYPE html>
+			<html>
+
+			<head>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				<ctbt:base/>
+				<title>表格控件 - toolbar</title>
+				<link href="${WebUrl}/js/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css">
+				<link href="${WebUrl}/js/ligerUI/skins/ligerui-icons.css" rel="stylesheet" type="text/css">
+				<link href="${WebUrl}/js/ligerUI/skins/Gray/css/all.css" rel="stylesheet" type="text/css">
+				<script src="${WebUrl}/js/jquery/jquery-1.9.0.min.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/core/base.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerGrid.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerComboBox.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerToolBar.js" type="text/javascript"></script>
+
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerDrag.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerDialog.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerResizable.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerCheckBox.js" type="text/javascript"></script>
+
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerResizable.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerCheckBox.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerDateEditor.js" type="text/javascript"></script>
+
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerResizable.js" type="text/javascript"></script>
+				<script src="${WebUrl}/js/ligerUI/js/plugins/ligerCheckBox.js" type="text/javascript"></script>
+
+
+				<script type="text/javascript">
+					var gd, fishBox, sendTimeStart, sendTimeEnd;
+					var storage = window.localStorage;
+
+					function itemclick(item) {
+						console.log(item.text);
+					}
+					var userEditWin;
+
+					function add_win_open(item) {
+
+						console.log(item.text);
+						if (item.text == "详情") {
+							userEditWin = $.ligerDialog.open({
+								height: 400,
+								url: '${WebUrl}/user/toUserAdd.ctbt',
+								width: 600,
+								showMax: true,
+								showToggle: true,
+								showMin: true,
+								isResize: true,
+								slide: false,
+								isDrag: true
+							});
+						}
+
+					}
+
+					$(function () {
+						gd = $("#maingrid").ligerGrid({
+							height: '100%',
+							columns: [{
+									display: '用户ID:',
+									name: 'record_id',
+									width: 100,
+									minWidth: 100
+								}, {
+									display: '渔船ID:',
+									name: 'ship_id',
+									minWidth: 160
+								}, {
+									display: 'ID:',
+									name: 'user_id',
+									minWidth: 160
+								}, {
+									display: '海域：',
+									name: 'sea_area',
+									minWidth: 80
+								}, {
+									display: '国家：',
+									name: 'country',
+									minWidth: 80
+								}, {
+									display: '捕鱼时间：',
+									name: 'record_date',
+									minWidth: 160
+								}, {
+									display: '天气：',
+									name: 'weather',
+									minWidth: 80
+								}, {
+									display: '风力：',
+									name: 'wind',
+									minWidth: 160
+								}, {
+									display: '经纬度',
+									name: 'location',
+									minWidth: 160
+								},
+								{
+									display: '详情：',
+									name: 'grade',
+									minWidth: 50,
+									// onclick: alert("Hello")
+								},
+
+							],
+							pageSize: 30,
+							rownumbers: true,
+							toolbar: {
+								items: [{
+									text: '详情',
+									click: add_win_open,
+									icon: 'add'
+								}, {
+									line: true
+								}]
+							},
+							onSelectRow: function () { //弹出详情窗口
+								console.log(gd.getSelectedRow().record_id)
+								userEditWin = $.ligerDialog.open({
+									height: 800,
+									url: '${WebUrl}/fish/toFishLogDetail.ctbt',
+									width: 1000,
+									showMax: true,
+									showToggle: true,
+									showMin: true,
+									isResize: true,
+									slide: false,
+									isDrag: true,
+									data:{
+										recordId: gd.getSelectedRow().record_id
+									}
+								});
+								//打开弹窗
+								//发送record_id 到后台
+							}
+						});
+						fishBox = $("#fishType").ligerComboBox({ //鱼类字典
+							url: '${WebUrl}/dic/getDic.ctbt?dicId=22',
+							width: 135,
+							valueField: 'key',
+							textField: 'value',
+							value: '1',
+							valueFieldID: 'test1',
+							isTextBoxMode: false,
+							keySupport: true
+						});
+
+						sendTimeStart = $("#sendTimeStart").ligerDateEditor({
+							width: 200,
+							format: "yyyy/MM/dd",
+							labelWidth: 80,
+
+							cancelable: false
+						});
+						sendTimeEnd = $("#sendTimeEnd").ligerDateEditor({
+							width: 200,
+							labelWidth: 80,
+							labelAlign: 'left',
+							format: "yyyy/MM/dd/",
+							cancelable: false
+						});
+
+						$("#pageloading").hide();
+						//把role信息保存到本地缓存
+
+					});
+
+					function query() {
+						var shipId = $("#shipId").val();
+						var sendTimeStart = $("#sendTimeStart").val();
+						var sendTimeEnd = $("#sendTimeEnd").val();
+						var fishType = fishBox.getValue();
+						console.log(shipId)
+						console.log(sendTimeStart)
+
+						$.ajax({
+							type: "POST",
+							url: "${WebUrl}/fish/queryFishLogList.ctbt",
+							data: {
+								"sendTimeEnd": sendTimeEnd,
+								"sendTimeStart": sendTimeStart,
+								"shipId": shipId
+							},
+							dataType: "json",
+							success: function (listdata) { //成功后返回数据			
+								console.log(listdata)
+								var jsonObj = {};
+								jsonObj.Rows = listdata;
+								gd.set({
+									data: jsonObj
+								});
+							}
+						});
+					}
+
+					function reset() {
+						ctbt.FormUtil.Clean(document.queryRoleFrom);
+					}
+
+					function closeUserEditWin() {
+						if (userEditWin != null) {
+							userEditWin.close();
+						}
+
+					}
+				</script>
+			</head>
+
+			<body>
+
+				<form name="queryRoleFrom" action="">
+					<div style="height: 50px; border: solid 1px #cccccc; margin: 5px; padding-top: 10px;">
+						<table style="width: 98%;">
+							<tr>
+								<td width="10%" align="right">渔船id：</td>
+								<td width="23%">
+									<input id="shipId" name="shipId" type="text" style="width: 95%;" />
+								</td>
+								<td width="10%" align="right">捕鱼时间：</td>
+								<td width="5%">
+									<input id="sendTimeStart" name="sendTimeStart" type="text" style="width: 95%;" />
+								</td>
+								<td width="10%" align="right">捕鱼时间：</td>
+								<td width="5%">
+									<input id="sendTimeEnd" name="sendTimeEnd" type="text" style="width: 95%;" />
+								</td>
+								<td width="10%" align="right">鱼类：</td>
+								<td>
+									<input name="fishType" id="fishType" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="8" align="right" height="30">
+									<input value="查询" type="button" onclick="query()" class="ctbt-btn">
+									<input value="重置" type="button" onclick="reset()" class="ctbt-btn">
+								</td>
+							</tr>
+						</table>
+					</div>
+					<form name="queryRoleFrom" action="">
+						<div class="l-loading" style="display: block" id="pageloading"></div>
+						<a class="l-button" style="width: 120px; float: left; margin-left: 10px; display: none;" onclick="deleteRow()">删除选择的行</a>
+						<div class="l-clear"></div>
+						<div id="maingrid"></div>
+						<div style="display: none;"></div>
+			</body>
+
+			</html>

@@ -170,4 +170,6 @@
       exclude_confirm_time = #{excludeConfirmTime,jdbcType=TIMESTAMP}
     where msg_id = #{msgId,jdbcType=INTEGER}
   </update>
+  
+  
 </mapper>

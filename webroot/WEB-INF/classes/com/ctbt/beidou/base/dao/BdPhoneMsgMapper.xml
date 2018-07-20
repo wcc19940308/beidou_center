@@ -19,6 +19,21 @@
     from bd_phone_msg
     where phone_msg_id = #{phoneMsgId,jdbcType=INTEGER}
   </select>
+   <select id="queryPhonemsg" parameterType="java.util.Map" resultType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_phone_msg
+	WHERE phone LIKE '%${phone}%' 
+	<if test="msgType != null  and msgType !='' "> 
+	and msg_type = #{msgType}
+	</if>
+	<if test="sendTimeStart != null"> 
+	and (#{sendTimeStart} <![CDATA[ <= ]]> send_time or #{sendTimeStart} = send_time)
+	</if>
+	<if test="sendTimeEnd != null"> 
+	and (#{sendTimeEnd} <![CDATA[ >= ]]> send_time or #{sendTimeEnd} = send_time)
+	</if>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from bd_phone_msg
     where phone_msg_id = #{phoneMsgId,jdbcType=INTEGER}
@@ -80,6 +95,24 @@
       </if>
     </trim>
   </insert>
+  
+  
+  
+  <!-- 批量保存,并返回每个用户插入的ID -->
+<insert id="insertbBatchSave" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO bd_phone_msg (phone, msg_txt,msg_type,send_time)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+        (#{item.phone}, #{item.msgTxt}, #{item.msgType},#{item.sendTime})
+    </foreach>
+</insert>
+<insert id="insertbBatchSave2" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO bd_phone_msg (phone, msg_code,msg_type,send_time)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+        (#{item.phone}, #{item.msgCode}, #{item.msgType},#{item.sendTime})
+    </foreach>
+</insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdPhoneMsg">
     update bd_phone_msg
     <set>

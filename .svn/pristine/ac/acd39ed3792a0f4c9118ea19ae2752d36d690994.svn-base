@@ -1,0 +1,88 @@
+package com.ctbt.beidou.phonemsg.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.bo.ResultView;
+import com.ctbt.beidou.base.dao.BdPhoneMsgMapper;
+import com.ctbt.beidou.base.dao.BdRoleMapper;
+import com.ctbt.beidou.base.dao.BdUserMapper;
+import com.ctbt.beidou.base.model.BdPhoneMsg;
+import com.ctbt.beidou.base.model.BdRole;
+import com.ctbt.beidou.base.model.BdUser;
+
+@Transactional
+@Service("phonemsgService")
+public class PhonemsgServiceImpl implements IPhonemsgService {
+	
+	@Resource
+	private BdPhoneMsgMapper bdPhoneMsgMapper;
+	
+	@Override
+	public List<Map<String,Object>> queryPhonemsgList(BdPhoneMsg record){
+		HashMap<String, String> parms = new HashMap<>();
+		//调用mapper
+		record.setMsgType("1");
+		record.setPhone("12");
+		record.setMsgType("1");
+//		Date time = new java.sql.Date(new java.util.Date().getTime());
+//		record.setSendTime(time);
+		List<Map<String,Object>> list = bdPhoneMsgMapper.queryPhonemsg(record);
+		return list;
+	}
+
+	@Override
+	public int insert(BdPhoneMsg record) {
+		// TODO 自动生成的方法存根
+		return 0;
+	}
+
+	@Override
+	public int insertSelective(BdPhoneMsg record) {
+		// TODO 自动生成的方法存根
+		record.setMsgType("2");
+		record.setPhone("10089");
+		record.setMsgTxt("2222");
+		Date time = new java.sql.Date(new java.util.Date().getTime());
+		record.setSendTime(time);
+		bdPhoneMsgMapper.insertSelective(record);
+		return 0;
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(BdPhoneMsg record) {
+		// TODO 自动生成的方法存根
+		return 0;
+	}
+
+	@Override
+	public int updateByPrimaryKey(BdPhoneMsg record) {
+		// TODO 自动生成的方法存根
+		return 0;
+	}
+
+	@Override
+	public ResultView saveBdRoleEdit(BdPhoneMsg record) {
+		// TODO 自动生成的方法存根
+		return null;
+	}
+
+	@Override
+	public int deleteByPrimaryKey(Integer roleId) {
+		// TODO 自动生成的方法存根
+		return 0;
+	}
+
+	@Override
+	public BdRole selectByPrimaryKey(Integer BdPhoneMsgId) {
+		// TODO 自动生成的方法存根
+		return null;
+	}
+}

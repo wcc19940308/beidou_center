@@ -93,10 +93,7 @@
   
   
    <select id="findAll" parameterType="java.util.Map" resultType="Map">
-  select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e , 
-  (select c.phone , d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
-  (select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id) as f 
-  where e.user_id = f.user_id order by ship_id
+  select ship_id , ship_name , card_no1 from bd_ship
 	</select>
   
   <insert id="toInsertMsg" parameterType="java.util.List">
@@ -109,12 +106,7 @@
   </insert>
   
   <select id="searchInfo" parameterType="java.lang.String" resultType="Map">
-  select * from 
-  (select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e , 
-  (select c.phone , d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
-  (select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id) as f 
-  where e.user_id = f.user_id order by ship_id)as x where x.user_name like #{text} or x.phone like #{text} or
-  x.ship_name like #{text} or x.card_no1 like #{text}
+   select ship_id , ship_name , card_no1 from bd_ship where ship_name like #{text} or card_no1 like #{text}
   </select>
   
   <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">

@@ -1,0 +1,103 @@
+package com.ctbt.beidou.fish.controller;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.model.BdFishRecord;
+import com.ctbt.beidou.base.model.BdFishRecordDetail;
+import com.ctbt.beidou.base.utils.DateUtil;
+import com.ctbt.beidou.fish.service.IFishService;
+@Controller
+@RequestMapping("/fish")
+public class FishRecordController {
+	@Resource
+	private IFishService fishService;
+	
+	@RequestMapping("/toFishLogList")
+	public String toFishLogList(HttpServletRequest request, Model model,ModelMap retMap) {
+		return "fish/fishLogList";
+	}
+	
+	@RequestMapping("/toFishLogDetail")
+	public String toFishLogDetail(HttpServletRequest request, Model model) {
+		return "fish/fishlogDetail";
+	}
+	
+	@RequestMapping("/queryFishLogList")
+	@ResponseBody
+	public List queryFishLogList(HttpServletRequest request,BdFishRecord bdFishRecord,BdFishRecordDetail bdFishRecordDetail,Model model){
+		//传入开始结束日期，渔船ID，鱼类
+		//判断日期是否为空
+		try {
+			Date sendTimeStart=null;
+			Date sendTimeEnd = null;
+			if(request.getParameter("sendTimeStart")!=null) {
+				sendTimeStart = DateUtil.string2Date(request.getParameter("sendTimeStart"), "yyyy-MM-dd");
+
+			}
+			if(request.getParameter("sendTimeEnd")!=null) {
+				sendTimeEnd = DateUtil.string2Date(request.getParameter("sendTimeEnd"), "yyyy-MM-dd");
+			}
+			List list = fishService.getFishRecord(bdFishRecord,bdFishRecordDetail,sendTimeStart,sendTimeEnd);
+			return list;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	@RequestMapping("/queryFishLogListByKey")
+	@ResponseBody
+	public List queryFishLogListByKey(HttpServletRequest request,BdFishRecord bdFishRecord,Model model){
+		//通过ID查询
+		//判断日期是否为空
+		try {
+			List list = fishService.getFishLogListByKey(bdFishRecord.getRecordId());
+			return list;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@RequestMapping("/queryFishDetailList")
+	@ResponseBody
+	public List queryFishDetailList(HttpServletRequest request,BdFishRecordDetail bdFishRecordDetail,Model model){
+		//通过ID查询
+		//判断日期是否为空
+		try {
+			List list = fishService.getFishRecordDetail(bdFishRecordDetail.getRecordId());
+			return list;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@RequestMapping("/addFishLogList")//app接口
+	@ResponseBody
+	public String addFishLogList(HttpServletRequest request,BdFishRecord bdFishRecord,BdFishRecordDetail bdFishRecordDetail,Model model){
+		java.util.Date aa = DateUtil.string2Date(request.getParameter("recordDate"), "yyyy-MM-dd");
+		bdFishRecord.setRecordDate(aa);
+		fishService.insertFishRecord(bdFishRecord);
+		//如果有这条主要记录，就不添加，直接添加detail
+		return "success";
+	}
+}

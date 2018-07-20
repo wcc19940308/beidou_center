@@ -1,0 +1,14 @@
+package com.ctbt.beidou.fish.service;
+
+import java.util.List;
+
+import com.ctbt.beidou.base.model.BdFishRecord;
+import com.ctbt.beidou.base.model.BdFishRecordDetail;
+
+public interface IFishService {
+	public int insertFishRecord(BdFishRecord bdFishRecord);
+	public int insertFishRecordDetail(BdFishRecordDetail bdFishRecordDetail);
+	public List getFishRecord(BdFishRecord bdFishRecord, BdFishRecordDetail bdFishRecordDetail);
+	public List getFishRecordDetail(int fishRecordId);
+
+}

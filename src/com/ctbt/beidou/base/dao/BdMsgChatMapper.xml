@@ -25,8 +25,6 @@
     where msg_id = #{msgId,jdbcType=INTEGER}
   </select>
   
- 
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from bd_msg_chat
     where msg_id = #{msgId,jdbcType=INTEGER}
@@ -218,19 +216,42 @@
     
   </insert>
   
+ <!--  <insert id="insertChatWithPhone" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="msgId">
+   <selectKey resultType="int" keyProperty="id" order="AFTER" >
+    SELECT LAST_INSERT_ID()
+  </selectKey> 
+  insert into bd_msg_chat (send_time,msg_type,msg_txt,msg_from,from_phone,
+  msg_to,to_phone) values (#{send_time},#{msg_type},#{msg_txt},#{msg_from},
+  #{from_phone},#{msg_to},#{to_phone})
+  </insert> -->
+  
+  <insert id="insertChatWithPhone" parameterType="java.util.Map" >
+   <selectKey resultType="int" keyProperty="msgId" order="AFTER" >
+    SELECT LAST_INSERT_ID() as msgId
+  </selectKey> 
+  insert into bd_msg_chat (send_time,msg_type,msg_txt,msg_from,from_phone,
+  msg_to,to_phone) values (#{send_time},#{msg_type},#{msg_txt},#{msg_from},
+  #{from_phone},#{msg_to},#{to_phone})
+  </insert>
+  
+  <insert id="insertChatFile" parameterType="java.util.Map" >
+  insert into bd_msg_chat_file (msg_id,msg_type,msg_base64)
+  values (#{msg_id},#{msg_type},#{msg_base64})
+  </insert>
+  
    <select id="findAll" parameterType="java.util.Map" resultType="Map">
-  select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e , 
-  (select c.phone , d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
-  (select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id) as f 
-  where e.user_id = f.user_id order by ship_id
+  select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e right join
+  (select c.phone , c.validity,d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
+  (select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id and c.validity=1) as f 
+  on e.user_id = f.user_id order by ship_id
 	</select>
 	
   <select id="searchInfo" parameterType="java.lang.String" resultType="Map">
   select * from 
-  (select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e , 
-  (select c.phone , d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
-  (select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id) as f 
-  where e.user_id = f.user_id order by ship_id)as x where x.user_name like #{text} or x.phone like #{text} or
+  (select e.user_name , f.phone , f.ship_id , f.ship_name , f.card_no1 , f.user_id from bd_user_detail as e right join
+  (select c.phone , c.validity,d.ship_id , d.ship_name , d.card_no1 , d.user_id from bd_user as c ,
+  (select a.ship_id , a.ship_name , a.card_no1 , b.user_id from bd_ship as a , bd_ship_user as b where a.ship_id = b.ship_id) as d where c.user_id = d.user_id and c.validity=1) as f 
+  on e.user_id = f.user_id order by ship_id)as x where x.user_name like #{text} or x.phone like #{text} or
   x.ship_name like #{text} or x.card_no1 like #{text}
   </select>
   
@@ -243,5 +264,4 @@
   
   
   
- 
 </mapper>

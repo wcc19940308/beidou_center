@@ -1,0 +1,41 @@
+package com.ctbt.beidou.base.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ctbt.beidou.base.model.BdMsgWeather;
+
+public interface BdMsgWeatherMapper {
+    int deleteByPrimaryKey(Integer msgId);
+
+    int insert(BdMsgWeather record);
+
+    int insertSelective(BdMsgWeather record);
+
+    BdMsgWeather selectByPrimaryKey(Integer msgId);
+
+    int updateByPrimaryKeySelective(BdMsgWeather record);
+
+    int updateByPrimaryKey(BdMsgWeather record);
+    
+  //查询所有chat
+    List<BdMsgWeather> selectAll();
+    
+    //按条件查询chat
+    List<BdMsgWeather> selectByCondition(BdMsgWeather record);
+    
+    //查询所有人的信息
+    List<Map<String, Object>> findAll();
+    
+    //查询搜索后的人的信息
+    List<Map<String, Object>> searchInfo(String text);
+    
+    //查询to框中显示的人的信息(根据电话号码查找)
+    List<Map<String, Object>> findByPhone(String[] phones);
+      
+    //将发送的信息批量插入到表中
+    int toInsertMsg(List<BdMsgWeather> list);
+    
+    //查找某条语音信息
+    String findVoice(int msgId);
+}

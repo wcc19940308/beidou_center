@@ -9,8 +9,27 @@
     <result column="validity" jdbcType="CHAR" property="validity" />
   </resultMap>
   <sql id="Base_Column_List">
-    dic_id, item_key, item_value, item_order, validity
+    dic_id, item_key, item_value, item_order, validity 
   </sql>
+  
+  
+    <select id="selectByDicId" parameterType="com.ctbt.beidou.base.model.SysDicItem" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dic_item
+    where dic_id = #{dicId,jdbcType=INTEGER} order by item_order desc
+  </select> 
+    <select id="selectBykORV" parameterType="com.ctbt.beidou.base.model.SysDicItem" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dic_item
+    where  (item_value = #{itemValue,jdbcType=VARCHAR} or item_key  = #{itemKey,jdbcType=VARCHAR} )
+    and dic_id = #{dicId,jdbcType=INTEGER}
+  </select> 
+  
+  
+  
+  
   <select id="selectByPrimaryKey" parameterType="com.ctbt.beidou.base.model.SysDicItemKey" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -45,7 +64,7 @@
         item_order,
       </if>
       <if test="validity != null">
-        validity,
+        validity
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -62,13 +81,16 @@
         #{itemOrder,jdbcType=INTEGER},
       </if>
       <if test="validity != null">
-        #{validity,jdbcType=CHAR},
+        #{validity,jdbcType=CHAR}
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.SysDicItem">
     update sys_dic_item
     <set>
+    <if test="itemKey != null">
+        item_key = #{itemKey,jdbcType=VARCHAR},
+      </if>
       <if test="itemValue != null">
         item_value = #{itemValue,jdbcType=VARCHAR},
       </if>
@@ -80,8 +102,9 @@
       </if>
     </set>
     where dic_id = #{dicId,jdbcType=INTEGER}
-      and item_key = #{itemKey,jdbcType=VARCHAR}
   </update>
+  
+  
   <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.SysDicItem">
     update sys_dic_item
     set item_value = #{itemValue,jdbcType=VARCHAR},

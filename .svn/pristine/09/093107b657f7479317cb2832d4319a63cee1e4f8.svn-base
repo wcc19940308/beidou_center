@@ -1,0 +1,59 @@
+package com.ctbt.beidou.phonemsg.controller;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.model.BdPhoneMsg;
+import com.ctbt.beidou.phonemsg.service.IPhonemsgService;
+import com.ctbt.beidou.phonemsg.service.PhonemsgServiceImpl;
+
+@Controller
+@RequestMapping("/phonemsg")
+public class PhonemsgController {
+	@Resource
+	IPhonemsgService PhoneService;
+	private Logger logger = LogManager.getLogger(getClass());
+
+	@RequestMapping("/toPhoneToSend")
+	public String toPhoneToSend(HttpServletRequest request,Model model){
+		
+		return "phonemsg/phoneToSend";
+	}
+	
+	@RequestMapping("/toPhonemsgList")
+	public String toPhonemsgList(HttpServletRequest request,Model model){
+
+		return "phonemsg/phonemsgList";
+	}
+
+
+	@RequestMapping("/queryPhonemsgList")
+	@ResponseBody
+	public List queryPhonemsgList(HttpServletRequest request,BdPhoneMsg bdPhoneMsg,Model model){
+		List list = PhoneService.queryPhonemsgList(bdPhoneMsg);
+		return list;
+	}
+	
+	@RequestMapping("/sendPhonemsg")
+	@ResponseBody
+	public String sendPhonemsg(HttpServletRequest request,BdPhoneMsg bdPhoneMsg,Model model){
+		//发送信息接口
+		PhoneService.insertSelective(bdPhoneMsg);
+		return "success";
+	}
+
+	@RequestMapping("/toPhonemsgEdit")
+	public String toPhonemsgEdit(HttpServletRequest request,Model model){
+
+		return "phonemsg/phonemsgEdit";
+	}
+}

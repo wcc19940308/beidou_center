@@ -1,0 +1,57 @@
+package com.ctbt.beidou.fish.service;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.dao.BdFishRecordDetailMapper;
+import com.ctbt.beidou.base.dao.BdFishRecordMapper;
+import com.ctbt.beidou.base.model.BdFishRecord;
+import com.ctbt.beidou.base.model.BdFishRecordDetail;
+@Transactional
+@Service("fishService")
+public class FishServiceImpl implements IFishService{
+	@Resource
+	private BdFishRecordMapper bdFishRecordMapper;
+	
+	@Resource 
+	private BdFishRecordDetailMapper BdFishRecordDetailMapper;
+	
+	@Override
+	public int insertFishRecord(BdFishRecord bdFishRecord) {
+		// TODO 自动生成的方法存根
+		return 0;
+	}
+
+	@Override
+	public int insertFishRecordDetail(BdFishRecordDetail bdFishRecordDetail) {
+		// TODO 自动生成的方法存根
+	
+		return 0;
+	}
+
+
+	@Override
+	public List getFishRecordDetail(int fishRecordId) {
+		// TODO 自动生成的方法存根
+		return null;
+	}
+
+	@Override
+	public List getFishRecord(BdFishRecord bdFishRecord, BdFishRecordDetail bdFishRecordDetail) {
+		// TODO 自动生成的方法存根
+
+		HashMap<String, String> paramsMap = new HashMap<String, String>();
+		paramsMap.put("ship_id", "");
+		paramsMap.put("record_date", "2018-07-13");
+		paramsMap.put("fish_type", "");
+		List fishRecordList = bdFishRecordMapper.selectBySelective(paramsMap);
+		return fishRecordList;
+	}
+	
+
+}

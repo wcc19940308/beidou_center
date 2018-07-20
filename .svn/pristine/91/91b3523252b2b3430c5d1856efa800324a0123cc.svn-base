@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdFishRecordMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdFishRecord">
+    <id column="record_id" jdbcType="INTEGER" property="recordId" />
+    <result column="ship_id" jdbcType="INTEGER" property="shipId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="sea_area" jdbcType="VARCHAR" property="seaArea" />
+    <result column="country" jdbcType="VARCHAR" property="country" />
+    <result column="record_date" jdbcType="DATE" property="recordDate" />
+    <result column="weather" jdbcType="VARCHAR" property="weather" />
+    <result column="wind" jdbcType="INTEGER" property="wind" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="jdv1" jdbcType="CHAR" property="jdv1" />
+    <result column="jdv2" jdbcType="INTEGER" property="jdv2" />
+    <result column="jdv3" jdbcType="INTEGER" property="jdv3" />
+    <result column="jdv4" jdbcType="INTEGER" property="jdv4" />
+    <result column="jdv5" jdbcType="INTEGER" property="jdv5" />
+    <result column="wdv1" jdbcType="CHAR" property="wdv1" />
+    <result column="wdv2" jdbcType="INTEGER" property="wdv2" />
+    <result column="wdv3" jdbcType="INTEGER" property="wdv3" />
+    <result column="wdv4" jdbcType="INTEGER" property="wdv4" />
+    <result column="wdv5" jdbcType="INTEGER" property="wdv5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    record_id, ship_id, user_id, sea_area, country, record_date, weather, wind, grade, 
+    jdv1, jdv2, jdv3, jdv4, jdv5, wdv1, wdv2, wdv3, wdv4, wdv5
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="Map">
+    select 
+    <include refid="Base_Column_List" />,
+    f_get_location(jdv1, jdv2, jdv3, jdv4, jdv5, wdv1, wdv2, wdv3, wdv4, wdv5) location
+    from bd_fish_record
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectBySelective" parameterType="java.util.Map" resultType="Map">
+  <choose>
+  
+<when test="fishType == null">
+    SELECT record_id, ship_id, user_id, sea_area, country, record_date, weather, wind, grade, 
+f_get_location(jdv1, jdv2, jdv3, jdv4, jdv5, wdv1, wdv2, wdv3, wdv4, wdv5) location,f_get_fish_detail(record_id) detail FROM`bd_fish_record`
+	WHERE ship_id LIKE '%${shipId}%'
+	<if test="sendTimeStart != null"> 
+	and (TO_DAYS(#{sendTimeStart}) <![CDATA[ <= ]]> TO_DAYS(record_date) or TO_DAYS(#{sendTimeStart}) = TO_DAYS(record_date))
+	</if>
+	<if test="sendTimeEnd != null"> 
+	and (TO_DAYS(#{sendTimeEnd})<![CDATA[ >= ]]>  TO_DAYS(record_date) or TO_DAYS(#{sendTimeEnd}) = TO_DAYS(record_date) )
+	</if>
+</when>
+
+  <otherwise>
+    SELECT t1.record_id, ship_id, user_id, sea_area, country, record_date, weather, wind, grade, 
+f_get_location(jdv1, jdv2, jdv3, jdv4, jdv5, wdv1, wdv2, wdv3, wdv4, wdv5) location,f_get_fish_detail(t1.record_id) detail FROM`bd_fish_record`AS t1 ,`bd_fish_record_detail` AS t2
+	WHERE ship_id LIKE '%${shipId}%'
+	<if test="sendTimeStart != null"> 
+	and TO_DAYS(#{sendTimeStart}) <![CDATA[ <= ]]> TO_DAYS(record_date) or TO_DAYS(#{sendTimeStart}) = TO_DAYS(record_date)
+	</if>
+	<if test="sendTimeEnd != null"> 
+	and TO_DAYS(#{sendTimeEnd})<![CDATA[ >= ]]>  TO_DAYS(record_date) or TO_DAYS(#{sendTimeEnd}) = TO_DAYS(record_date)
+	</if>
+	and t1.record_id=t2.record_id 
+	and t2.fish_type = #{fishType}
+</otherwise>
+
+
+</choose>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_fish_record
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdFishRecord">
+    insert into bd_fish_record (record_id, ship_id, user_id, 
+      sea_area, country, record_date, 
+      weather, wind, grade, 
+      jdv1, jdv2, jdv3, jdv4, 
+      jdv5, wdv1, wdv2, wdv3, 
+      wdv4, wdv5)
+    values (#{recordId,jdbcType=INTEGER}, #{shipId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{seaArea,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{recordDate,jdbcType=DATE}, 
+      #{weather,jdbcType=VARCHAR}, #{wind,jdbcType=INTEGER}, #{grade,jdbcType=VARCHAR}, 
+      #{jdv1,jdbcType=CHAR}, #{jdv2,jdbcType=INTEGER}, #{jdv3,jdbcType=INTEGER}, #{jdv4,jdbcType=INTEGER}, 
+      #{jdv5,jdbcType=INTEGER}, #{wdv1,jdbcType=CHAR}, #{wdv2,jdbcType=INTEGER}, #{wdv3,jdbcType=INTEGER}, 
+      #{wdv4,jdbcType=INTEGER}, #{wdv5,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdFishRecord">
+    insert into bd_fish_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="recordId != null">
+        record_id,
+      </if>
+      <if test="shipId != null">
+        ship_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="seaArea != null">
+        sea_area,
+      </if>
+      <if test="country != null">
+        country,
+      </if>
+      <if test="recordDate != null">
+        record_date,
+      </if>
+      <if test="weather != null">
+        weather,
+      </if>
+      <if test="wind != null">
+        wind,
+      </if>
+      <if test="grade != null">
+        grade,
+      </if>
+      <if test="jdv1 != null">
+        jdv1,
+      </if>
+      <if test="jdv2 != null">
+        jdv2,
+      </if>
+      <if test="jdv3 != null">
+        jdv3,
+      </if>
+      <if test="jdv4 != null">
+        jdv4,
+      </if>
+      <if test="jdv5 != null">
+        jdv5,
+      </if>
+      <if test="wdv1 != null">
+        wdv1,
+      </if>
+      <if test="wdv2 != null">
+        wdv2,
+      </if>
+      <if test="wdv3 != null">
+        wdv3,
+      </if>
+      <if test="wdv4 != null">
+        wdv4,
+      </if>
+      <if test="wdv5 != null">
+        wdv5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="recordId != null">
+        #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="shipId != null">
+        #{shipId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="seaArea != null">
+        #{seaArea,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null">
+        #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="recordDate != null">
+        #{recordDate,jdbcType=DATE},
+      </if>
+      <if test="weather != null">
+        #{weather,jdbcType=VARCHAR},
+      </if>
+      <if test="wind != null">
+        #{wind,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null">
+        #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="jdv1 != null">
+        #{jdv1,jdbcType=CHAR},
+      </if>
+      <if test="jdv2 != null">
+        #{jdv2,jdbcType=INTEGER},
+      </if>
+      <if test="jdv3 != null">
+        #{jdv3,jdbcType=INTEGER},
+      </if>
+      <if test="jdv4 != null">
+        #{jdv4,jdbcType=INTEGER},
+      </if>
+      <if test="jdv5 != null">
+        #{jdv5,jdbcType=INTEGER},
+      </if>
+      <if test="wdv1 != null">
+        #{wdv1,jdbcType=CHAR},
+      </if>
+      <if test="wdv2 != null">
+        #{wdv2,jdbcType=INTEGER},
+      </if>
+      <if test="wdv3 != null">
+        #{wdv3,jdbcType=INTEGER},
+      </if>
+      <if test="wdv4 != null">
+        #{wdv4,jdbcType=INTEGER},
+      </if>
+      <if test="wdv5 != null">
+        #{wdv5,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdFishRecord">
+    update bd_fish_record
+    <set>
+      <if test="shipId != null">
+        ship_id = #{shipId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="seaArea != null">
+        sea_area = #{seaArea,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null">
+        country = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="recordDate != null">
+        record_date = #{recordDate,jdbcType=DATE},
+      </if>
+      <if test="weather != null">
+        weather = #{weather,jdbcType=VARCHAR},
+      </if>
+      <if test="wind != null">
+        wind = #{wind,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null">
+        grade = #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="jdv1 != null">
+        jdv1 = #{jdv1,jdbcType=CHAR},
+      </if>
+      <if test="jdv2 != null">
+        jdv2 = #{jdv2,jdbcType=INTEGER},
+      </if>
+      <if test="jdv3 != null">
+        jdv3 = #{jdv3,jdbcType=INTEGER},
+      </if>
+      <if test="jdv4 != null">
+        jdv4 = #{jdv4,jdbcType=INTEGER},
+      </if>
+      <if test="jdv5 != null">
+        jdv5 = #{jdv5,jdbcType=INTEGER},
+      </if>
+      <if test="wdv1 != null">
+        wdv1 = #{wdv1,jdbcType=CHAR},
+      </if>
+      <if test="wdv2 != null">
+        wdv2 = #{wdv2,jdbcType=INTEGER},
+      </if>
+      <if test="wdv3 != null">
+        wdv3 = #{wdv3,jdbcType=INTEGER},
+      </if>
+      <if test="wdv4 != null">
+        wdv4 = #{wdv4,jdbcType=INTEGER},
+      </if>
+      <if test="wdv5 != null">
+        wdv5 = #{wdv5,jdbcType=INTEGER},
+      </if>
+    </set>
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdFishRecord">
+    update bd_fish_record
+    set ship_id = #{shipId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      sea_area = #{seaArea,jdbcType=VARCHAR},
+      country = #{country,jdbcType=VARCHAR},
+      record_date = #{recordDate,jdbcType=DATE},
+      weather = #{weather,jdbcType=VARCHAR},
+      wind = #{wind,jdbcType=INTEGER},
+      grade = #{grade,jdbcType=VARCHAR},
+      jdv1 = #{jdv1,jdbcType=CHAR},
+      jdv2 = #{jdv2,jdbcType=INTEGER},
+      jdv3 = #{jdv3,jdbcType=INTEGER},
+      jdv4 = #{jdv4,jdbcType=INTEGER},
+      jdv5 = #{jdv5,jdbcType=INTEGER},
+      wdv1 = #{wdv1,jdbcType=CHAR},
+      wdv2 = #{wdv2,jdbcType=INTEGER},
+      wdv3 = #{wdv3,jdbcType=INTEGER},
+      wdv4 = #{wdv4,jdbcType=INTEGER},
+      wdv5 = #{wdv5,jdbcType=INTEGER}
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </update>
+</mapper>
