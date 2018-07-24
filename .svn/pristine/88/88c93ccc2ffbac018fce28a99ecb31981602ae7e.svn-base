@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdDataPackRecvMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdDataPackRecv">
+    <id column="pkg_id" jdbcType="INTEGER" property="pkgId" />
+    <result column="pkg_type" jdbcType="CHAR" property="pkgType" />
+    <result column="msg_id" jdbcType="INTEGER" property="msgId" />
+    <result column="pkg_data" jdbcType="VARCHAR" property="pkgData" />
+    <result column="master_from" jdbcType="VARCHAR" property="masterFrom" />
+    <result column="pkg_from" jdbcType="VARCHAR" property="pkgFrom" />
+    <result column="phone_from" jdbcType="VARCHAR" property="phoneFrom" />    
+    <result column="master_to" jdbcType="VARCHAR" property="masterTo" />
+    <result column="pkg_to" jdbcType="VARCHAR" property="pkgTo" />
+    <result column="phone_to" jdbcType="VARCHAR" property="phoneTo" /> 
+    <result column="recv_time" jdbcType="TIMESTAMP" property="recvTime" />
+    <result column="from_site_no" jdbcType="VARCHAR" property="fromSiteNo" />    
+  </resultMap>
+  
+   <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select * from bd_recv_package where pkg_id is not null
+  	<if test="masterFrom != null">
+  		and masterFrom = #{masterFrom}
+  	</if>
+  	
+  	<if test="masterTo != null">
+  		and masterTo = #{masterTo}
+  	</if>
+  	
+  	<if test="phoneFrom != null">
+  		and phoneFrom = #{phoneFrom}
+  	</if>
+  	
+  	<if test="phoneTo != null">
+  		and phoneTo = #{phoneTo}
+  	</if>
+  	
+  	<if test="pkgFrom != null">
+  		and pkgFrom = #{pkgFrom}
+  	</if>
+  	
+  	<if test="pkgTo != null">
+  		and pkgTo = #{pkgTo}
+  	</if>
+  	
+  	<if test="beginTime != null and endTime == null">
+  	and recvTime >= #{beginTime}
+  	</if>
+  	
+  	<if test="beginTime != null and endTime != null">
+  	and recvTime between #{beginTime} and #{endTime}
+  	</if>
+  	
+  </select>
+  </mapper>

@@ -21,35 +21,35 @@
   <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">
   	select * from bd_send_package where pkg_id is not null
   	<if test="masterFrom != null">
-  		and masterFrom = #{masterFrom}
+  		and master_from = #{masterFrom}
   	</if>
   	
   	<if test="masterTo != null">
-  		and masterTo = #{masterTo}
+  		and master_to = #{masterTo}
   	</if>
   	
   	<if test="phoneFrom != null">
-  		and phoneFrom = #{phoneFrom}
+  		and phone_from = #{phoneFrom}
   	</if>
   	
   	<if test="phoneTo != null">
-  		and phoneTo = #{phoneTo}
+  		and phone_to = #{phoneTo}
   	</if>
   	
   	<if test="pkgFrom != null">
-  		and pkgFrom = #{pkgFrom}
+  		and pkg_from = #{pkgFrom}
   	</if>
   	
   	<if test="pkgTo != null">
-  		and pkgTo = #{pkgTo}
+  		and pkg_to = #{pkgTo}
   	</if>
   	
   	<if test="beginTime != null and endTime == null">
-  	and sendTime >= #{beginTime}
+  	and create_time >= #{beginTime}
   	</if>
   	
   	<if test="beginTime != null and endTime != null">
-  	and sendTime between #{beginTime} and #{endTime}
+  	and create_time between #{beginTime} and #{endTime}
   	</if>
   	
   </select>

@@ -166,39 +166,43 @@
     where msg_id = #{msgId,jdbcType=INTEGER}
   </update>
 
-    <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">select  <include refid="Base_Column_List" /> from bd_msg_chat where msg_id is not null
+    <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">
+   select c.msg_id,c.send_time,c.recv_time,c.msg_type,c.msg_from,c.from_phone,c.msg_to,c.to_phone,c.is_recv,c.recv_confirm_time,(IFNULL(c.msg_txt,c.msg_base64)) as 'msg_txt' from 
+(select a.msg_id,a.send_time,a.recv_time,a.msg_type,a.msg_txt,a.msg_from,a.from_phone,a.msg_to,a.to_phone,a.is_recv,a.recv_confirm_time,b.msg_base64
+from bd_msg_chat as a left join bd_msg_chat_file as b 
+on a.msg_id = b.msg_id) as c where c.msg_id is not null
     <if test="sendTime != null">
-        and send_time = #{sendTime,jdbcType=TIMESTAMP}
+        and c.send_time = #{sendTime,jdbcType=TIMESTAMP}
       </if>
       <if test="recvTime != null">
-        and recv_time = #{recvTime,jdbcType=TIMESTAMP}
+        and c.recv_time = #{recvTime,jdbcType=TIMESTAMP}
       </if>
       <if test="msgType != null">
-        and msg_type = #{msgType,jdbcType=CHAR}
+        and c.msg_type = #{msgType,jdbcType=CHAR}
       </if>
       
       <if test="msgTxt != null">
-        and msg_txt = #{msgTxt,jdbcType=VARCHAR}
+        and c.msg_txt = #{msgTxt,jdbcType=VARCHAR}
       </if>
       <if test="msgFrom != null">
-        and msg_from = #{msgFrom,jdbcType=VARCHAR}
+        and c.msg_from = #{msgFrom,jdbcType=VARCHAR}
       </if>
       <if test="fromPhone != null">
-        and from_phone = #{fromPhone,jdbcType=VARCHAR}
+        and c.from_phone = #{fromPhone,jdbcType=VARCHAR}
       </if>
       <if test="msgTo != null">
-        and msg_to = #{msgTo,jdbcType=VARCHAR}
+        and c.msg_to = #{msgTo,jdbcType=VARCHAR}
       </if>
       <if test="toPhone != null">
-        and to_phone = #{toPhone,jdbcType=VARCHAR}
+        and c.to_phone = #{toPhone,jdbcType=VARCHAR}
       </if>
       <if test="isRecv != null">
-        and is_recv = #{isRecv,jdbcType=CHAR}
+        and c.is_recv = #{isRecv,jdbcType=CHAR}
       </if>
       <if test="recvConfirmTime != null">
-        and recv_confirm_time = #{recvConfirmTime,jdbcType=TIMESTAMP}
+        and c.recv_confirm_time = #{recvConfirmTime,jdbcType=TIMESTAMP}
       </if>
-      order by send_time DESC
+      order by c.send_time DESC
   </select>
   
   <select id="selectAll" parameterType="java.util.Map" resultMap="BaseResultMap">select <include refid="Base_Column_List" />

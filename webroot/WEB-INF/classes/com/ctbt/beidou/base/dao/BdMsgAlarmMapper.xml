@@ -172,4 +172,13 @@
   </update>
   
   
+  <insert id="toInsertMsg" parameterType="java.util.List">
+  insert into bd_msg_alarm (send_time,msg_type,msg_txt,msg_from,msg_to)
+  values
+  <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.sendTime,jdbcType=TIMESTAMP}, #{item.msgType,jdbcType=CHAR}, #{item.msgTxt,jdbcType=VARCHAR},#{item.msgFrom,jdbcType=VARCHAR},
+            #{item.msgTo,jdbcType=VARCHAR})
+  </foreach>  
+  </insert>
+  
 </mapper>

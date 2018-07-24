@@ -104,12 +104,30 @@
     delete from sys_region
     where reg_id = #{regId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.ctbt.beidou.base.model.SysRegion">
+<!--   <insert id="insert" parameterType="com.ctbt.beidou.base.model.SysRegion">
     insert into sys_region (reg_id, reg_name, parent_id, 
       level, country_id)
     values (#{regId,jdbcType=INTEGER}, #{regName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
       #{level,jdbcType=INTEGER}, #{countryId,jdbcType=INTEGER})
+  </insert> -->
+  
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.SysRegion" >
+    <selectKey resultType="int" keyProperty="regId" order="AFTER" >
+      SELECT LAST_INSERT_ID() AS regId
+    </selectKey>
+        insert into sys_region (reg_id, reg_name, parent_id, 
+      level, country_id)
+    values (#{regId,jdbcType=INTEGER}, #{regName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
+      #{level,jdbcType=INTEGER}, #{countryId,jdbcType=INTEGER})
   </insert>
+  
+  
+  
+  
+  
+  
+  
+  
   <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.SysRegion">
     insert into sys_region
     <trim prefix="(" suffix=")" suffixOverrides=",">

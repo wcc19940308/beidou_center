@@ -64,6 +64,7 @@
 		 from bd_ship where ship_no like '%${shipNo}%' and ship_owner like '%${shipOwner}%' and card_no1 like '%${cardNo1}%' 
   </select>
   
+
   
   <delete id="deleteByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdShip">
     delete from bd_ship

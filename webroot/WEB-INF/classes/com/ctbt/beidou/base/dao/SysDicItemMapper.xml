@@ -88,9 +88,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.SysDicItem">
     update sys_dic_item
     <set>
-    <if test="itemKey != null">
-        item_key = #{itemKey,jdbcType=VARCHAR},
-      </if>
       <if test="itemValue != null">
         item_value = #{itemValue,jdbcType=VARCHAR},
       </if>
@@ -101,7 +98,7 @@
         validity = #{validity,jdbcType=CHAR},
       </if>
     </set>
-    where dic_id = #{dicId,jdbcType=INTEGER}
+    where dic_id = #{dicId,jdbcType=INTEGER} and item_key = #{itemKey,jdbcType=VARCHAR}
   </update>
   
   
