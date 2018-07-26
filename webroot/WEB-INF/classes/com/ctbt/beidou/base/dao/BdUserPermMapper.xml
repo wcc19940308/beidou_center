@@ -6,12 +6,19 @@
     <id column="perm_id" jdbcType="INTEGER" property="permId" />
     <id column="perm_type" jdbcType="CHAR" property="permType" />
   </resultMap>
+  
+    <select id="selectByroleId" parameterType="java.lang.Integer" resultType="Map">
+    select *
+    from  bd_user_perm where ur_id = #{urId,jdbcType=INTEGER}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdUserPermKey">
     delete from bd_user_perm
-    where ur_id = #{urId,jdbcType=INTEGER}
-      and perm_id = #{permId,jdbcType=INTEGER}
-      and perm_type = #{permType,jdbcType=CHAR}
+    where ur_id = #{urId}
+      and perm_id = #{permId}
+      and perm_type = #{permType}
   </delete>
+  
   <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdUserPermKey">
     insert into bd_user_perm (ur_id, perm_id, perm_type
       )

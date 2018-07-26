@@ -25,12 +25,51 @@
     where msg_id = #{msgId,jdbcType=INTEGER}
   </select>
   
-  <select id="selectByCondition" parameterType="java.lang.Integer" resultType="Map">
+    
+    <select id="selectSendToData" parameterType="com.ctbt.beidou.base.model.BdMsgAlarm" resultMap="BaseResultMap">
     select 
-    send_time sendTime, recv_time recvTime, msg_type msgType, msg_txt msgTxt, msg_from msgFrom, msg_to msgTo, is_recv isRecv, recv_confirm_time recvConfirmTime, 
-    is_exclude isExclude, exclude_confirm_time excludeConfirmTime
+    <include refid="Base_Column_List" />
     from bd_msg_alarm
-    where msg_txt is not null
+    where send_time &gt; #{sendTime,jdbcType=TIMESTAMP}  or 
+    recv_time &gt; #{recvTime,jdbcType=TIMESTAMP} or
+    exclude_confirm_time &gt; #{excludeConfirmTime,jdbcType=TIMESTAMP} 
+	ORDER BY send_time limit 10 
+  </select>
+  
+  <select id="selectByCondition" parameterType="java.util.Map" resultType="Map">
+  select * from 
+  (select  <include refid="Base_Column_List" /> 
+  from bd_msg_alarm where msg_id is not null
+       
+      <if test="msgFrom != null" >
+       and msg_from = #{msgFrom}
+      </if>
+      
+      <if test="msgTo != null" >
+       and msg_to = #{msgTo}
+      </if>
+      
+     <if test="msgType != null" >
+       and msg_type = #{msgType}
+      </if>
+      
+      <if test="beginTime1 != null and endTime1 == null and beginTime2 == null and endTime2 == null">
+  		and send_time >= #{beginTime1}
+  	  </if>
+  	
+  	  <if test="beginTime != null and endTime != null and beginTime2 == null and endTime2 == null">
+  	    and send_time between #{beginTime1} and #{endTime1}
+  	  </if>
+  	  
+  	  <if test="beginTime2 != null and endTime2 == null and beginTime1 == null and endTime1 == null">
+  		and recv_time >= #{beginTime2}
+  	  </if>
+  	
+  	  <if test="beginTime2 != null and endTime2 != null and beginTime1 == null and endTime1 == null">
+  	   and recv_time between #{beginTime2} and #{endTime2}
+  	  </if>  	  
+     ) as a left join sys_dic_item as b on b.dic_id=15 and b.item_key = a.msg_type
+      order by a.msg_id DESC
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -180,5 +219,13 @@
             #{item.msgTo,jdbcType=VARCHAR})
   </foreach>  
   </insert>
+  
+   <select id="findAll" parameterType="java.util.Map" resultType="Map">
+ select ship_id , ship_name , card_no1 from bd_ship
+	</select>
+	
+	 <select id="searchInfo" parameterType="java.lang.String" resultType="Map">
+  select ship_id , ship_name , card_no1 from bd_ship where ship_name like #{text} or card_no1 like #{text}
+  </select>
   
 </mapper>
