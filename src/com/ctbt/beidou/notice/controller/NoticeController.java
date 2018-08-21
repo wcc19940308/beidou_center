@@ -16,10 +16,16 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ctbt.beidou.base.bo.ResultView;
+import com.ctbt.beidou.base.model.BdMsgChat;
 import com.ctbt.beidou.base.model.BdMsgNotice;
 import com.ctbt.beidou.notice.service.IBdNoticeService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -36,9 +42,8 @@ public class NoticeController {
 	// 条件查询
 	@RequestMapping(value = "/queryNoticeList", method = RequestMethod.POST)
 	@ResponseBody
-	public List<BdMsgNotice> queryNoticeList(HttpServletRequest request) {
+	public JSONObject queryNoticeList(HttpServletRequest request) {
 
-		// BdMsgNotice bdMsgNotice = new BdMsgNotice();
 		Map<String, Object> record = new HashMap<>();
 		// 开始时间
 		if (("").equals(request.getParameter("beginTime"))) {
@@ -58,10 +63,18 @@ public class NoticeController {
 		} else {
 			record.put("cardNo", request.getParameter("cardNo"));
 		}
-
+		String page=request.getParameter("page");
+	    String pageSize=request.getParameter("pageSize");
+		PageHelper.startPage(Integer.valueOf(page),Integer.valueOf(pageSize));
 		List<BdMsgNotice> list = noticeService.queryNoticeList(record);
-
-		return list;
+		PageInfo pages =new PageInfo(list,5);
+	    JSONObject obj = new JSONObject();
+	    obj.put("Rows", list);
+	    obj.put("recordNum",pages.getTotal());
+	    obj.put("currentPage",pages.getPageNum());
+	    obj.put("sumPageNum",pages.getPages());
+		
+		return obj;
 	}
 
 	@RequestMapping("/toNoticeList")
@@ -83,27 +96,13 @@ public class NoticeController {
 	}
 
 	// 向bd_msg_notice表插入向船员发送的数据
-	@RequestMapping(value = "/toInsertMsg", method = RequestMethod.POST)
+	@RequestMapping(value = "/sendNotice", method = RequestMethod.POST)
 	@ResponseBody
-	public int toInsertMsg(HttpServletRequest request) {
+	public ResultView sendNotice(HttpServletRequest request, @RequestParam Map<String, Object> param) {
+		
+		ResultView rv = noticeService.saveSendNotice(param);
 
-		String liString = request.getParameter("list");
-		List<BdMsgNotice> list = new ArrayList<>();
-		JSONArray jsonArray = JSONArray.fromObject(liString);
-		for (int i = 0; i < jsonArray.size(); i++) {
-			Object object = jsonArray.get(i);
-			JSONObject jsonObject = JSONObject.fromObject(object);
-			BdMsgNotice bdMsgNotice = (BdMsgNotice) JSONObject.toBean(jsonObject, BdMsgNotice.class);
-			bdMsgNotice.setSendTime(new Date());
-			list.add(bdMsgNotice);
-			System.out.println(bdMsgNotice);
-		}
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i));
-		}
-		int returnInt = noticeService.insertMsg(list);
-		System.out.println(returnInt);
-		return returnInt;
+		return rv;
 	}
 
 	// 找到所有人信息，并且跳转到选择人员界面
@@ -112,12 +111,4 @@ public class NoticeController {
 		return "notice/noticeSend";
 	}
 
-	// 找到所有人的信息构造树形结构
-	@RequestMapping(value = "/findAll", method = RequestMethod.POST)
-	@ResponseBody
-	public List<Map<String, Object>> findAll(HttpServletRequest request, BdMsgNotice record) {
-
-		List<Map<String, Object>> list = noticeService.findAll(request);
-		return list;
-	}
 }

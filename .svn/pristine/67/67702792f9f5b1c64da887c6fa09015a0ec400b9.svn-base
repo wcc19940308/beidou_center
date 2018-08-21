@@ -1,0 +1,46 @@
+package com.ctbt.beidou.user.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import com.ctbt.beidou.base.bo.BdUserBo;
+import com.ctbt.beidou.base.model.BdUser;
+import com.ctbt.beidou.base.model.BdUserDetail;
+import com.ctbt.beidou.base.model.BdUserLoginLog;
+import com.ctbt.beidou.base.model.BdUserLoginSession;
+import com.ctbt.beidou.perm.service.IBdPermService;
+
+public interface IUserService {
+	public BdUser getUserById(int userId);
+
+	int saveBdUser(BdUser record);
+
+	BdUser selectByModel(BdUser record);
+
+	public List queryUserList(BdUser bdUser);
+
+	public BdUser selectByPrimaryKey(Integer userId);
+
+	public BdUserDetail selectDetailByPrimaryKey(Integer userId);
+
+	public int addUser(BdUser bdUser, BdUserDetail bdUserDetail);
+
+	int updateUser(BdUser bdUser, BdUserDetail bdUserDetail);
+
+	int deleteUser(BdUser bdUser, BdUserDetail bdUserDetail);
+
+	public int insertBdUserLoginLog(BdUserLoginLog bdUserLoginLog);
+
+	public int updateBdUserLoginSession(BdUserLoginSession bdUserLoginSession);
+
+	public int deleteUserSession(String sessionId);
+
+	public void saveSession(HttpSession session,BdUser bdUserInDB,BdUserLoginLog bdUserLoginLog
+			,BdUserLoginSession bdUserLoginSession,String clientIp, IUserService userService, IBdPermService permService);
+
+	BdUser selectByPhone(BdUser record);
+
+//	BdUserLoginSession selectBdUserLoginSession(BdUserLoginSession bdUserLoginSession);
+
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctbt.beidou.base.dao.BdInterfaceUserMapper" >
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdInterfaceUser" >
+    <id column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="pass_word" property="passWord" jdbcType="VARCHAR" />
+    <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+    user_name, pass_word, last_login_time, user_id
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.ctbt.beidou.base.model.BdInterfaceUser" >
+    select 
+    <include refid="Base_Column_List" />
+    from bd_interface_user
+    where user_name = #{userName,jdbcType=VARCHAR} and pass_word=#{passWord,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bd_interface_user
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdInterfaceUser" >
+    update bd_interface_user
+    <set >
+      <if test="lastLoginTime != null" >
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

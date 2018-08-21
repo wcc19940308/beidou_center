@@ -1,0 +1,80 @@
+package com.ctbt.beidou.base.init;
+
+import java.io.IOException;
+import java.util.ResourceBundle;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.ctbt.beidou.base.CommValue;
+import com.ctbt.beidou.base.utils.DicUtil;
+import com.ctbt.beidou.data.DataJobManager;
+import com.ctbt.beidou.data.SendToManager;
+
+public class InitServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+
+	private Logger logger = LogManager.getLogger(InitServlet.class);
+	
+    @Override
+	public void init(ServletConfig sc) throws ServletException {
+		logger.info("InitServlet init start ...");
+		try{
+
+            //常量初始化
+        	ResourceBundle resource = ResourceBundle.getBundle("webconfig");
+        	String ProjectName = resource.getString("ProjectName");
+        	String CenterNo = resource.getString("CenterNo");
+        	logger.info("InitServlet ProjectName:"+ProjectName);
+        	logger.info("InitServlet CenterNo:"+CenterNo);
+
+        	ServletContext application = sc.getServletContext();
+            application.setAttribute("ProjectName", ProjectName);
+            application.setAttribute("CenterNo", CenterNo);
+            
+            CommValue.CenterNo = CenterNo;
+            
+            //加载字典到内存
+            DicUtil.getInstance().loadAllDic();
+            
+            //向webservice接口发送消息，开启即可
+            //SendToManager.getInstance().init();
+
+            DataJobManager.getInstance().init();
+		}catch (Exception e){
+			logger.error(e.getMessage(), e);
+		}
+		logger.info("InitServlet init finished !!!");
+	}
+	
+    @Override
+    public void destroy() {
+    	logger.info("InitServlet destroy");
+    }
+
+    @Override
+    public ServletConfig getServletConfig() {
+    	logger.info("InitServlet getServletConfig");
+        return null;
+    }
+
+    @Override
+    public String getServletInfo() {
+    	logger.info("InitServlet getServletInfo");
+        return null;
+    }
+
+    @Override
+    public void service(ServletRequest arg0, ServletResponse arg1) throws ServletException, IOException {
+    	logger.info("InitServlet service");
+    }
+
+}

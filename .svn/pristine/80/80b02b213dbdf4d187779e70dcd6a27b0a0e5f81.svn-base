@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdPermMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdPerm">
+    <id column="perm_id" jdbcType="INTEGER" property="permId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="perm_level" jdbcType="INTEGER" property="permLevel" />
+    <result column="perm_name" jdbcType="VARCHAR" property="permName" />
+    <result column="perm_type" jdbcType="CHAR" property="permType" />
+    <result column="perm_url" jdbcType="VARCHAR" property="permUrl" />
+    <result column="perm_icon" jdbcType="VARCHAR" property="permIcon" />
+    <result column="validity" jdbcType="CHAR" property="validity" />
+    <result column="order_no" jdbcType="INTEGER" property="orderNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    perm_id, parent_id, perm_level, perm_name, perm_type, perm_url, validity, order_no,perm_icon
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_perm
+    where perm_id = #{permId,jdbcType=INTEGER}
+  </select>
+  <!-- 查询整张表 -->
+  <select id="selectAllTable" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_perm
+  </select>
+  
+   <!-- 整棵权限划树查询 -->
+  <select id="queryRolePermTree" parameterType="java.lang.Integer" resultType="Map">
+    SELECT 
+	<include refid="Base_Column_List" />
+	 FROM bd_perm ORDER BY perm_level,order_no DESC
+  </select>
+  
+     <!-- 根据roleId去查询权限树 -->
+  <select id="queryRolePermTreeByRoleid" parameterType="java.lang.Integer" resultType="Map">
+    SELECT t1.perm_id,t2.ur_id, parent_id, perm_level, perm_name,
+	t1.perm_type, perm_url, validity, order_no 
+	FROM `bd_perm` as t1 LEFT JOIN`bd_user_perm` as t2 
+	ON t1.perm_id = t2.perm_id AND t2.ur_id = #{ur_id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_perm
+    where perm_id = #{permId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdPerm">
+    insert into bd_perm (perm_id, parent_id, perm_level, 
+      perm_name, perm_type, perm_url, 
+      validity)
+    values (#{permId,jdbcType=INTEGER}, #{parentId,jdbcType=VARCHAR}, #{permLevel,jdbcType=INTEGER}, 
+      #{permName,jdbcType=VARCHAR}, #{permType,jdbcType=CHAR}, #{permUrl,jdbcType=VARCHAR}, 
+      #{validity,jdbcType=CHAR})
+  </insert>
+  
+    <insert id="insertMap" parameterType="java.util.Map">
+    insert into bd_user_perm (perm_id, parent_id, perm_level, 
+      perm_name, perm_type, perm_url, 
+      validity)
+    values (#{permId,jdbcType=INTEGER}, #{parentId,jdbcType=VARCHAR}, #{permLevel,jdbcType=INTEGER}, 
+      #{permName,jdbcType=VARCHAR}, #{permType,jdbcType=CHAR}, #{permUrl,jdbcType=VARCHAR}, 
+      #{validity,jdbcType=CHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdPerm">
+    insert into bd_perm
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="permId != null">
+        perm_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="permLevel != null">
+        perm_level,
+      </if>
+      <if test="permName != null">
+        perm_name,
+      </if>
+      <if test="permType != null">
+        perm_type,
+      </if>
+      <if test="permUrl != null">
+        perm_url,
+      </if>
+      <if test="validity != null">
+        validity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="permId != null">
+        #{permId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="permLevel != null">
+        #{permLevel,jdbcType=INTEGER},
+      </if>
+      <if test="permName != null">
+        #{permName,jdbcType=VARCHAR},
+      </if>
+      <if test="permType != null">
+        #{permType,jdbcType=CHAR},
+      </if>
+      <if test="permUrl != null">
+        #{permUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="validity != null">
+        #{validity,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdPerm">
+    update bd_perm
+    <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="permLevel != null">
+        perm_level = #{permLevel,jdbcType=INTEGER},
+      </if>
+      <if test="permName != null">
+        perm_name = #{permName,jdbcType=VARCHAR},
+      </if>
+      <if test="permType != null">
+        perm_type = #{permType,jdbcType=CHAR},
+      </if>
+      <if test="permUrl != null">
+        perm_url = #{permUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="validity != null">
+        validity = #{validity,jdbcType=CHAR},
+      </if>
+    </set>
+    where perm_id = #{permId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdPerm">
+    update bd_perm
+    set parent_id = #{parentId,jdbcType=VARCHAR},
+      perm_level = #{permLevel,jdbcType=INTEGER},
+      perm_name = #{permName,jdbcType=VARCHAR},
+      perm_type = #{permType,jdbcType=CHAR},
+      perm_url = #{permUrl,jdbcType=VARCHAR},
+      validity = #{validity,jdbcType=CHAR}
+    where perm_id = #{permId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctbt.beidou.base.dao.BdInterfaceLogMapper" >
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdInterfaceLog" >
+    <id column="log_id" property="logId" jdbcType="BIGINT" />
+    <result column="log_time" property="logTime" jdbcType="TIMESTAMP" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="request_sequence" property="requestSequence" jdbcType="VARCHAR" />
+    <result column="terminal_code" property="terminalCode" jdbcType="VARCHAR" />
+    <result column="terminal_type" property="terminalType" jdbcType="VARCHAR" />
+    <result column="request_type" property="requestType" jdbcType="VARCHAR" />
+    <result column="business_id" property="businessId" jdbcType="VARCHAR" />
+    <result column="receipt_code" property="receiptCode" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdInterfaceLog" >
+    insert into bd_interface_log (log_id, log_time, user_name, 
+      request_sequence, terminal_code, terminal_type, 
+      request_type, business_id, receipt_code, 
+      description)
+    values (#{logId,jdbcType=BIGINT}, #{logTime,jdbcType=TIMESTAMP}, #{userName,jdbcType=VARCHAR}, 
+      #{requestSequence,jdbcType=VARCHAR}, #{terminalCode,jdbcType=VARCHAR}, #{terminalType,jdbcType=VARCHAR}, 
+      #{requestType,jdbcType=VARCHAR}, #{businessId,jdbcType=VARCHAR}, #{receiptCode,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdInterfaceLog" >
+    insert into bd_interface_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logTime != null" >
+        log_time,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="requestSequence != null" >
+        request_sequence,
+      </if>
+      <if test="terminalCode != null" >
+        terminal_code,
+      </if>
+      <if test="terminalType != null" >
+        terminal_type,
+      </if>
+      <if test="requestType != null" >
+        request_type,
+      </if>
+      <if test="businessId != null" >
+        business_id,
+      </if>
+      <if test="receiptCode != null" >
+        receipt_code,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logTime != null" >
+        #{logTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="requestSequence != null" >
+        #{requestSequence,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalCode != null" >
+        #{terminalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalType != null" >
+        #{terminalType,jdbcType=VARCHAR},
+      </if>
+      <if test="requestType != null" >
+        #{requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="businessId != null" >
+        #{businessId,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptCode != null" >
+        #{receiptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+   <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdInterfaceLog" >
+    update bd_interface_log
+    <set >
+      <if test="logTime != null" >
+        log_time = #{logTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="requestSequence != null" >
+        request_sequence = #{requestSequence,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalCode != null" >
+        terminal_code = #{terminalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalType != null" >
+        terminal_type = #{terminalType,jdbcType=VARCHAR},
+      </if>
+      <if test="requestType != null" >
+        request_type = #{requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="businessId != null" >
+        business_id = #{businessId,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptCode != null" >
+        receipt_code = #{receiptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+
+</mapper>

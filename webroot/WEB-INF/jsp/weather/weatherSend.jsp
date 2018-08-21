@@ -67,7 +67,7 @@ $(function () {
 		     idFieldName: 'id', 
 		     isExpand: true, 
 		     slide: false,
-		     enabledCompleteCheckbox:true,
+		     enabledCompleteCheckbox:false,
 		     onSuccess: function(){
 		    	 treeList.selectNode(function(data){
 		    		 console.log(data);

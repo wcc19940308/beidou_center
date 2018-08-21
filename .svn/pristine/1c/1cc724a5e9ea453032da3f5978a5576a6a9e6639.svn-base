@@ -1,0 +1,132 @@
+package com.ctbt.beidou.advert.controller;
+
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.advert.service.IAdvertService;
+import com.ctbt.beidou.base.model.BdAdvert;
+import com.ctbt.beidou.base.model.BdShip;
+
+@Controller
+@RequestMapping("/advert")
+public class AdvertController {
+
+	private Logger logger = LogManager.getLogger(getClass());
+
+	@Resource
+	private IAdvertService iAdertService;
+	
+	@RequestMapping(value = "/selectAllAdvert")
+	@ResponseBody
+	public List<BdAdvert> selectAll(HttpServletRequest request) {
+
+		List<BdAdvert> result = iAdertService.selectAll();
+		
+		return result;
+	}
+	
+	@RequestMapping("/queryAdvertList")
+	@ResponseBody
+	public List<BdAdvert>  queryAdvertList(HttpServletRequest request,BdAdvert bdAdvert,Model model){
+		List<BdAdvert> result = iAdertService.selectByItem(bdAdvert);
+		return result;
+	}
+	
+	
+	@RequestMapping("/toAdvertList")
+	public String toAdvertList(HttpServletRequest request,ModelMap retMap){
+
+		return "advert/advertList";
+	}
+	
+	@RequestMapping("/toPreviewImg")
+	public String toPreviewImg(HttpServletRequest request,ModelMap retMap){
+
+		return "advert/toPreviewImg";
+	}
+	
+	@RequestMapping(value = "/updateByPrimaryKeyValidity")
+	@ResponseBody
+	public int updateByPrimaryKeyValidity(HttpServletRequest request, BdAdvert bdAdvert) {
+		bdAdvert.setValidity("0");
+		int result =iAdertService.updateByPrimaryKeyValidity(bdAdvert);
+		return result;
+	}
+	
+	@RequestMapping("/toAdvertEdit")
+	public String toAdvertEdit(HttpServletRequest request,BdAdvert bdAdvert,Model model,ModelMap retMap){
+		Integer advId=bdAdvert.getAdvId();
+		if(advId!=null) {
+			bdAdvert = iAdertService.selectByPrimaryKey(advId);
+			//输出格式yyyy-MM-dd HH:mm
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			if(bdAdvert.getAdvStart()!=null) {
+			String start = df.format(bdAdvert.getAdvStart());//格式化数据
+			retMap.addAttribute("start",start);
+			}
+			if(bdAdvert.getAdvEnd()!=null) {
+			String end = df.format(bdAdvert.getAdvEnd());
+			retMap.addAttribute("end",end);
+			}//格式化数据}
+		}
+		else {
+			bdAdvert.setAdvId(0);
+			bdAdvert.setValidity("1");
+			bdAdvert.setAdvType("1");
+			bdAdvert.setAdvBase64("No");
+		}
+		retMap.addAttribute("BdAdvert", bdAdvert);
+
+		return "advert/advertEdit";
+	}
+	
+	
+
+	@RequestMapping(value = "/insertAdvert", method = RequestMethod.POST)
+	@ResponseBody
+	public int insertAdvert(HttpServletRequest request, BdAdvert bdAdvert) throws ParseException {
+		if(bdAdvert.getOrderNo()==null) {
+			bdAdvert.setOrderNo(0);
+		}
+		int result=iAdertService.insert(bdAdvert);
+
+			return result;
+	}
+	
+	@RequestMapping(value = "/updateAdvert", method = RequestMethod.POST)
+	@ResponseBody
+	public int updateAdvert(HttpServletRequest request, BdAdvert bdAdvert) throws ParseException {
+
+		int result=iAdertService.updateByPrimaryKeySelective(bdAdvert);
+
+			return result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

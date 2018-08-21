@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ctbt.beidou.base.dao.BdAppMapper">
+
+
+<select id="findAll" parameterType="java.util.Map" resultType="Map">
+
+<!-- 从是视图中返回所有类型的数据（天气，聊天等） -->
+
+select * from people_msg where 
+<if test="phone != null">
+to_phone = #{phone} 
+</if>
+<if test="phone == null">
+msg_to = (SELECT f_get_card_by_phone(#{phone})) 
+</if>
+and recv_time > #{recv_time}
+order by recv_time limit 20
+
+</select>
+
+</mapper>

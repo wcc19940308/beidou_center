@@ -1,0 +1,74 @@
+package com.ctbt.beidou.base.tag;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
+
+import com.ctbt.beidou.base.LoginSessionManager;
+//每个页面修改查询删除选项
+public class FormPermButtonTag extends TagSupport{
+	private String value;
+	private String ids;
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+	/**
+     * 表单元素构造标签库。
+     * 
+     * @throws JspException
+     */
+	public int doEndTag() throws JspException {
+		// 校验对象名称
+
+		try{
+			String html = makeHtml();
+
+			// 组装html并输出
+			pageContext.getOut().write(html);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+		return EVAL_PAGE; // continue to eval the later jsp page code.
+	}
+
+	/**
+     * 构造menu的html代码。
+     * 
+     * @return
+     * @throws Exception
+     */
+	private String makeHtml() throws Exception {
+		StringBuffer aHTML = new StringBuffer();
+		List<Map<String, Object>> userRoleList = getRoleMenuList();
+		System.out.println("---------------------"+ids);
+		
+		
+
+		return aHTML.toString();
+	}
+	private List<Map<String, Object>> getRoleMenuList() {
+		HttpSession session =  pageContext.getSession(); 
+		HttpSession thisUserSession = (HttpSession)LoginSessionManager.getInstance().sessionMap.get(session.getId());
+		List<Map<String, Object>> userRoleList= (List<Map<String, Object>>) thisUserSession.getAttribute("userRole");
+		return userRoleList;
+
+	}
+}

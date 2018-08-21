@@ -1,0 +1,245 @@
+package com.ctbt.beidou.user.controller;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.LoginSessionManager;
+import com.ctbt.beidou.base.bo.BdUserBo;
+import com.ctbt.beidou.base.dao.BdUserLoginLogMapper;
+import com.ctbt.beidou.base.dao.BdUserMapper;
+import com.ctbt.beidou.base.model.BdUser;
+import com.ctbt.beidou.base.model.BdUserDetail;
+import com.ctbt.beidou.base.model.BdUserLoginLog;
+import com.ctbt.beidou.base.model.BdUserLoginSession;
+import com.ctbt.beidou.base.utils.EncryptUtil;
+import com.ctbt.beidou.perm.service.IBdPermService;
+import com.ctbt.beidou.user.service.IUserService;
+
+@Controller
+@RequestMapping("/user")
+public class UserController {
+
+	private Logger logger = LogManager.getLogger(getClass());
+	private String getIPAddr(HttpServletRequest request) {
+		String clientIp=null;
+		clientIp=request.getHeader("x-forwarded-for");  
+        if(clientIp == null || clientIp.length() == 0 || "unknown".equalsIgnoreCase(clientIp)) {  
+            clientIp = request.getHeader("Proxy-Client-IP");  
+        }  
+        if(clientIp == null || clientIp.length() == 0 || "unknown".equalsIgnoreCase(clientIp)) {  
+            clientIp = request.getHeader("WL-Proxy-Client-IP");  
+        }  
+        if(clientIp == null || clientIp.length() == 0 || "unknown".equalsIgnoreCase(clientIp)) {  
+            clientIp = request.getRemoteAddr();  
+        } 
+		return clientIp;
+	}
+	
+	@Autowired
+	private IUserService userService;
+	@Autowired
+	private IBdPermService permService;
+
+	@RequestMapping("/toLogin")
+	public String toLogin(HttpServletRequest request, Model model) {
+		logger.info("user toLogin");
+		ServletContext application = request.getServletContext();
+		String WebUrl = (String) application.getAttribute("WebUrl");
+		if ("".equals(StringUtils.trimToEmpty(WebUrl))) {
+			WebUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+					+ request.getContextPath();
+			application.setAttribute("WebUrl", WebUrl);
+		}
+		return "login";
+	}
+
+	@RequestMapping("/toWelcome")
+	public String toWelcome(HttpServletRequest request, Model model) {
+
+		return "welcome";
+	}
+
+	@RequestMapping("/login") 
+	@ResponseBody
+	public String login(HttpServletRequest request, BdUser bdUser, BdUserLoginLog bdUserLoginLog,
+			BdUserLoginSession bdUserLoginSession, ModelMap resultMap) {
+		
+//		BdUser bdUserInDB = userService.selectByModel(bdUser);
+//		String clientIp = getIPAddr(request);
+//		if (bdUserInDB != null) { // 
+//			int logFlag=0,sessionFlag=0;
+//			{//log
+//				bdUserLoginLog.setDeviceId(clientIp);
+//				bdUserLoginLog.setUserId(bdUserInDB.getUserId());
+//				Date time = new java.sql.Date(new java.util.Date().getTime());
+//				bdUserLoginLog.setLoginTime(time);
+//				logFlag = userService.insertBdUserLoginLog(bdUserLoginLog);
+//			}
+//			{//session
+//				HttpSession session = request.getSession();
+//				session.setAttribute("user", bdUserInDB);//用来登出时获取用户id
+//				session.setAttribute("UserLoginLog", bdUserLoginLog);//用来登出时获取deviceId
+//				bdUserLoginSession.setUserId(bdUserInDB.getUserId());
+//				bdUserLoginSession.setDeviceId(clientIp);	
+//				bdUserLoginSession.setSessionId(session.getId());//session_id
+//				sessionFlag = userService.updateBdUserLoginSession(bdUserLoginSession);
+//				//userRole
+//				List userRoleList = permService.queryRolePermData(bdUserInDB.getRoleId());
+//				session.setAttribute("userRole", userRoleList);//用来登出时获取用户id
+//				//保存这个用户的Session
+//				LoginSessionManager.getInstance().sessionMap.put("session",session);
+//	}
+//			return "success";
+//		} else {
+//			
+//			return "failed";
+//		}
+		return "success";
+	}
+
+	@RequestMapping("/toMain") 
+	public String toMain() {
+		return "main";
+	}
+
+	@RequestMapping("/toLogout") 
+	@ResponseBody
+	public String toLogout(HttpServletRequest request, ModelMap resultMap) {
+		//添加log 清除session
+		int sessionFlag = 0;
+		HttpSession session = request.getSession();
+		String sessionId = session.getId();
+		//插入log
+		if (session.getAttribute("UserLoginLog")!=null) {
+			BdUserLoginLog record = (BdUserLoginLog)session.getAttribute("UserLoginLog");
+			Date time = new java.sql.Date(new java.util.Date().getTime());
+			
+			record.setLogoutTime(time);
+			record.setLoginTime(null);
+			userService.insertBdUserLoginLog(record);
+		}
+		//删除数据库中session记录
+		sessionFlag = userService.deleteUserSession(sessionId);
+		return "success";
+	}
+	
+	@RequestMapping("/register") 
+	@ResponseBody
+	public String register(HttpServletRequest request, BdUser bdUser, ModelMap resultMap) {
+
+		return "false";
+	}
+
+	@RequestMapping("/toUserList")
+	public String toUserList(HttpServletRequest request, Model model) {
+		return "user/userList";
+	}
+
+	@RequestMapping(value = "/queryUserList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<?> queryUserList(HttpServletRequest request, BdUser bdUser, ModelMap retMap) {
+		List<?> list = userService.queryUserList(bdUser);//返回map List
+		return list;
+	}
+
+	@RequestMapping("/toUserAdd")
+	public String toUserAdd(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		return "user/userAdd";
+	}
+
+	@RequestMapping("/toUserEdit") //
+	public String toUserEdit(HttpServletRequest request, BdUser bdUser, ModelMap retMap) {
+		Integer userId = null;
+		BdUserDetail bdUserDetail = null;
+		//
+		if (bdUser != null) {
+			userId = bdUser.getUserId();
+		}
+		if (userId != null) {
+			bdUser = userService.selectByPrimaryKey(userId);
+			bdUserDetail = userService.selectDetailByPrimaryKey(userId);
+		}
+		retMap.addAttribute("BdUser", bdUser);
+		retMap.addAttribute("BdUserDetail", bdUserDetail);
+
+		return "user/userEdit";
+	}
+
+	@RequestMapping("/saveUserAdd") //
+	@ResponseBody
+	public int saveUserAdd(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		int IsAddSuccess = 0;
+		
+		IsAddSuccess = userService.addUser(bdUser, bdUserDetail);
+		return IsAddSuccess;
+	}
+
+	@RequestMapping("/saveUserEdit") //
+	@ResponseBody
+	public int saveUserEdit(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		int IsAddSuccess = 0;
+		Integer userId = bdUser.getUserId();	
+		try {
+			if (userId != null) {
+				if (bdUser.getPassword() != null) {
+					bdUser.setPassword(EncryptUtil.Md5(bdUser.getPassword()));
+				} else {
+					bdUser.setPassword(EncryptUtil.Md5("111111"));
+				}
+				IsAddSuccess = userService.updateUser(bdUser, bdUserDetail);
+			} else {
+				if (bdUser.getPassword() != null) {
+					bdUser.setPassword(EncryptUtil.Md5(bdUser.getPassword()));
+				} else {
+					bdUser.setPassword(EncryptUtil.Md5("111111"));
+				}
+				IsAddSuccess = userService.addUser(bdUser, bdUserDetail);
+			}
+
+			return 1;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return 0;
+		}
+		
+	}
+
+	@RequestMapping("/saveUserDelete")
+	@ResponseBody
+	public int saveUserDelete(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		int IsAddSuccess = 0;
+		if (bdUser.getUserId() != null || bdUserDetail.getUserId() != null) {
+			IsAddSuccess = userService.deleteUser(bdUser, bdUserDetail);
+		}
+		return IsAddSuccess;
+	}
+
+	@RequestMapping("/saveUserPasswordEdit") // 
+	@ResponseBody
+	public int saveUserPasswordEdit(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		int IsAddSuccess = 0;
+		IsAddSuccess = userService.updateUser(bdUser, bdUserDetail);
+		return IsAddSuccess;
+	}
+
+}

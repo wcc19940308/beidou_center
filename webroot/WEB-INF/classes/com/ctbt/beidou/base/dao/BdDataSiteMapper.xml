@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdDataSiteMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdDataSite">
+    <id column="site_no" jdbcType="VARCHAR" property="siteNo" />
+    <result column="site_ip" jdbcType="VARCHAR" property="siteIp" />
+    <result column="site_port" jdbcType="INTEGER" property="sitePort" />
+    <result column="site_url" jdbcType="VARCHAR" property="siteUrl" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="last_time" jdbcType="TIMESTAMP" property="lastTime" />
+    <result column="validity" jdbcType="CHAR" property="validity" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    site_no, site_ip, site_port, site_url, user_name, password, last_time, validity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_data_site
+    where site_no = #{siteNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_data_site
+    where validity='1'
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from bd_data_site
+    where site_no = #{siteNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdDataSite">
+    insert into bd_data_site (site_no, site_ip, site_port, 
+      site_url, user_name, password, 
+      last_time, validity)
+    values (#{siteNo,jdbcType=VARCHAR}, #{siteIp,jdbcType=VARCHAR}, #{sitePort,jdbcType=INTEGER}, 
+      #{siteUrl,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{lastTime,jdbcType=TIMESTAMP}, #{validity,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdDataSite">
+    insert into bd_data_site
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="siteNo != null">
+        site_no,
+      </if>
+      <if test="siteIp != null">
+        site_ip,
+      </if>
+      <if test="sitePort != null">
+        site_port,
+      </if>
+      <if test="siteUrl != null">
+        site_url,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="lastTime != null">
+        last_time,
+      </if>
+      <if test="validity != null">
+        validity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="siteNo != null">
+        #{siteNo,jdbcType=VARCHAR},
+      </if>
+      <if test="siteIp != null">
+        #{siteIp,jdbcType=VARCHAR},
+      </if>
+      <if test="sitePort != null">
+        #{sitePort,jdbcType=INTEGER},
+      </if>
+      <if test="siteUrl != null">
+        #{siteUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="lastTime != null">
+        #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validity != null">
+        #{validity,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdDataSite">
+    update bd_data_site
+    <set>
+      <if test="siteIp != null">
+        site_ip = #{siteIp,jdbcType=VARCHAR},
+      </if>
+      <if test="sitePort != null">
+        site_port = #{sitePort,jdbcType=INTEGER},
+      </if>
+      <if test="siteUrl != null">
+        site_url = #{siteUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validity != null">
+        validity = #{validity,jdbcType=CHAR},
+      </if>
+    </set>
+    where site_no = #{siteNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdDataSite">
+    update bd_data_site
+    set site_ip = #{siteIp,jdbcType=VARCHAR},
+      site_port = #{sitePort,jdbcType=INTEGER},
+      site_url = #{siteUrl,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      last_time = #{lastTime,jdbcType=TIMESTAMP},
+      validity = #{validity,jdbcType=CHAR}
+    where site_no = #{siteNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

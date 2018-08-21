@@ -1,0 +1,33 @@
+package com.ctbt.beidou.base.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ctbt.beidou.base.bo.KeyValue;
+import com.ctbt.beidou.base.model.SysDic;
+import com.ctbt.beidou.base.model.SysRegion;
+
+public interface IDicService {
+	Map<String, List<KeyValue>> getAllDic();
+
+	List<KeyValue> loadDic(SysDic sysDic);
+	 int insert(SysRegion record);
+	 Integer queryMax(); 
+	List<KeyValue> loadDic(Integer dicId);
+	   SysRegion queryV(SysRegion record);
+	    
+	    SysRegion queryT(SysRegion record);
+
+	List<KeyValue> queryCountryList();
+	List<KeyValue> queryProvinceList(Integer countryId);
+	List<KeyValue> queryCityList(Integer regId);
+	List<KeyValue> queryCityAreaList(Integer regId);
+	List<KeyValue> queryTownList(Integer regId);
+	List<KeyValue> queryVillageList(Integer regId);
+	
+	List<SysRegion> querySysRegionTree();
+	List<SysRegion> querySysRegionTreeByParentId();
+	
+	List<SysRegion> querySysRegionShipTree(Map<String, Object> record);
+	
+}

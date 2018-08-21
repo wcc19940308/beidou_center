@@ -8,17 +8,25 @@
     <result column="perm_name" jdbcType="VARCHAR" property="permName" />
     <result column="perm_type" jdbcType="CHAR" property="permType" />
     <result column="perm_url" jdbcType="VARCHAR" property="permUrl" />
+    <result column="perm_icon" jdbcType="VARCHAR" property="permIcon" />
     <result column="validity" jdbcType="CHAR" property="validity" />
     <result column="order_no" jdbcType="INTEGER" property="orderNo" />
+    <result column="perm_script" jdbcType="INTEGER" property="permScript" />
   </resultMap>
   <sql id="Base_Column_List">
-    perm_id, parent_id, perm_level, perm_name, perm_type, perm_url, validity, order_no
+    perm_id, parent_id, perm_level, perm_name, perm_type, perm_url, validity, order_no,perm_icon,perm_script
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from bd_perm
     where perm_id = #{permId,jdbcType=INTEGER}
+  </select>
+  <!-- 查询整张表 -->
+  <select id="selectAllTable" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_perm
   </select>
   
    <!-- 整棵权限划树查询 -->

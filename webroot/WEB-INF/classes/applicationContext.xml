@@ -34,14 +34,15 @@
             <value>${jndi.data_source}</value>
         </property>
     </bean>
-    
+
     <!--第二步：创建sqlSessionFactory-->
     <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
         <!--传入数据源-->
         <property name="dataSource" ref="dataSource"/>
         <!--指定MyBatis的核心配置文件的位置-->
         <property name="configLocation" value="classpath:springMybatis.xml"/>
-        <!--其他MyBatis的配置都可以在此进行配置-->
+        <!--其他MyBatis的配置都可以在此进行配置--> 
+     
     </bean>
     
     <!--扫描Mapper，生成dao的代理对象-->

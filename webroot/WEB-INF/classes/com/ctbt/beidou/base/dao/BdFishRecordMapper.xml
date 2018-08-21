@@ -38,15 +38,16 @@
   <choose>
   
 <when test="fishType == null">
-    SELECT record_id, ship_id, user_id, sea_area, country, record_date, weather, wind, grade, 
-f_get_location(jdv1, jdv2, jdv3, jdv4, jdv5, wdv1, wdv2, wdv3, wdv4, wdv5) location,f_get_fish_detail(record_id) detail FROM`bd_fish_record`
+    SELECT t1.record_id, ship_id, user_id, sea_area, country, record_date, weather, wind, grade, 
+f_get_location(jdv1, jdv2, jdv3, jdv4, jdv5, wdv1, wdv2, wdv3, wdv4, wdv5) location,f_get_fish_detail(t1.record_id) detail FROM`bd_fish_record`AS t1 ,`bd_fish_record_detail` AS t2
 	WHERE ship_id LIKE '%${shipId}%'
 	<if test="sendTimeStart != null"> 
 	and (TO_DAYS(#{sendTimeStart}) <![CDATA[ <= ]]> TO_DAYS(record_date) or TO_DAYS(#{sendTimeStart}) = TO_DAYS(record_date))
 	</if>
 	<if test="sendTimeEnd != null"> 
-	and (TO_DAYS(#{sendTimeEnd})<![CDATA[ >= ]]>  TO_DAYS(record_date) or TO_DAYS(#{sendTimeEnd}) = TO_DAYS(record_date) )
+	and (TO_DAYS(#{sendTimeEnd})<![CDATA[ >= ]]>  TO_DAYS(record_date) or TO_DAYS(#{sendTimeEnd}) = TO_DAYS(record_date))
 	</if>
+	and t1.record_id=t2.record_id 
 </when>
 
   <otherwise>
@@ -85,7 +86,7 @@ f_get_location(jdv1, jdv2, jdv3, jdv4, jdv5, wdv1, wdv2, wdv3, wdv4, wdv5) locat
       #{jdv5,jdbcType=INTEGER}, #{wdv1,jdbcType=CHAR}, #{wdv2,jdbcType=INTEGER}, #{wdv3,jdbcType=INTEGER}, 
       #{wdv4,jdbcType=INTEGER}, #{wdv5,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdFishRecord">
+  <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdFishRecord" useGeneratedKeys="true" keyProperty="id">
     insert into bd_fish_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="recordId != null">

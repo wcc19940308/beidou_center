@@ -3,11 +3,19 @@
 
 <mapper namespace="com.ctbt.beidou.base.dao.BdAppMapper">
 
+
 <select id="findAll" parameterType="java.util.Map" resultType="Map">
 
-select * from people_msg where 
-to_phone = #{phone} or msg_to = (SELECT f_get_card_by_phone(#{phone}))
- and recv_time > #{recv_time}
+<!-- 从是视图中返回所有类型的数据（天气，聊天等） -->
+
+select * from people_msg where
+<if test="phone != null">
+(type='c' or type='o' or to_phone = #{phone} or (msg_to is not null and msg_to = (SELECT f_get_card_by_phone(#{phone}))))
+</if>
+<if test="phone == null">
+(type='c' or type='o')
+</if>
+and recv_time > #{recv_time}
 order by recv_time limit 20
 
 </select>

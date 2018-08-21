@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdDataPackSendMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdSendPackage">
+    <id column="pkg_id" jdbcType="INTEGER" property="pkgId" />
+    <result column="center_no" jdbcType="VARCHAR" property="centerNo" />
+    <result column="pkg_type" jdbcType="CHAR" property="pkgType" />
+    <result column="msg_id" jdbcType="INTEGER" property="msgId" />
+    <result column="pkg_msg" jdbcType="VARCHAR" property="pkgMsg" />
+    <result column="master_from" jdbcType="INTEGER" property="masterFrom" />
+    <result column="pkg_from" jdbcType="INTEGER" property="pkgFrom" />
+    <result column="phone_from" jdbcType="VARCHAR" property="phoneFrom" />
+    <result column="master_to" jdbcType="INTEGER" property="masterTo" />
+    <result column="pkg_to" jdbcType="INTEGER" property="pkgTo" />
+    <result column="phone_to" jdbcType="VARCHAR" property="phoneTo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="send_site_no" jdbcType="VARCHAR" property="sendSiteNo" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    pkg_id, center_no, pkg_type, msg_id, pkg_msg, master_from, pkg_from, phone_from, 
+    master_to, pkg_to, phone_to, create_time, send_time, send_site_no
+  </sql>
+  
+  <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select * from bd_send_package where pkg_id is not null
+  	<if test="masterFrom != null">
+  		and master_from = #{masterFrom}
+  	</if>
+  	
+  	<if test="masterTo != null">
+  		and master_to = #{masterTo}
+  	</if>
+  	
+  	<if test="phoneFrom != null">
+  		and phone_from = #{phoneFrom}
+  	</if>
+  	
+  	<if test="phoneTo != null">
+  		and phone_to = #{phoneTo}
+  	</if>
+  	
+  	<if test="pkgFrom != null">
+  		and pkg_from = #{pkgFrom}
+  	</if>
+  	
+  	<if test="pkgTo != null">
+  		and pkg_to = #{pkgTo}
+  	</if>
+  	
+  	<if test="beginTime != null and endTime == null">
+  	and create_time >= #{beginTime}
+  	</if>
+  	
+  	<if test="beginTime != null and endTime != null">
+  	and create_time between #{beginTime} and #{endTime}
+  	</if>
+  	
+  </select>
+  
+  <select id="selectForSend" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_send_package
+    where send_time is null order by create_time LIMIT 50
+  </select>
+  
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdSendPackage">
+    insert into bd_send_package (pkg_id, center_no, pkg_type, 
+      msg_id, pkg_msg, master_from, 
+      pkg_from, phone_from, master_to, 
+      pkg_to, phone_to, create_time, 
+      send_time, send_site_no)
+    values (#{pkgId,jdbcType=INTEGER}, #{centerNo,jdbcType=VARCHAR}, #{pkgType,jdbcType=CHAR}, 
+      #{msgId,jdbcType=INTEGER}, #{pkgMsg,jdbcType=VARCHAR}, #{masterFrom,jdbcType=INTEGER}, 
+      #{pkgFrom,jdbcType=INTEGER}, #{phoneFrom,jdbcType=VARCHAR}, #{masterTo,jdbcType=INTEGER}, 
+      #{pkgTo,jdbcType=INTEGER}, #{phoneTo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{sendTime,jdbcType=TIMESTAMP}, #{sendSiteNo,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateForSend" parameterType="com.ctbt.beidou.base.model.BdSendPackage">
+    update bd_send_package
+    set send_time = #{sendTime,jdbcType=TIMESTAMP},
+      send_site_no = #{sendSiteNo,jdbcType=VARCHAR}
+    where pkg_id = #{pkgId,jdbcType=INTEGER}
+  </update>
+</mapper>

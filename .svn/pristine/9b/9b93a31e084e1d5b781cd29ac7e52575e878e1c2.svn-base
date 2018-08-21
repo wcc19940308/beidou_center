@@ -1,0 +1,239 @@
+package com.ctbt.beidou.notice.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.dao.BdMsgNoticeMapper;
+import com.ctbt.beidou.base.model.BdMsgNotice;
+import com.ctbt.beidou.base.model.SysRegion;
+import com.ctbt.beidou.base.service.IDicService;
+import com.ctbt.beidou.base.utils.DicUtil;
+import com.ctbt.beidou.base.utils.SpringContextUtil;
+import com.ctbt.beidou.datapack.service.IBdDataPackService;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
+@Transactional
+@Service("noticeService")
+public class BdNoticeServiceImpl implements IBdNoticeService {
+	@Resource
+	private BdMsgNoticeMapper bdMsgNoticeMapper;
+
+	@Resource
+	private IBdDataPackService datapackService;
+
+	@Override
+	public int deleteByPrimaryKey(Integer msgId) {
+
+		return this.bdMsgNoticeMapper.deleteByPrimaryKey(msgId);
+	}
+
+	@Override
+	public int insert(BdMsgNotice record) {
+
+		return this.bdMsgNoticeMapper.insert(record);
+	}
+
+	@Override
+	public int insertSelective(BdMsgNotice record) {
+
+		return this.bdMsgNoticeMapper.insertSelective(record);
+	}
+
+	@Override
+	public BdMsgNotice selectByPrimaryKey(Integer msgId) {
+
+		return this.bdMsgNoticeMapper.selectByPrimaryKey(msgId);
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(BdMsgNotice record) {
+
+		return this.bdMsgNoticeMapper.updateByPrimaryKeySelective(record);
+	}
+
+	@Override
+	public int updateByPrimaryKey(BdMsgNotice record) {
+
+		return this.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public List<BdMsgNotice> queryNoticeList(Map<String, Object> record) {
+
+		return this.bdMsgNoticeMapper.selectByCondition(record);
+	}
+
+	/*
+	 * //查询消息，构造树形结构
+	 * 
+	 * @Override public List<Map<String, Object>> findAll(HttpServletRequest
+	 * request) {
+	 * 
+	 * String text = request.getParameter("text"); String str =
+	 * request.getParameter("str"); List<Map<String, Object>> list = null;
+	 * //如果搜索框的内容和to中的内容都为空，构造整棵树 if((text == null || text == "") && (str == null ||
+	 * str == "")) { list = bdMsgNoticeMapper.findAll(); } //如果搜索框内容不为空，则按搜索框内容进行搜索
+	 * else if(text != null || text != "") { text = "%"+text+"%"; list =
+	 * bdMsgNoticeMapper.searchInfo(text); }
+	 * System.out.println("------------------------"+list.size()); //返回的List数据
+	 * List<Map<String, Object>> returnListInfo = new LinkedList<>();
+	 * while(list.size() > 0){ //返回的Map数据 Map<String,Object> returnMapInfo = new
+	 * HashMap<>(); //获得每项明细 int detailShip_id = (int) list.get(0).get("ship_id");
+	 * String detailShip_name = (String) list.get(0).get("ship_name"); int
+	 * detailCard_no1; if (list.get(0).get("card_no1") == null) { detailCard_no1 =
+	 * 000000000; }else { detailCard_no1 = (int) list.get(0).get("card_no1"); }
+	 * //船的具体信息 returnMapInfo.put("ship_id", detailShip_id);
+	 * returnMapInfo.put("ship_name", detailShip_name);
+	 * returnMapInfo.put("card_no1", detailCard_no1); returnMapInfo.put("text",
+	 * detailShip_name+"("+detailCard_no1+")"); returnMapInfo.put("icon",
+	 * request.getScheme() +"://" + request.getServerName() + ":"
+	 * +request.getServerPort()
+	 * +request.getContextPath()+"/images/icons/ship22.png"); list.remove(0);
+	 * returnListInfo.add(returnMapInfo); } return returnListInfo; }
+	 */
+
+	@Override
+	public List<Map<String, Object>> findAll(HttpServletRequest request) {
+
+		String text = request.getParameter("text");
+		String str = request.getParameter("str");
+		List<Map<String, Object>> list = null;
+
+		List<Map<String, Object>> origionList = DicUtil.getInstance().querySysRegionTree();
+		Map<Integer, Map<String, Object>> origionMap = DicUtil.getInstance().sysRegionMap;
+		// 如果搜索框的内容和to中的内容都为空，构造整棵树
+		if ((text == null || text == "") && (str == null || str == "")) {
+			list = bdMsgNoticeMapper.findAll();
+			List<Map<String, Object>> middleList = new ArrayList<>();
+			// 获得以下几个省份的list
+			for (int i = 0; i < origionList.size(); i++) {
+				String origionName = (String) origionList.get(i).get("text");
+				if (("浙江省").equals(origionName) || ("福建省").equals(origionName) || ("广东省").equals(origionName)
+						|| ("海南省").equals(origionName) || ("江苏省").equals(origionName) || ("山东省").equals(origionName)
+						|| ("辽宁省").equals(origionName)) {
+					middleList.add(origionList.get(i));
+				}
+			}
+			for (int i = 0; i < list.size(); i++) {
+				// 获得这艘船的最低限定位置
+				Object returnShip = list.get(i).get("village") != null ? list.get(i).get("village")
+						: list.get(i).get("town") != null ? (Object) list.get(i).get("town")
+								: (Object) list.get(i).get("city_area");
+
+				Map<String, Object> returnMap = origionMap.get(returnShip);
+				List<Map<String, Object>> shipNodeList = new ArrayList<>();
+				Map<String, Object> shipNode = new HashMap<String, Object>();
+
+				shipNode.put("ship_id", list.get(i).get("ship_id"));
+				shipNode.put("ship_name", list.get(i).get("ship_name"));
+				shipNode.put("card_no1", list.get(i).get("card_no1"));
+				shipNode.put("text", list.get(i).get("ship_name") + "(" + list.get(i).get("card_no1") + ")");
+				shipNode.put("icon", request.getScheme() + "://" + request.getServerName() + ":"
+						+ request.getServerPort() + request.getContextPath() + "/images/icons/ship22.png");
+				shipNodeList.add(shipNode);
+				if (returnMap.get("children") != null) {
+					List<Map<String, Object>> childrenList = (List<Map<String, Object>>) returnMap.get("children");
+					// 防止遍历的时候重复塞入相同的船
+					for (int j=0; j<childrenList.size(); j++) {
+						if (!childrenList.contains(shipNode)) {
+							childrenList.add(shipNode);
+						}
+					}					
+				}else {
+					returnMap.put("children", shipNodeList);
+				}				
+			}
+			return middleList;
+		}
+		// 如果搜索框内容不为空，则按搜索框内容进行搜索
+		else if (text != null || text != "") {
+			text = "%" + text + "%";
+			// 找到搜索的那艘船
+			list = bdMsgNoticeMapper.searchInfo(text);
+			Map<String, Object> map = new HashMap<>();
+
+			map.put("province", list.get(0).get("province"));
+			map.put("city", list.get(0).get("city"));
+			map.put("city_area", list.get(0).get("city_area"));
+			map.put("town", list.get(0).get("town"));
+			map.put("village", list.get(0).get("village"));
+
+			IDicService dicService = (IDicService) SpringContextUtil.getBean("dicService");
+			List<SysRegion> searchRegList = dicService.querySysRegionShipTree(map);
+			List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+			Map<Integer, Map<String, Object>> sysRegionMap = new HashMap<Integer, Map<String, Object>>();
+			SysRegion sysreg = null;
+			for (int k = 0; k < searchRegList.size(); k++) {
+				sysreg = searchRegList.get(k);
+				Map<String, Object> node = new HashMap<String, Object>();
+				Map<String, Object> middleMap = new HashMap<>();
+				node.put("id", sysreg.getRegId());
+				node.put("text", sysreg.getRegName());
+				node.put("level", sysreg.getLevel().intValue());
+				node.put("pid", sysreg.getParentId());
+				node.put("countryId", sysreg.getCountryId());
+				Map<String, Object> parent = sysRegionMap.get(sysreg.getParentId());
+				if (parent != null) {
+					// 找到父节点
+					List<Map<String, Object>> childList = (List<Map<String, Object>>) parent.get("children");
+					if (childList == null) {
+						childList = new ArrayList<Map<String, Object>>();
+						parent.put("children", childList);
+					}
+
+					childList.add(node);
+				} else {
+					// 没找到父节点，就当一级节点
+					//
+					returnList.add(node);
+				}
+				sysRegionMap.put(sysreg.getRegId(), node);// 添加节点索引
+			}
+			
+			System.out.println(returnList);
+
+			// 获得这艘船的最低限定位置
+			Object returnShip = list.get(0).get("village") != null ? list.get(0).get("village")
+					: list.get(0).get("town") != null ? (Object) list.get(0).get("town")
+							: (Object) list.get(0).get("city_area");
+					
+			Map<String, Object> returnMap = sysRegionMap.get(returnShip);
+			List<Map<String, Object>> shipNodeList = new ArrayList<>();
+			Map<String, Object> shipNode = new HashMap<String, Object>();
+
+			shipNode.put("type", "ship");
+			shipNode.put("ship_id", list.get(0).get("ship_id"));
+			shipNode.put("ship_name", list.get(0).get("ship_name"));
+			shipNode.put("card_no1", list.get(0).get("card_no1"));
+			shipNode.put("text", list.get(0).get("ship_name") + "(" + list.get(0).get("card_no1") + ")");
+			shipNode.put("icon", request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+					+ request.getContextPath() + "/images/icons/ship22.png");
+			shipNodeList.add(shipNode);
+			returnMap.put("children", shipNodeList);
+
+			return returnList;
+
+		}
+		return null;
+	}
+
+	@Override
+	public int insertMsg(List<BdMsgNotice> list) {
+
+		for (BdMsgNotice msg : list) {
+			this.bdMsgNoticeMapper.insert(msg);
+			datapackService.saveBdSendPackageForNotice(msg);
+		}
+
+		return list.size();
+	}
+}

@@ -1,0 +1,28 @@
+package com.ctbt.beidou.datapack.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ctbt.beidou.base.model.BdDataPackRecv;
+import com.ctbt.beidou.base.model.BdMsgAlarm;
+import com.ctbt.beidou.base.model.BdMsgChat;
+import com.ctbt.beidou.base.model.BdMsgNotice;
+import com.ctbt.beidou.base.model.BdMsgWeather;
+import com.ctbt.beidou.base.model.BdSendPackage;
+import com.ctbt.beidou.base.model.BdRecvPackage;
+
+
+public interface IBdDataPackService {
+
+	List<BdSendPackage> queryDataPackSendList(Map<String, Object> record);
+	
+	List<BdDataPackRecv> queryDataPackRecvList(Map<String, Object> record);
+	
+	int saveBdRecvPackage(BdRecvPackage record);
+
+	int saveBdSendPackage(BdSendPackage record);
+	int saveBdSendPackageForChat(BdMsgChat record);
+	int saveBdSendPackageForAlarm(BdMsgAlarm record);
+	int saveBdSendPackageForNotice(BdMsgNotice record);
+	int saveBdSendPackageForWeather(BdMsgWeather record);
+}

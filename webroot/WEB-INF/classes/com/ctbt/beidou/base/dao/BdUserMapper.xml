@@ -8,25 +8,30 @@
     <result column="role_id" jdbcType="INTEGER" property="roleId" />
     <result column="validity" jdbcType="CHAR" property="validity" />
     <result column="role_name" jdbcType="INTEGER" property="roleName" />
+     <result column="user_name" jdbcType="VARCHAR" property="userName" />
   </resultMap>
   <sql id="Base_Column_List">
     user_id, password, phone, role_id, validity
   </sql>
-  <select id="getMaxUserID" resultType="java.lang.Integer">
-	select max(user_id) from bd_user;
-  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from bd_user
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
-   <select id="selectByModel" parameterType="com.ctbt.beidou.base.model.BdUser" resultMap="BaseResultMap">
+   <select id="selectByModel" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from bd_user where (user_id = #{userId,jdbcType=INTEGER} OR 
-    phone = #{phone,jdbcType=VARCHAR})  AND
-      password = #{password,jdbcType=VARCHAR}
+    from bd_user where (user_id = (select bd_user_detail.user_id from bd_user_detail where user_name = #{userName,jdbcType=VARCHAR}  )OR 
+    phone = #{phone,jdbcType=VARCHAR})  AND password = #{password,jdbcType=VARCHAR}
+  
+     
+  </select>
+  <select id="selectByPhone" parameterType="com.ctbt.beidou.base.model.BdUser" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_user where (user_id = #{userId,jdbcType=INTEGER} OR phone = #{phone,jdbcType=VARCHAR}) 
+     
   </select>
   <select id="selectByCondition" parameterType="com.ctbt.beidou.base.model.BdUser" resultMap="BaseResultMap">
 SELECT user_id, `password`,phone,validity,f_get_roleName(role_id) as role_name, role_id
@@ -44,10 +49,10 @@ where phone like '%${phone}%'
     delete from bd_user
     where user_id = #{userId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdUser" >
-    insert into bd_user (user_id, password, phone, 
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdUser" useGeneratedKeys="true" keyProperty="userId">
+    insert into bd_user (password, phone, 
       role_id, validity)
-    values (#{userId,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+    values (#{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{roleId,jdbcType=INTEGER}, #{validity,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ctbt.beidou.base.model.BdUser">

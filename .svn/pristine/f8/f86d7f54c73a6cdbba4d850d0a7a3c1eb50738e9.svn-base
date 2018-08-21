@@ -1,0 +1,250 @@
+package com.ctbt.beidou.user.controller;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.LoginSessionManager;
+import com.ctbt.beidou.base.bo.BdUserBo;
+import com.ctbt.beidou.base.dao.BdUserLoginLogMapper;
+import com.ctbt.beidou.base.dao.BdUserMapper;
+import com.ctbt.beidou.base.model.BdUser;
+import com.ctbt.beidou.base.model.BdUserDetail;
+import com.ctbt.beidou.base.model.BdUserLoginLog;
+import com.ctbt.beidou.base.model.BdUserLoginSession;
+import com.ctbt.beidou.base.utils.EncryptUtil;
+import com.ctbt.beidou.perm.service.IBdPermService;
+import com.ctbt.beidou.user.service.IUserService;
+
+@Controller
+@RequestMapping("/user")
+@CrossOrigin
+public class UserController {
+
+	private Logger logger = LogManager.getLogger(getClass());
+	
+	
+	@Autowired
+	private IUserService userService;
+	@Autowired
+	private IBdPermService permService;
+
+	@RequestMapping("/toLogin")
+	public String toLogin(HttpServletRequest request, Model model) {
+		logger.info("user toLogin");
+		ServletContext application = request.getServletContext();
+		String WebUrl = (String) application.getAttribute("WebUrl");
+		if ("".equals(StringUtils.trimToEmpty(WebUrl))) {
+			WebUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+					+ request.getContextPath();
+			application.setAttribute("WebUrl", WebUrl);
+		}
+		return "login";
+	}
+
+	@RequestMapping("/toWelcome")
+	public String toWelcome(HttpServletRequest request, Model model) {
+
+		return "welcome";
+	}
+/**
+ * 登陆是保存用户登陆日志和session记录
+ * 
+ */
+	@RequestMapping("/login") 
+	@ResponseBody
+	public String login(HttpServletRequest request, BdUser bdUser, BdUserLoginLog bdUserLoginLog,
+			BdUserLoginSession bdUserLoginSession,BdUserDetail bdUserDetail, ModelMap resultMap) {
+		
+		BdUser bdUserInDB = userService.selectByModel(bdUserDetail.getUserName(), bdUser.getPhone(),bdUser.getPassword());
+		String clientIp = getIPAddr(request);
+		if (bdUserInDB != null) { // 
+			//log
+				if (bdUserLoginLog.getDeviceId()==null) bdUserLoginLog.setDeviceId(clientIp);//如果是空 就保存一个IP地址	
+				bdUserLoginLog.setUserId(bdUserInDB.getUserId());
+				bdUserLoginLog.setLoginTime(new Date());
+				userService.insertBdUserLoginLog(bdUserLoginLog);//存入数据库
+			//session
+				HttpSession session = request.getSession();
+				session.setAttribute("user", bdUserInDB);
+				userService.saveSession(session,bdUserInDB,bdUserLoginLog,bdUserLoginSession,clientIp,userService,permService);
+				
+			return "success";
+		} else {
+			
+			return "failed";
+		}
+//		return "success";
+	}
+
+	@RequestMapping("/toMain") 
+	public String toMain() {
+		return "main";
+	}
+
+	@RequestMapping("/toLogout") 
+	@ResponseBody
+	public String toLogout(HttpServletRequest request, ModelMap resultMap) {
+		//添加log 清除session
+		int sessionFlag = 0;
+		HttpSession session = request.getSession();
+		String sessionId = session.getId();
+		//插入log
+		if (session.getAttribute("UserLoginLog")!=null) {
+			BdUserLoginLog record = (BdUserLoginLog)session.getAttribute("UserLoginLog");
+			record.setLogoutTime(new Date());
+			record.setLoginTime(null);
+			userService.insertBdUserLoginLog(record);
+		}
+		//删除数据库中session记录
+		sessionFlag = userService.deleteUserSession(sessionId);
+		return "success";
+	}
+	
+	@RequestMapping("/register") 
+	@ResponseBody
+	public String register(HttpServletRequest request, BdUser bdUser, ModelMap resultMap) {
+
+		return "false";
+	}
+
+	@RequestMapping("/toUserList")
+	public String toUserList(HttpServletRequest request, Model model) {
+		return "user/userList";
+	}
+
+	@RequestMapping(value = "/queryUserList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<?> queryUserList(HttpServletRequest request, BdUser bdUser, ModelMap retMap) {
+		List<?> list = userService.queryUserList(bdUser);//返回map List
+		return list;
+	}
+
+	@RequestMapping("/toUserAdd")
+	public String toUserAdd(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		return "user/userAdd";
+	}
+
+	@RequestMapping("/toUserEdit") //
+	public String toUserEdit(HttpServletRequest request, BdUser bdUser, ModelMap retMap) {
+		Integer userId = null;
+		BdUserDetail bdUserDetail = null;
+		//
+		if (bdUser != null) {
+			userId = bdUser.getUserId();
+		}
+		if (userId != null) {
+			bdUser = userService.selectByPrimaryKey(userId);
+			bdUserDetail = userService.selectDetailByPrimaryKey(userId);
+		}
+		retMap.addAttribute("BdUser", bdUser);
+		retMap.addAttribute("BdUserDetail", bdUserDetail);
+		//把该用户显示在jsp页面上 
+		return "user/userEdit";
+	}
+
+	@RequestMapping("/saveUserAdd") //添加用户
+	@ResponseBody
+	@CrossOrigin
+	public String saveUserAdd(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		String IsAddSuccess = "failed";
+		
+		//setPassword
+		if (bdUser.getPassword() != null) { bdUser.setPassword(EncryptUtil.Md5(bdUser.getPassword())); } 
+		else { bdUser.setPassword(EncryptUtil.Md5("888888")); }
+		BdUser bdUserInDB = userService.selectByPhone(bdUser);//通过userID或iphone去查询
+		if (bdUser.getRoleId()==null) {
+			bdUser.setRoleId(101);
+		}
+		if (bdUserInDB != null) {//已经存在，更新已有数据
+//			bdUser.setUserId(bdUserInDB.getUserId());
+//			userService.updateUser(bdUser, bdUserDetail);
+			return "failed";
+		}else {//不存在进行创建账户
+			if (userService.addUser(bdUser, bdUserDetail)>0) {
+				IsAddSuccess = "success";
+				return IsAddSuccess;
+			}else {
+				return IsAddSuccess;
+			}
+		}
+		
+	}
+
+	@RequestMapping("/saveUserEdit") //编辑用户信息
+	@ResponseBody
+	public int saveUserEdit(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		BdUser bdUserInDB = userService.selectByPhone(bdUser);
+		int IsAddSuccess = 0;
+		try {
+			if (bdUserInDB != null) {//已经存在，更新已有数据
+			if (bdUser.getPassword() != null) { bdUser.setPassword(EncryptUtil.Md5(bdUser.getPassword())); } 
+			else { bdUser.setPassword(EncryptUtil.Md5("111111")); }
+				bdUser.setUserId(bdUserInDB.getUserId());
+				userService.updateUser(bdUser, bdUserDetail);
+				IsAddSuccess = 1;
+				return IsAddSuccess;
+			}else {
+				return 0;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			return IsAddSuccess;
+		}
+		
+	}
+
+	@RequestMapping("/saveUserDelete")
+	@ResponseBody
+	public int saveUserDelete(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		int IsAddSuccess = 0;
+		if (bdUser.getUserId() != null || bdUserDetail.getUserId() != null) {
+			IsAddSuccess = userService.deleteUser(bdUser, bdUserDetail);
+		}
+		return IsAddSuccess;
+	}
+
+	@RequestMapping("/saveUserPasswordEdit") // 
+	@ResponseBody
+	public int saveUserPasswordEdit(HttpServletRequest request, BdUser bdUser, BdUserDetail bdUserDetail) {
+		int IsAddSuccess = 0;
+		IsAddSuccess = userService.updateUser(bdUser, bdUserDetail);
+		return IsAddSuccess;
+	}
+	
+	private String getIPAddr(HttpServletRequest request) {
+		String clientIp=null;
+		clientIp=request.getHeader("x-forwarded-for");  
+        if(clientIp == null || clientIp.length() == 0 || "unknown".equalsIgnoreCase(clientIp)) {  
+            clientIp = request.getHeader("Proxy-Client-IP");  
+        }  
+        if(clientIp == null || clientIp.length() == 0 || "unknown".equalsIgnoreCase(clientIp)) {  
+            clientIp = request.getHeader("WL-Proxy-Client-IP");  
+        }  
+        if(clientIp == null || clientIp.length() == 0 || "unknown".equalsIgnoreCase(clientIp)) {  
+            clientIp = request.getRemoteAddr();  
+        } 
+		return clientIp;
+	}
+
+}

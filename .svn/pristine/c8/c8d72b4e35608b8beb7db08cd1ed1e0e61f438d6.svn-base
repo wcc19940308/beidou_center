@@ -1,0 +1,143 @@
+package com.ctbt.beidou.data;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.alarm.service.IBdAlarmService;
+import com.ctbt.beidou.base.model.BdMsgAlarm;
+import com.ctbt.beidou.base.model.BdMsgChat;
+import com.ctbt.beidou.base.model.BdMsgNotice;
+import com.ctbt.beidou.base.model.BdMsgType;
+import com.ctbt.beidou.base.model.BdMsgWeather;
+import com.ctbt.beidou.chat.service.IBdChatService;
+import com.ctbt.beidou.notice.service.IBdNoticeService;
+import com.ctbt.beidou.weather.service.IBdWeatherService;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+@Controller
+@RequestMapping("/bdmsg")
+public class BdmsgController {
+
+	private Logger logger = LogManager.getLogger(getClass());
+
+	@Resource
+	private IBdNoticeService noticeService;
+
+	@Resource
+	private IBdChatService chatServie;
+
+	@Resource
+	private IBdAlarmService alarmService;
+	
+	@Resource
+	private IBdWeatherService weatherService;
+
+	@PostMapping(value="/msg")
+	@ResponseBody
+	public String insertNotice(HttpServletRequest request,BdMsgType msgs)  {
+		String request_type=msgs.getRequest_type();
+		String args=msgs.getArgs();
+		if (args==null|| request_type==null || args.equals("")) {
+			return "null";
+		}
+//		聊天信息
+		else if(request_type.equals("9") ||request_type.equals("10") || request_type.equals("11") ||request_type.equals("12")) {
+			String liString="["+args+"]";
+			List<BdMsgChat> msgChat=new ArrayList<>();
+			JSONArray jsonObjects = JSONArray.fromObject(liString);
+			for (int i = 0; i < jsonObjects.size(); i++) {				
+				Object object = jsonObjects.get(i);
+				JSONObject jsonObject = JSONObject.fromObject(object);
+				BdMsgChat bdMsgNotice = (BdMsgChat) JSONObject.toBean(jsonObject, BdMsgChat.class);
+				if(bdMsgNotice.getMsgType()==null) {
+					bdMsgNotice.setMsgType("1");
+				}
+				msgChat.add(bdMsgNotice);
+			}
+			int a=chatServie.insertMsg(msgChat);
+			if (a==1) {
+				return "sucess";
+			} else {
+				return "fail";
+			}
+		}
+//		报警
+		else if (request_type.equals("19")) {
+			String liString="["+args+"]";
+			List<BdMsgAlarm> msgChat=new ArrayList<>();
+			JSONArray jsonObjects = JSONArray.fromObject(liString);
+			for (int i = 0; i < jsonObjects.size(); i++) {				
+					Object object = jsonObjects.get(i);
+					JSONObject jsonObject = JSONObject.fromObject(object);
+					BdMsgAlarm bdMsgNotice = (BdMsgAlarm) JSONObject.toBean(jsonObject, BdMsgAlarm.class);
+					msgChat.add(bdMsgNotice);
+			}
+			int a=alarmService.insertMsg(msgChat);
+			if (a==1) {
+				return "success";
+			}
+			else {
+				return "fail";
+			}		
+		}
+//		通知
+		else if (request_type.equals("101")) {
+			String liString="["+args+"]";
+			List<BdMsgNotice> msgChat=new ArrayList<>();
+			JSONArray jsonObjects = JSONArray.fromObject(liString);
+			for (int i = 0; i < jsonObjects.size(); i++) {				
+					Object object = jsonObjects.get(i);
+					JSONObject jsonObject = JSONObject.fromObject(object);
+					BdMsgNotice bdMsgNotice = (BdMsgNotice) JSONObject.toBean(jsonObject, BdMsgNotice.class);
+					msgChat.add(bdMsgNotice);
+			}
+			int a=noticeService.insertMsg(msgChat);
+			if (a==1) {
+				return "success";
+			}
+			else {
+				return "fail";
+			}	
+		}
+//		天气
+		else if (request_type.equals("102")) {
+			String liString="["+args+"]";
+			List<BdMsgWeather> msgChat=new ArrayList<>();
+			JSONArray jsonObjects = JSONArray.fromObject(liString);
+			for (int i = 0; i < jsonObjects.size(); i++) {				
+					Object object = jsonObjects.get(i);
+					JSONObject jsonObject = JSONObject.fromObject(object);
+					BdMsgWeather bdMsgNotice = (BdMsgWeather) JSONObject.toBean(jsonObject, BdMsgWeather.class);
+					msgChat.add(bdMsgNotice);
+			}
+			int a=weatherService.insertMsg(msgChat);
+			if (a==1) {
+				return "success";
+			}
+			else {
+				return "fail";
+			}			
+		}
+		else {
+			return "null";
+		}
+	}
+	
+	
+}

@@ -9,9 +9,10 @@
     <result column="msg_txt" jdbcType="VARCHAR" property="msgTxt" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
     <result column="send_flag" jdbcType="CHAR" property="sendFlag" />
+    <result column="send_uuid" jdbcType="VARCHAR" property="sendUUID" />
   </resultMap>
   <sql id="Base_Column_List">
-    phone_msg_id, phone, msg_type, msg_code, msg_txt, send_time, send_flag
+    phone_msg_id, phone, msg_type, msg_code, msg_txt, send_time, send_flag,send_uuid
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -19,6 +20,13 @@
     from bd_phone_msg
     where phone_msg_id = #{phoneMsgId,jdbcType=INTEGER}
   </select>
+<!-- 查询某个手机号码的最近一条验证短信） -->
+   <select id="selectByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+   
+ SELECT <include refid="Base_Column_List" /> 
+ FROM bd_phone_msg WHERE phone = #{phone} and msg_type='1' ORDER BY send_time DESC LIMIT 1
+  </select>
+  
    <select id="queryPhonemsg" parameterType="java.util.Map" resultType="Map">
     select 
     <include refid="Base_Column_List" />
@@ -28,10 +36,10 @@
 	and msg_type = #{msgType}
 	</if>
 	<if test="sendTimeStart != null"> 
-	and (#{sendTimeStart} <![CDATA[ <= ]]> send_time or #{sendTimeStart} = send_time)
+	and TIMESTAMPDIFF(SECOND,#{sendTimeStart},STR_TO_DATE(send_time,'%Y-%m-%d %H:%i:%s'))<![CDATA[ >= ]]>0
 	</if>
 	<if test="sendTimeEnd != null"> 
-	and (#{sendTimeEnd} <![CDATA[ >= ]]> send_time or #{sendTimeEnd} = send_time)
+	and TIMESTAMPDIFF(SECOND,#{sendTimeEnd},STR_TO_DATE(send_time,'%Y-%m-%d %H:%i:%s'))<![CDATA[ <= ]]>0
 	</if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -99,6 +107,7 @@
   
   
   <!-- 批量保存,并返回每个用户插入的ID -->
+  <!-- 保存非验证短信 -->
 <insert id="insertbBatchSave" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO bd_phone_msg (phone, msg_txt,msg_type,send_time)
     VALUES
@@ -106,11 +115,12 @@
         (#{item.phone}, #{item.msgTxt}, #{item.msgType},#{item.sendTime})
     </foreach>
 </insert>
+<!-- 保存验证短信 -->
 <insert id="insertbBatchSave2" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO bd_phone_msg (phone, msg_code,msg_type,send_time)
+    INSERT INTO bd_phone_msg (phone, msg_code,msg_type,send_time,send_flag,send_uuid)
     VALUES
     <foreach collection="list" item="item" separator=",">
-        (#{item.phone}, #{item.msgCode}, #{item.msgType},#{item.sendTime})
+        (#{item.phone}, #{item.msgCode}, #{item.msgType},#{item.sendTime},#{item.sendFlag},#{item.sendUUID})
     </foreach>
 </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdPhoneMsg">

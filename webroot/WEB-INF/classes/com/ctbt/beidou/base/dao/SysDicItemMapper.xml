@@ -37,7 +37,7 @@
     where dic_id = #{dicId,jdbcType=INTEGER}
       and item_key = #{itemKey,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.ctbt.beidou.base.model.SysDicItemKey">
+  <delete id="deleteByPrimaryKey" parameterType="com.ctbt.beidou.base.model.SysDicItem">
     delete from sys_dic_item
     where dic_id = #{dicId,jdbcType=INTEGER}
       and item_key = #{itemKey,jdbcType=VARCHAR}

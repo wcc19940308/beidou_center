@@ -1,0 +1,44 @@
+package com.ctbt.beidou.base;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.ctbt.beidou.base.model.BdUserLoginSession;
+
+public class LoginSessionManager {
+
+	private static Logger logger = LogManager.getLogger(LoginSessionManager.class);
+
+	private static LoginSessionManager instance = new LoginSessionManager();
+
+	public static Map<String, Object> sessionMap = new HashMap<String, Object>();
+	
+	/**根据手机号存放用户登录session**/
+	public static Map<String, BdUserLoginSession> sessionPhoneMap = new HashMap<String, BdUserLoginSession>();
+	
+	public static LoginSessionManager getInstance() {
+		return instance;
+	}
+	
+	/**
+	 * 根据手机号码，获取该手机所连接的北斗设备卡号
+	 * @param phone
+	 * @return
+	 */
+	public String getBdCardNoByPhone(String phone) {
+		String cardNo = "";
+		
+		BdUserLoginSession loginSession = sessionPhoneMap.get(phone);
+		if(loginSession != null && "".equals(loginSession.getNetType())) {
+			//如果最后登录的是船舶WIFI
+			loginSession.getDeviceId();
+			
+		}
+		
+		
+		return cardNo;
+	}
+}

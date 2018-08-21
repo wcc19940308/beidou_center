@@ -38,11 +38,16 @@
     select 
     <include refid="Base_Column_List" />
     from sys_dic
-    where dic_id = #{dicId,jdbcType=INTEGER} and dic_name like '%${dicName}%' 
+    		 <where>
+			<if test=" dicId!='' and dicId!=null ">
+				dic_id = #{dicId,jdbcType=INTEGER}
+			</if>
+			<if test=" dicName!='' and dicName!=null ">
+				dic_name like '%${dicName}%'
+			</if>
+		</where>
   </select> 
-  
-  
-  
+
   <select id="findAllValidity" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

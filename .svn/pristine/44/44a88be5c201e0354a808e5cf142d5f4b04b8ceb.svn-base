@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctbt.beidou.base.dao.BdMsgAlarmMapper">
+  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdMsgAlarm">
+    <id column="msg_id" jdbcType="INTEGER" property="msgId" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="recv_time" jdbcType="TIMESTAMP" property="recvTime" />
+    <result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+    <result column="msg_txt" jdbcType="VARCHAR" property="msgTxt" />
+    <result column="msg_from" jdbcType="VARCHAR" property="msgFrom" />
+    <result column="msg_to" jdbcType="VARCHAR" property="msgTo" />
+    <result column="is_recv" jdbcType="CHAR" property="isRecv" />
+    <result column="recv_confirm_time" jdbcType="TIMESTAMP" property="recvConfirmTime" />
+    <result column="is_exclude" jdbcType="CHAR" property="isExclude" />
+    <result column="exclude_confirm_time" jdbcType="TIMESTAMP" property="excludeConfirmTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    msg_id, send_time, recv_time, msg_type, msg_txt, msg_from, msg_to, is_recv, recv_confirm_time, 
+    is_exclude, exclude_confirm_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_msg_alarm
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </select>
+  
+    
+    <select id="selectSendToData" parameterType="com.ctbt.beidou.base.model.BdMsgAlarm" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_msg_alarm
+    where send_time &gt; #{sendTime,jdbcType=TIMESTAMP}  or 
+    recv_time &gt; #{recvTime,jdbcType=TIMESTAMP} or
+    exclude_confirm_time &gt; #{excludeConfirmTime,jdbcType=TIMESTAMP} 
+	ORDER BY send_time limit 10 
+  </select>
+  
+  <select id="selectByCondition" parameterType="java.util.Map" resultType="Map">
+  select * from 
+  (select  <include refid="Base_Column_List" /> 
+  from bd_msg_alarm where msg_id is not null
+       
+      <if test="msgFrom != null" >
+       and msg_from = #{msgFrom}
+      </if>
+      
+      <if test="msgTo != null" >
+       and msg_to = #{msgTo}
+      </if>
+      
+     <if test="msgType != null" >
+       and msg_type = #{msgType}
+      </if>
+      
+      <if test="beginTime1 != null and endTime1 == null and beginTime2 == null and endTime2 == null">
+  		and send_time >= #{beginTime1}
+  	  </if>
+  	
+  	  <if test="beginTime != null and endTime != null and beginTime2 == null and endTime2 == null">
+  	    and send_time between #{beginTime1} and #{endTime1}
+  	  </if>
+  	  
+  	  <if test="beginTime2 != null and endTime2 == null and beginTime1 == null and endTime1 == null">
+  		and recv_time >= #{beginTime2}
+  	  </if>
+  	
+  	  <if test="beginTime2 != null and endTime2 != null and beginTime1 == null and endTime1 == null">
+  	   and recv_time between #{beginTime2} and #{endTime2}
+  	  </if>  	  
+     ) as a left join sys_dic_item as b on b.dic_id=15 and b.item_key = a.msg_type
+      order by a.msg_id DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bd_msg_alarm
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctbt.beidou.base.model.BdMsgAlarm">
+    insert into bd_msg_alarm (msg_id, send_time, recv_time, 
+      msg_type, msg_txt, msg_from, 
+      msg_to, is_recv, recv_confirm_time, 
+      is_exclude, exclude_confirm_time)
+    values (#{msgId,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP}, #{recvTime,jdbcType=TIMESTAMP}, 
+      #{msgType,jdbcType=VARCHAR}, #{msgTxt,jdbcType=VARCHAR}, #{msgFrom,jdbcType=VARCHAR}, 
+      #{msgTo,jdbcType=VARCHAR}, #{isRecv,jdbcType=CHAR}, #{recvConfirmTime,jdbcType=TIMESTAMP}, 
+      #{isExclude,jdbcType=CHAR}, #{excludeConfirmTime,jdbcType=TIMESTAMP})
+  </insert>
+ 
+  
+  <insert id="insertSelective" parameterType="java.util.Map">
+   <selectKey resultType="int" keyProperty="msgId" order="AFTER" >
+    SELECT LAST_INSERT_ID() as msgId
+  </selectKey> 
+  insert into bd_msg_alarm (send_time,msg_type,msg_txt,msg_from,msg_to) 
+  values (#{send_time},#{msg_type},#{msg_txt},#{msg_from},#{msg_to})
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctbt.beidou.base.model.BdMsgAlarm">
+    update bd_msg_alarm
+    <set>
+      <if test="sendTime != null">
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recvTime != null">
+        recv_time = #{recvTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="msgTxt != null">
+        msg_txt = #{msgTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="msgFrom != null">
+        msg_from = #{msgFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="msgTo != null">
+        msg_to = #{msgTo,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecv != null">
+        is_recv = #{isRecv,jdbcType=CHAR},
+      </if>
+      <if test="recvConfirmTime != null">
+        recv_confirm_time = #{recvConfirmTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isExclude != null">
+        is_exclude = #{isExclude,jdbcType=CHAR},
+      </if>
+      <if test="excludeConfirmTime != null">
+        exclude_confirm_time = #{excludeConfirmTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctbt.beidou.base.model.BdMsgAlarm">
+    update bd_msg_alarm
+    set send_time = #{sendTime,jdbcType=TIMESTAMP},
+      recv_time = #{recvTime,jdbcType=TIMESTAMP},
+      msg_type = #{msgType,jdbcType=VARCHAR},
+      msg_txt = #{msgTxt,jdbcType=VARCHAR},
+      msg_from = #{msgFrom,jdbcType=VARCHAR},
+      msg_to = #{msgTo,jdbcType=VARCHAR},
+      is_recv = #{isRecv,jdbcType=CHAR},
+      recv_confirm_time = #{recvConfirmTime,jdbcType=TIMESTAMP},
+      is_exclude = #{isExclude,jdbcType=CHAR},
+      exclude_confirm_time = #{excludeConfirmTime,jdbcType=TIMESTAMP}
+    where msg_id = #{msgId,jdbcType=INTEGER}
+  </update>
+  
+  
+  <insert id="toInsertMsg" parameterType="java.util.List">
+  insert into bd_msg_alarm (send_time,msg_type,msg_txt,msg_from,msg_to)
+  values
+  <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.sendTime,jdbcType=TIMESTAMP}, #{item.msgType,jdbcType=CHAR}, #{item.msgTxt,jdbcType=VARCHAR},#{item.msgFrom,jdbcType=VARCHAR},
+            #{item.msgTo,jdbcType=VARCHAR})
+  </foreach>  
+  </insert>
+  
+   <select id="findAll" parameterType="java.util.Map" resultType="Map">
+ select ship_id , ship_name , card_no1 from bd_ship
+	</select>
+	
+	 <select id="searchInfo" parameterType="java.lang.String" resultType="Map">
+  select ship_id , ship_name , card_no1 from bd_ship where ship_name like #{text} or card_no1 like #{text}
+  </select>
+  
+</mapper>

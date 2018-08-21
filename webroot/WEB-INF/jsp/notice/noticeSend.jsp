@@ -29,7 +29,8 @@
             <input type="text" id="findTxt" name="findTxt" />
             <input type="button" id="findButton" name="findButton" onclick="search()" value="搜索"/> 
             <input type="button" id="choose1" name="choose1" onclick="chooseAll()" value="全选"/>
-			<input type="button" id="choose2" name="choose2" onclick="chooseInvert()" value="全不选"/>        
+			<input type="button" id="choose2" name="choose2" onclick="chooseInvert()" value="全不选"/>     
+			<input type="button" id="choose3" name="choose3" onclick="expandAll()" value="展开"/>    
 		</div>  	
     	<div style="height:300px; overflow:auto;">               
             <div class="tree"> 
@@ -56,41 +57,47 @@ $(function () {
 	//根据to中是否有内容进行判断	
 	//正则表达式，取出电话号码,变成电话1，电话2的形式
 		var doc = $(editPage).find('input[id="to"]');
+	console.log(doc);
 		var valueStr = doc[0].value;
+	console.log(valueStr);
 	//如果to框中已有值，则展示to中的树形结构，且打上勾
 	if(valueStr != ""){
 		var value = JSON.parse(valueStr);
 		console.log(value);
+		console.log(value[0].shipId);
 		treeList = $("#tree1").ligerTree({ 
-		     nodeWidth: 200,
+		     nodeWidth: 350,
 		     url: "${WebUrl}/notice/findAll.ctbt",
 		     checkbox: true,
 		     idFieldName: 'id', 
-		     isExpand: true, 
+		     delay: true, 
 		     slide: false,
-		     enabledCompleteCheckbox:true,
-		     onSuccess: function(){
-		    	 treeList.selectNode(function(data){
-		    		 console.log(data);
-						for(var i in value){
-							if(value[i].msgTo == data.card_no1){
-								return true;
-							}
-						}  
-				});
+		     isExpand: true, 
+		     enabledCompleteCheckbox:false,
+		     onSuccess: function(){		    		    
+				treeList.selectNode(function(data){
+					console.log(data);
+					//if()
+				})
+				//treeList.selectNode(parm);
 				treeList.refreshTree();
-		     }
+		     }		
 	 	});
 	}
 	//如果第一次加载，to中没有内容，展示整棵树，并且不打勾
 	else{
 		treeList = $("#tree1").ligerTree({ 
-		     nodeWidth: 200,
+		     nodeWidth: 350,
 		     url: "${WebUrl}/notice/findAll.ctbt?text="+text,
 		     checkbox: true,
 		     idFieldName: 'id', 
+		     delay: true, 
+		     slide: false,
 		     isExpand: true, 
-		     slide: false
+		     enabledCompleteCheckbox:true,
+		     onSuccess: function(){
+		    	 treeList.refreshTree();
+		     }
 		 });
 	}
 });
@@ -107,6 +114,11 @@ function chooseInvert(){
 		treeList.cancelSelect(data);
 	});
 	//treeList.refreshTree();
+}
+
+//全部展开
+function expandAll(){
+	treeList.expandAll();			
 }
 
 function prove(){
@@ -132,6 +144,7 @@ function sendMsg(){
 
 			insertRes.msgType = 1;
 			insertRes.msgTo = nodes[i].data.card_no1;
+			insertRes.shipId = nodes[i].data.ship_id;
 			
 			insertList.push(insertRes);
 			

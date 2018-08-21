@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+
     <!--日志，具体其他配置参考压缩包中，pdf说明文档的3.1.2 settings-->
     <settings>
         <setting name="logImpl" value="LOG4J"/>
@@ -12,10 +13,18 @@
     <typeAliases>
         <package name="com.ctbt.beidou.base.model"/>
     </typeAliases>
-
+	<plugins>
+	  <!-- com.github.pagehelper为PageHelper类所在包名 -->
+	  <plugin interceptor="com.github.pagehelper.PageHelper">
+	    <!-- 设置数据库类型 Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL六种数据库-->    
+	    <property name="dialect" value="mysql"/>
+	  </plugin>
+	</plugins>
     <!--配置mapper映射文件的位置-->
     <mappers>
     	<!-- dao 和 mapping.xml 放同一个目录下"/ -->
         <package name="com.ctbt.beidou.base.dao"/>
     </mappers>
+
 </configuration>
+

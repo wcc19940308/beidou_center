@@ -1,0 +1,57 @@
+package com.ctbt.beidou.datapack.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.dao.BdDataPackRecvMapper;
+import com.ctbt.beidou.base.dao.BdDataPackSendMapper;
+import com.ctbt.beidou.base.model.BdDataPackRecv;
+import com.ctbt.beidou.base.model.BdDataPackSend;
+import com.ctbt.beidou.base.model.BdRecvPackage;
+
+@Transactional
+@Service("datapackService")
+public class BdDataPackServiceImpl implements IBdDataPackService{
+
+	@Resource
+	private BdDataPackSendMapper bdDataPackSendMapper;
+	
+	@Resource
+	private BdDataPackRecvMapper bdDataPackRecvMapper;
+	
+	@Override
+	public List<BdDataPackSend> queryDataPackSendList(Map<String, Object> record) {
+		
+		return bdDataPackSendMapper.selectByCondition(record);
+	}
+
+	@Override
+	public List<BdDataPackRecv> queryDataPackRecvList(Map<String, Object> record) {
+		
+		return bdDataPackRecvMapper.selectByCondition(record);
+	}
+
+	/**
+	 * 从数据站接收到的数据包，保存至中心平台的数据包接收表
+	 */
+	@Override
+	public int saveBdRecvPackage(BdRecvPackage pkg) {
+
+		pkg.setFromPkgId(pkg.getPkgId());//此时收到的pkgId 是数据站中的id，存放至 FromPkgId，重新生成中心平台自己的pkgId
+		pkg.setPkgId(null);
+		
+		String pkgType = pkg.getPkgType();//报文类型
+		if("d".equalsIgnoreCase(pkgType)) {
+			//普通消息（文本）
+		}
+		
+		return bdDataPackRecvMapper.insert(pkg);
+	}
+
+	
+}

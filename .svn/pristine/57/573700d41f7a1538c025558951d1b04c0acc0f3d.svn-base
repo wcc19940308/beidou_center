@@ -1,0 +1,95 @@
+package com.ctbt.beidou.fish.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.dao.BdFishRecordDetailMapper;
+import com.ctbt.beidou.base.dao.BdFishRecordMapper;
+import com.ctbt.beidou.base.model.BdFishRecord;
+import com.ctbt.beidou.base.model.BdFishRecordDetail;
+@Transactional
+@Service("fishService")
+public class FishServiceImpl implements IFishService{
+	@Resource
+	private BdFishRecordMapper bdFishRecordMapper;
+	
+	@Resource 
+	private BdFishRecordDetailMapper bdFishRecordDetailMapper;
+	
+	@Override
+	public int insertFishRecord(BdFishRecord bdFishRecord) {
+		//先去查记录，再插入
+		bdFishRecordMapper.insert(bdFishRecord);
+		// TODO 上传bdFishRecord
+		return 0;
+	}
+
+	@Override
+	public int insertFishRecordDetail(BdFishRecordDetail bdFishRecordDetail) {
+		// TODO 自动生成的方法存根
+	
+		return 0;
+	}
+
+
+
+	
+	
+	
+	
+	@Override
+	public List getFishRecord(BdFishRecord bdFishRecord, BdFishRecordDetail bdFishRecordDetail,Date sendTimeStart,Date sendTimeEnd) {
+		// TODO 自动生成的方法存根
+		try {
+			HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+			paramsMap.put("shipId", bdFishRecord.getShipId());
+			paramsMap.put("sendTimeStart", sendTimeStart);
+			paramsMap.put("sendTimeEnd", sendTimeEnd);
+			if (bdFishRecordDetail.getFishType()=="") {
+				paramsMap.put("fishType", null);
+			}else {
+				paramsMap.put("fishType", bdFishRecordDetail.getFishType());
+			}
+			
+			List<HashMap> fishRecordList = bdFishRecordMapper.selectBySelective(paramsMap);
+			Iterator<?> it = fishRecordList.iterator();
+			while(it.hasNext()) {
+			  //格式化时间	
+				HashMap<String, Object> next = (HashMap<String, Object>) it.next();
+				if(next.get("record_date")!=null) {
+					next.put("record_date", next.get("record_date").toString());
+				}
+			}
+			return fishRecordList;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
+
+	@Override
+	public List getFishRecordDetail(Integer fishRecordId) {
+		// TODO 自动生成的方法存根
+		List list = bdFishRecordDetailMapper.selectByRecordKey(fishRecordId);
+		return list;
+	}
+
+	@Override
+	public List getFishLogListByKey(Integer recordId) {
+		// TODO 自动生成的方法存根
+		List list = bdFishRecordMapper.selectByPrimaryKey(recordId);
+		return list;
+	}
+	
+
+}

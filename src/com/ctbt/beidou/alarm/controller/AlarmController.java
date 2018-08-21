@@ -27,10 +27,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ctbt.beidou.alarm.service.IBdAlarmService;
 import com.ctbt.beidou.base.model.BdMsgAlarm;
 import com.ctbt.beidou.base.model.BdMsgChat;
+import com.ctbt.beidou.base.model.BdShip;
 import com.ctbt.beidou.webservices.NewAlarmMesWebServiceProxy;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;;
+import net.sf.json.JSONObject;
 
 
 @Controller
@@ -50,7 +53,7 @@ public class AlarmController {
 	
 	@RequestMapping(value = "/queryAlarmList", method = RequestMethod.POST)
 	@ResponseBody
-	public List<BdMsgAlarm> queryAlarmList(HttpServletRequest request){
+	public JSONObject queryAlarmList(HttpServletRequest request){
 
 		Map<String, Object> record = new HashMap<>();
 		// 发送开始时间
@@ -89,18 +92,25 @@ public class AlarmController {
 			record.put("msgTo", null);
 		} else {
 			record.put("msgTo", request.getParameter("msgTo"));
-		}
-		
+		}		
 		//报警类型
 		if (("").equals(request.getParameter("msgType"))) {
 			record.put("msgType", null);
 		} else {
 			record.put("msgType", request.getParameter("msgType"));
 		}
-		
+		String page=request.getParameter("page");
+	    String pageSize=request.getParameter("pageSize");
+		PageHelper.startPage(Integer.valueOf(page),Integer.valueOf(pageSize));
 		List<BdMsgAlarm> list = alarmService.queryAlarmList(record);
-		
-		return list;
+		PageInfo pages =new PageInfo(list,5);
+	    JSONObject obj = new JSONObject();
+	    obj.put("Rows", list);
+	    obj.put("recordNum",pages.getTotal());
+	    obj.put("currentPage",pages.getPageNum());
+	    obj.put("sumPageNum",pages.getPages());
+	    
+		return obj;
 	}	
 	@RequestMapping("/toAlarmEdit")
 	
@@ -112,12 +122,10 @@ public class AlarmController {
 	
 	@RequestMapping(value = "/saveAlarmEdit",method=RequestMethod.POST)
 	@ResponseBody
-	public String saveAlarmEdit(HttpServletRequest request, BdMsgAlarm alarm){
-		
-		System.out.println(alarm.getSendTime());
-		System.out.println(alarm.getRecvConfirmTime());
-		String rv = alarmService.saveBdMsgAlarmEdit(alarm);
-		return rv;
+	public Map<String, Object> saveAlarmEdit(HttpServletRequest request){
+				
+		Map<String, Object> returnMap = alarmService.saveBdMsgAlarmEdit(request);
+		return returnMap;
 	}
 	
 	@InitBinder 

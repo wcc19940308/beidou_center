@@ -1,0 +1,129 @@
+package com.ctbt.beidou.phonemsg.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ctbt.beidou.base.model.BdPhoneMsg;
+import com.ctbt.beidou.base.utils.DateUtil;
+import com.ctbt.beidou.phonemsg.service.IPhonemsgService;
+import com.ctbt.beidou.phonemsg.service.PhonemsgServiceImpl;
+
+@Controller
+@RequestMapping("/phonemsg")
+public class PhonemsgController {
+	@Resource
+	IPhonemsgService PhoneService;
+	private Logger logger = LogManager.getLogger(getClass());
+
+	@RequestMapping("/toPhoneToSend")
+	public String toPhoneToSend(HttpServletRequest request,Model model){
+		
+		return "phonemsg/phoneToSend";
+	}
+	
+	@RequestMapping("/toPhonemsgList")
+	public String toPhonemsgList(HttpServletRequest request,Model model){
+
+		return "phonemsg/phonemsgList";
+	}
+
+
+	@RequestMapping("/queryPhonemsgList")
+	@ResponseBody
+	public List queryPhonemsgList(HttpServletRequest request,BdPhoneMsg bdPhoneMsg,Model model){
+		//判断日期是否为空
+				try {
+					String sendTimeStart=null;
+					String sendTimeEnd = null;
+					
+					if(request.getParameter("sendTimeStart")!=null) {
+						sendTimeStart = request.getParameter("sendTimeStart");						
+					}
+					if(request.getParameter("sendTimeEnd")!=null) {
+						sendTimeEnd =request.getParameter("sendTimeEnd");
+					}
+					List list = PhoneService.queryPhonemsgList(bdPhoneMsg,sendTimeStart,sendTimeEnd);
+					return list;
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+					return null;
+				}
+
+	}
+	
+	@RequestMapping("/sendPhonemsg")
+	@ResponseBody
+	public String sendPhonemsg(HttpServletRequest request,BdPhoneMsg bdPhoneMsg,Model model){
+		//发送信息接口
+		try {
+			List<String> contactList= null;
+			String strList = request.getParameter("contactList");
+			contactList = Arrays.asList(strList.replace("[","").replace(" ","").replace("]","").replace("\"","").split(","));
+			List<BdPhoneMsg> bdPhoneMsgList = new LinkedList<BdPhoneMsg>();
+			Date time =  new java.sql.Date(new java.util.Date().getTime());
+//			把每一个联系人list都放进POJO类list中
+			for (String phoneString : contactList) {
+				BdPhoneMsg temp = new BdPhoneMsg();
+				temp.setPhone(phoneString);
+				temp.setSendTime(time);
+				temp.setMsgType(bdPhoneMsg.getMsgType());
+				temp.setMsgTxt(bdPhoneMsg.getMsgTxt());
+				temp.setMsgCode(bdPhoneMsg.getMsgCode());
+				bdPhoneMsgList.add(temp);
+			}
+			PhoneService.sendMessageToDB(bdPhoneMsgList);
+			return "success";
+		} catch (Exception e) {
+			// TODO: handle exception
+			return "failed";
+		}
+		
+		
+	}
+
+	
+	@RequestMapping("/sendPhoneCodemsg")
+	@ResponseBody
+	public String sendPhoneCodemsg(HttpServletRequest request,BdPhoneMsg bdPhoneMsg,Model model){
+		//发送信息接口
+		List<String> contactList= null;
+		String strList = request.getParameter("contactList");
+		contactList = Arrays.asList(strList.replace("[","").replace(" ","").replace("]","").replace("\"","").split(","));
+		List<BdPhoneMsg> bdPhoneMsgList = new LinkedList<BdPhoneMsg>();
+		Date time =  new java.sql.Date(new java.util.Date().getTime());
+//		把每一个联系人list都放进POJO类list中
+		for (String phoneString : contactList) {
+			BdPhoneMsg temp = new BdPhoneMsg();
+			temp.setPhone(phoneString);
+			temp.setSendTime(time);
+			temp.setMsgType(bdPhoneMsg.getMsgType());
+			temp.setMsgTxt(bdPhoneMsg.getMsgTxt());
+			bdPhoneMsgList.add(temp);
+		}
+		PhoneService.sendMessageToDB(bdPhoneMsgList);
+		return "success";
+	}
+	
+	
+	@RequestMapping("/toPhonemsgEdit")
+	public String toPhonemsgEdit(HttpServletRequest request,Model model){
+
+		return "phonemsg/phonemsgEdit";
+	}
+}

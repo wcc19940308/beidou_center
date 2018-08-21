@@ -1,54 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ctbt.beidou.base.dao.BdDataPackRecvMapper">
-  <resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdDataPackRecv">
-    <id column="pkg_id" jdbcType="INTEGER" property="pkgId" />
-    <result column="pkg_type" jdbcType="CHAR" property="pkgType" />
-    <result column="msg_id" jdbcType="INTEGER" property="msgId" />
-    <result column="pkg_data" jdbcType="VARCHAR" property="pkgData" />
-    <result column="master_from" jdbcType="VARCHAR" property="masterFrom" />
-    <result column="pkg_from" jdbcType="VARCHAR" property="pkgFrom" />
-    <result column="phone_from" jdbcType="VARCHAR" property="phoneFrom" />    
-    <result column="master_to" jdbcType="VARCHAR" property="masterTo" />
-    <result column="pkg_to" jdbcType="VARCHAR" property="pkgTo" />
-    <result column="phone_to" jdbcType="VARCHAR" property="phoneTo" /> 
-    <result column="recv_time" jdbcType="TIMESTAMP" property="recvTime" />
-    <result column="from_site_no" jdbcType="VARCHAR" property="fromSiteNo" />    
-  </resultMap>
-  
-   <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">
-  	select * from bd_recv_package where pkg_id is not null
-  	<if test="masterFrom != null">
-  		and master_from = #{masterFrom}
-  	</if>
-  	
-  	<if test="masterTo != null">
-  		and master_to = #{masterTo}
-  	</if>
-  	
-  	<if test="phoneFrom != null">
-  		and phone_from = #{phoneFrom}
-  	</if>
-  	
-  	<if test="phoneTo != null">
-  		and phone_to = #{phoneTo}
-  	</if>
-  	
-  	<if test="pkgFrom != null">
-  		and pkg_from = #{pkgFrom}
-  	</if>
-  	
-  	<if test="pkgTo != null">
-  		and pkg_to = #{pkgTo}
-  	</if>
-  	
-  	<if test="beginTime != null and endTime == null">
-  	and recv_time >= #{beginTime}
-  	</if>
-  	
-  	<if test="beginTime != null and endTime != null">
-  	and recv_time between #{beginTime} and #{endTime}
-  	</if>
-  	
-  </select>
-  </mapper>
+	<resultMap id="BaseResultMap" type="com.ctbt.beidou.base.model.BdDataPackRecv">
+		<id column="pkg_id" jdbcType="BIGINT" property="pkgId" />
+	    <result column="from_site_no" jdbcType="VARCHAR" property="fromSiteNo" />
+	    <result column="from_pkg_id" jdbcType="BIGINT" property="fromPkgId" />
+	    <result column="msg_id" jdbcType="BIGINT" property="msgId" />
+	    <result column="pkg_cmd" jdbcType="VARCHAR" property="pkgCmd" />
+	    <result column="pkg_type" jdbcType="CHAR" property="pkgType" />
+	    <result column="pkg_msg" jdbcType="VARCHAR" property="pkgMsg" />
+	    <result column="master_from" jdbcType="INTEGER" property="masterFrom" />
+	    <result column="pkg_from" jdbcType="INTEGER" property="pkgFrom" />
+	    <result column="phone_from" jdbcType="VARCHAR" property="phoneFrom" />
+	    <result column="master_to" jdbcType="INTEGER" property="masterTo" />
+	    <result column="pkg_to" jdbcType="INTEGER" property="pkgTo" />
+	    <result column="phone_to" jdbcType="VARCHAR" property="phoneTo" />
+	    <result column="recv_time" jdbcType="TIMESTAMP" property="recvTime" />
+	    <result column="recv_timestamp" jdbcType="BIGINT" property="recvTimestamp" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		pkg_id, msg_id, pkg_type, pkg_msg, master_from, pkg_from,
+		phone_from,
+		master_to,
+		pkg_to, phone_to, recv_time, recv_timestamp, from_site_no,
+		from_pkg_id
+	</sql>
+
+	<select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		pkg_id, msg_id, pkg_type, pkg_msg, master_from, pkg_from,
+		phone_from,
+		master_to,
+		pkg_to, phone_to, recv_time,  from_site_no
+		from bd_recv_package
+		where pkg_id is not null
+		<if test="masterFrom != null">
+			and master_from = #{masterFrom}
+		</if>
+
+		<if test="masterTo != null">
+			and master_to = #{masterTo}
+		</if>
+
+		<if test="phoneFrom != null">
+			and phone_from = #{phoneFrom}
+		</if>
+
+		<if test="phoneTo != null">
+			and phone_to = #{phoneTo}
+		</if>
+
+		<if test="pkgFrom != null">
+			and pkg_from = #{pkgFrom}
+		</if>
+
+		<if test="pkgTo != null">
+			and pkg_to = #{pkgTo}
+		</if>
+
+		<if test="beginTime != null and endTime == null">
+			and recv_time >= #{beginTime}
+		</if>
+
+		<if test="beginTime != null and endTime != null">
+			and recv_time between #{beginTime} and #{endTime}
+		</if>
+
+	</select>
+
+	<insert id="insert" parameterType="com.ctbt.beidou.base.model.BdRecvPackage">
+		insert into bd_recv_package (pkg_id, from_site_no,
+		from_pkg_id,
+		msg_id, pkg_cmd, pkg_type,
+		pkg_msg, master_from,
+		pkg_from,
+		phone_from, master_to, pkg_to,
+		phone_to, recv_time, recv_timestamp
+		)
+		values (#{pkgId,jdbcType=BIGINT}, #{fromSiteNo,jdbcType=VARCHAR},
+		#{fromPkgId,jdbcType=BIGINT},
+		#{msgId,jdbcType=BIGINT},
+		#{pkgCmd,jdbcType=VARCHAR}, #{pkgType,jdbcType=CHAR},
+		#{pkgMsg,jdbcType=VARCHAR},
+		#{masterFrom,jdbcType=VARCHAR},
+		#{pkgFrom,jdbcType=VARCHAR},
+		#{phoneFrom,jdbcType=VARCHAR},
+		#{masterTo,jdbcType=VARCHAR}, #{pkgTo,jdbcType=VARCHAR},
+		#{phoneTo,jdbcType=VARCHAR}, #{recvTime,jdbcType=TIMESTAMP},
+		#{recvTimestamp,jdbcType=BIGINT}
+		)
+	</insert>
+</mapper>

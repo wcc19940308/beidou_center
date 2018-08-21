@@ -1,0 +1,215 @@
+package com.ctbt.beidou.chat.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ctbt.beidou.base.dao.BdMsgChatMapper;
+import com.ctbt.beidou.base.model.BdMsgChat;
+import com.ctbt.beidou.datapack.service.IBdDataPackService;
+
+@Transactional
+@Service("chatService")
+public class BdChatServiceImpl implements IBdChatService{
+	
+	@Resource
+	private BdMsgChatMapper bdMsgChatMapper;
+
+	@Resource
+	private IBdDataPackService datapackService;
+
+	@Override
+	public int deleteByPrimaryKey(Integer msgId) {
+		
+		return this.bdMsgChatMapper.deleteByPrimaryKey(msgId);
+	}
+
+	@Override
+	public int insert(BdMsgChat record) {
+		
+		return  this.bdMsgChatMapper.insert(record);
+	}
+
+	@Override
+	public int insertSelective(BdMsgChat record) {
+		
+		return this.bdMsgChatMapper.insertSelective(record);
+	}
+
+	@Override
+	public BdMsgChat selectByPrimaryKey(Integer msgId) {
+		
+		return this.bdMsgChatMapper.selectByPrimaryKey(msgId);
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(BdMsgChat record) {
+		
+		return this.bdMsgChatMapper.updateByPrimaryKeySelective(record);
+	}
+
+	@Override
+	public int updateByPrimaryKey(BdMsgChat record) {
+		
+		return this.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public List<BdMsgChat> queryChatList(Map<String, Object> record) {
+		
+		return this.bdMsgChatMapper.selectByCondition(record);
+	}
+
+	@Override
+	public List<BdMsgChat> showChatList() {
+		
+		List<BdMsgChat> list = bdMsgChatMapper.selectAll();
+		for(BdMsgChat b : list) {
+			if(b.getMsgType().equals("3")) {
+				String base64Msg = bdMsgChatMapper.findVoice(b.getMsgId());
+				b.setMsgTxt(base64Msg);
+			}		
+		}
+		return list;
+	}
+
+	//查询消息，构造树形结构
+	@Override
+	public List<Map<String, Object>> findAll(HttpServletRequest request) {
+		
+		String text = request.getParameter("text");
+		String str = request.getParameter("str");
+		List<Map<String, Object>> list = null;
+		//如果搜索框的内容和to中的内容都为空，构造整棵树
+		if((text == null || text == "") && (str == null || str == "")) 
+		{
+			list = bdMsgChatMapper.findAll();
+		}
+		//如果搜索框内容不为空，则按搜索框内容进行搜索
+		else if(text != null || text != "")
+		{
+			text = "%"+text+"%";
+			list = bdMsgChatMapper.searchInfo(text);
+		}
+		//6
+		System.out.println("------------------------"+list.size());
+		//返回的List数据
+		List<Map<String, Object>> returnListInfo = new LinkedList<>();	
+		while(list.size() > 0){
+			//返回的Map数据
+			Map<String,Object> returnMapInfo = new HashMap<>();
+			//获得每项明细
+			int detailShip_id = (int) list.get(0).get("ship_id");
+			String detailShip_name = (String) list.get(0).get("ship_name");
+			int detailCard_no1 = (int) list.get(0).get("card_no1");
+			//船的具体信息
+			returnMapInfo.put("ship_id", detailShip_id);
+			returnMapInfo.put("ship_name", detailShip_name);
+			returnMapInfo.put("card_no1", detailCard_no1);
+			returnMapInfo.put("text", detailShip_name+"("+detailCard_no1+")");
+			returnMapInfo.put("icon", request.getScheme() +"://" + request.getServerName()  + 
+					":" +request.getServerPort() +request.getContextPath()+"/images/icons/ship22.png");
+			
+			//用户具体信息
+			List<Map<String, Object>> returnChildrenListInfo = new LinkedList<>();
+			while(list.size() > 0){
+				Map<String, Object> returnChildrenMapInfo = new HashMap<>();
+				if(list.get(0).get("ship_id").equals(detailShip_id)) {
+					int detailUser_id = (int) list.get(0).get("user_id");
+					String detailUser_name = (String) list.get(0).get("user_name");
+					String detailPhone = (String) list.get(0).get("phone");
+					returnChildrenMapInfo.put("user_id",detailUser_name);
+					returnChildrenMapInfo.put("user_name",detailUser_name);
+					returnChildrenMapInfo.put("phone",detailPhone);
+					returnChildrenMapInfo.put("text", detailUser_name+"("+detailPhone+")");
+					returnChildrenMapInfo.put("IC", detailCard_no1);
+					returnChildrenMapInfo.put("icon", request.getScheme() +"://" + request.getServerName()  + 
+							":" +request.getServerPort() +request.getContextPath()+"/images/icons/user22.png");				
+					list.remove(0);
+				}else {
+					break;
+				}
+				returnChildrenListInfo.add(returnChildrenMapInfo);
+			}
+			returnMapInfo.put("children", returnChildrenListInfo);
+			returnListInfo.add(returnMapInfo);
+		}
+		return returnListInfo;
+	}
+
+	@Override
+	public int insertMsg(List<BdMsgChat> list) {
+		
+		for(BdMsgChat msg : list) {
+			bdMsgChatMapper.insert(msg);
+			datapackService.saveBdSendPackageForChat(msg);
+		}
+		return list.size();
+	}
+
+	@Override
+	public Map<String, Object> insertChatWithPhone(HttpServletRequest request) {
+	
+		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> middleMap = new HashMap<>();
+		Map<String, Object> returnMap = new HashMap<>();
+		map.put("msg_from", request.getParameter("from"));
+		map.put("from_phone", request.getParameter("from_phone"));
+		map.put("msg_to", request.getParameter("to"));
+		map.put("to_phone", request.getParameter("to_phone"));
+		String type = request.getParameter("type");
+		//文本，语音，图片
+		if (type.equals("d")) {
+			type = "1";
+		}else if (type.equals("m")) {
+			type = "3";
+		}else if (type.equals("n")){
+			type = "2";
+		}
+		map.put("msg_type", type);
+		if(type.equals("1")) {
+			map.put("msg_txt", request.getParameter("body"));
+		}else {
+			map.put("msg_txt", null);
+		}
+		map.put("send_time", new Date());
+		map.put("msgId", 0);
+		bdMsgChatMapper.insertChatWithPhone(map);
+		int res =  (int) map.get("msgId");
+		int middleRes = 0;
+		//如果插入的是语音或者图片信息，需要额外在bd_msg_chat_file插入
+		if(type.equals("2") || type.equals("3")) {
+			middleMap.put("msg_id", res);
+			middleMap.put("msg_type", type);
+			middleMap.put("msg_base64", request.getParameter("body"));
+			//返回的插入结果的条数
+			middleRes = bdMsgChatMapper.insertChatFile(middleMap);
+			if (res != 0 && middleRes != 0 ) {
+				returnMap.put("code", "1");
+				returnMap.put("retmsg", res);
+			}else {
+				returnMap.put("code", "0");
+				returnMap.put("retmsg", "error");
+			}
+			//如果是文本
+		}else {
+			if (res != 0 ) {
+				returnMap.put("code", "1");
+				returnMap.put("retmsg", res);
+			}else {
+				returnMap.put("code", "0");
+				returnMap.put("retmsg", "error");
+			}
+		}
+		return returnMap;
+		
+	}
+}
